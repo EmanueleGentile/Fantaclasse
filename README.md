@@ -2,9 +2,20 @@
 FantaClasse è il nome del progetto dato all'applicazione della classe 3DIA del Nino Cortese di Maddaloni.
 Il progetto è basato sulle stesse regole del fantacalcio ma rivisitate per essere fatte con i propri compagni di classe!
 
+## 🚀 Come testare l'App (Per Sviluppatori/Collaboratori)
 
-REGOLAMENTO 
-FANTASTUDENTE
+Dato che l'app usa un backend in Python, **non basta aprire il file HTML**. Serve accendere il server locale.
+
+**Se usi Windows:**
+Ti basta fare doppio clic sul file `Avvia_Fantaclasse.bat`. Farà tutto da solo e potrai vedere l'app aprendo nel browser l'indirizzo: `http://127.0.0.1:5000`
+
+**Se usi Mac/Linux o il Terminale:**
+1. Installa i requisiti: `pip install flask`
+2. Avvia il server: `python main.py`
+3. Apri nel browser: `http://127.0.0.1:5000`
+
+---
+REGOLAMENTO FANTASTUDENTE
 —————————————
 in gioco:
 ogni giocatore deve schierare almeno uno studente per ogni materia.
