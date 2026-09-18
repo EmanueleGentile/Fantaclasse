@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantaclasse App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Libreria FontAwesome per avere tutte le icone del Mockup (impostazioni, casa, coppa, ecc) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- HEADER (La barra in alto) -->
+        <header class="app-header">
+            <div style="width: 24px;"></div> <!-- Spazio finto per centrare il logo perfettamente -->
+            
+            <div class="header-logo">
+                <i class="fa-solid fa-crown crown-icon"></i>
+                <div style="margin-top: -2px;">
+                    <span class="fanta">FANTA</span><br>
+                    <span class="classe">CLASSE</span>
+                </div>
+            </div>
+            
+            <div class="settings-icon">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+        </header>
+
+        <!-- CORPO CENTRALE SCORREVOLE -->
+        <main class="app-content">
+            
+            <!-- Sezione 1: La Tua Lega -->
+            <div class="section-title">LA TUA LEGA</div>
+            <div class="lega-card">
+                <div class="lega-icon-bg">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="lega-info">
+                    <!-- QUI ORA USIAMO I DATI INVIATI DA PYTHON! -->
+                    <div class="lega-name">{{ lega.nome_lega }}</div>
+                    <div class="lega-users">{{ totale_utenti }}/{{ totale_utenti }} Fantallenatori</div>
+                </div>
+                <div class="users-icon">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+            </div>
+
+            <!-- Sezione 2: La Classifica -->
+            <div class="section-title">CLASSIFICA</div>
+            <table class="classifica-table">
+                <thead>
+                    <tr>
+                        <th class="rank">#</th>
+                        <th>Nome</th>
+                        <th class="points">Punti</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- PYTHON CREA LE RIGHE IN AUTOMATICO CON QUESTO CICLO -->
+                    {% for squadra in classifica %}
+                    
+                    <!-- Se è la mia squadra, Python aggiunge la classe 'highlight' per farla verde -->
+                    <tr class="{% if squadra.mia_squadra %}highlight{% endif %}">
+                        <td class="rank">{{ squadra.posizione }}</td>
+                        <td>{{ squadra.nome }}</td>
+                        <td class="points">{{ squadra.punti }}</td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </main>
+
+        <!-- BARRA INFERIORE (Bottom Navigation) -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <i class="fa-solid fa-house nav-icon"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Squadre</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-trophy nav-icon"></i>
+                <span>Classifica</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-store nav-icon"></i>
+                <span>Mercato</span>
+            </div>
+        </nav>
+
+    </div>
+</body>
+</html>
