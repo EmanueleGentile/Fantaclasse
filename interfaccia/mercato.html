@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercato</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .giocatore-card {
+            background-color: var(--bg-light);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .giocatore-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .g-nome { font-weight: 800; font-size: 1.1rem; }
+        .g-dettagli { color: var(--text-light); font-size: 0.8rem; margin-top: 5px; }
+        .g-prezzo {
+            background-color: var(--accent-gold);
+            color: var(--bg-dark);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div style="width: 24px;"></div>
+            <div class="header-logo">
+                <div style="margin-top: -2px;">
+                    <span class="fanta">LISTONE</span><br>
+                    <span class="classe">MERCATO</span>
+                </div>
+            </div>
+            <div class="settings-icon" onclick="window.location.href='/suggerisci'" style="cursor: pointer;">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+        </header>
+
+        <main class="app-content">
+            <div class="section-title">GIOCATORI DISPONIBILI</div>
+            
+            {% if carte|length == 0 %}
+                <div style="text-align: center; color: var(--text-light); margin-top: 40px;">
+                    <i class="fa-solid fa-ghost" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>Il mercato è ancora vuoto!</p>
+                    <p style="font-size: 0.8rem;">Usa le impostazioni per suggerire una carta all'Admin.</p>
+                </div>
+            {% else %}
+                {% for giocatore in carte %}
+                <div class="giocatore-card">
+                    <div class="giocatore-info" style="flex: 1;">
+                        <div class="g-nome">{{ giocatore.nome }}</div>
+                        <div class="g-dettagli"><i class="fa-solid fa-book"></i> {{ giocatore.materie | join(', ') }} • Classe {{ giocatore.classe }}</div>
+                        
+                        <!-- Mini Badge per le statistiche (Media e Malus) -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;">
+                            {% if giocatore.media_voti is defined %}
+                            <span style="background-color: rgba(22, 163, 74, 0.2); color: var(--green-primary); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
+                                Media: {{ giocatore.media_voti }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if giocatore.assenze_iniziali %}
+                            <span style="background-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-user-xmark"></i> Ass: {{ giocatore.assenze_iniziali }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if giocatore.ritardi or giocatore.entrate_ritardo %}
+                            <span style="background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">
+                                <i class="fa-solid fa-clock"></i> Rit: {{ (giocatore.ritardi|default(0)) + (giocatore.entrate_ritardo|default(0)) }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if giocatore.note_generiche or giocatore.note_disciplinari %}
+                            <span style="background-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #ef4444;">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Note: {{ (giocatore.note_generiche|default(0)) + (giocatore.note_disciplinari|default(0)) }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="g-prezzo">
+                        {{ giocatore.quotazione }} <i class="fa-solid fa-coins" style="font-size: 0.9rem;"></i>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href='/'">
+                <i class="fa-solid fa-house nav-icon"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Squadre</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-trophy nav-icon"></i>
+                <span>Classifica</span>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='/mercato'">
+                <i class="fa-solid fa-store nav-icon"></i>
+                <span>Mercato</span>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

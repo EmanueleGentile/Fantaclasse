@@ -14,6 +14,16 @@ Ti basta fare doppio clic sul file `Avvia_Fantaclasse.bat`. Farà tutto da solo 
 2. Avvia il server: `python main.py`
 3. Apri nel browser: `http://127.0.0.1:5000`
 
+## 🧠 Roadmap e Nuove Idee (Brainstorming)
+Il progetto si evolverà per supportare una distinzione chiara tra **Dati Statici** (anagrafica) e **Dati Dinamici** (voti, assenze).
+Abbiamo ideato un **Workflow di Moderazione a 3 Step** per la creazione di nuove carte nel Mercato:
+
+1. **Utente (L'App Web):** L'utente usa la funzione "Suggerisci Carta" fornendo solo dati anagrafici (Nome, Classe, Indirizzo di studio).
+2. **Admin Panel (Step 1 - Verifica):** L'Admin riceve la richiesta nel terminale e verifica che il nome sia consono e che non ci siano doppioni. Se accetta, la carta NON va nel mercato, ma passa al Data Analyst.
+3. **Data Analyst Panel (Step 2 - Statistiche):** Il team di Data Analysis riceve la carta "vergine". Tramite un secondo pannello, inseriscono le statistiche iniziali basate sui registri reali (es. quota iniziale, storico assenze). Una volta confermato, la carta appare finalmente nel Mercato ufficiale per essere comprata!
+
+Questo sistema richiederà in futuro il passaggio dall'attuale `database.json` a un database relazionale (es. SQLite) per gestire in modo robusto queste tre fasi.
+
 ---
 REGOLAMENTO FANTASTUDENTE
 —————————————

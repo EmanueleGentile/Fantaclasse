@@ -1,0 +1,42 @@
+{
+    "carte_in_sospeso": [],
+    "carte_da_analizzare": [],
+    "carte_accettate": [
+        {
+            "nome": "abcde",
+            "classe": "3ESA",
+            "materie": [
+                "Informatica",
+                "Storia",
+                "Scienze",
+                "Inglese"
+            ],
+            "quotazione": 20,
+            "media_voti": 8.5,
+            "assenze_iniziali": 0,
+            "ritardi": 1,
+            "entrate_ritardo": 0,
+            "note_generiche": 2,
+            "note_disciplinari": 0
+        },
+        {
+            "nome": "tutututu",
+            "classe": "2asa",
+            "materie": [
+                "Informatica",
+                "Matematica",
+                "Italiano",
+                "Storia",
+                "Fisica",
+                "Inglese"
+            ],
+            "quotazione": 30,
+            "media_voti": 10.0,
+            "assenze_iniziali": 3,
+            "ritardi": 0,
+            "entrate_ritardo": 0,
+            "note_generiche": 1,
+            "note_disciplinari": 0
+        }
+    ]
+}

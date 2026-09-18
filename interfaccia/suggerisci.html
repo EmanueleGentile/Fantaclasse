@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggerisci Carta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div style="width: 24px; cursor: pointer;" onclick="window.location.href='/'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="header-logo">
+                <div style="margin-top: -2px;">
+                    <span class="fanta">SUGGERISCI</span><br>
+                    <span class="classe">CARTA</span>
+                </div>
+            </div>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <main class="app-content">
+            {% if messaggio %}
+            <div style="background-color: var(--green-primary); padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; margin-bottom: 20px;">
+                {{ messaggio }}
+            </div>
+            {% endif %}
+
+            <div class="section-title">NUOVO STUDENTE</div>
+            <form action="/suggerisci" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Nome Completo</label>
+                    <input type="text" name="nome" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Classe (Es. 3DIA)</label>
+                    <input type="text" name="classe" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Materie (Seleziona tutte quelle che fa)</label>
+                    <div style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+                        <label><input type="checkbox" name="materie" value="Informatica"> Informatica</label>
+                        <label><input type="checkbox" name="materie" value="Matematica"> Matematica</label>
+                        <label><input type="checkbox" name="materie" value="Italiano"> Italiano</label>
+                        <label><input type="checkbox" name="materie" value="Storia"> Storia</label>
+                        <label><input type="checkbox" name="materie" value="Fisica"> Fisica</label>
+                        <label><input type="checkbox" name="materie" value="Scienze"> Scienze</label>
+                        <label><input type="checkbox" name="materie" value="Inglese"> Inglese</label>
+                        <label><input type="checkbox" name="materie" value="Filosofia"> Filosofia</label>
+                    </div>
+                </div>
+
+                <button type="submit" style="margin-top: 10px; background-color: var(--green-primary); color: var(--bg-dark); border: none; padding: 15px; border-radius: 8px; font-weight: 800; font-family: 'Montserrat', sans-serif; cursor: pointer;">
+                    INVIA ALL'ADMIN
+                </button>
+            </form>
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href='/'">
+                <i class="fa-solid fa-house nav-icon"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Squadre</span>
+            </div>
+            <div class="nav-item">
+                <i class="fa-solid fa-trophy nav-icon"></i>
+                <span>Classifica</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/mercato'">
+                <i class="fa-solid fa-store nav-icon"></i>
+                <span>Mercato</span>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

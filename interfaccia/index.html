@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,14 @@
     <!-- Libreria FontAwesome per avere tutte le icone del Mockup (impostazioni, casa, coppa, ecc) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="app-container">
-        
-        <!-- HEADER (La barra in alto) -->
+
+        <!-- HEADER  -->
         <header class="app-header">
             <div style="width: 24px;"></div> <!-- Spazio finto per centrare il logo perfettamente -->
-            
+
             <div class="header-logo">
                 <i class="fa-solid fa-crown crown-icon"></i>
                 <div style="margin-top: -2px;">
@@ -22,15 +24,15 @@
                     <span class="classe">CLASSE</span>
                 </div>
             </div>
-            
-            <div class="settings-icon">
+
+            <div class="settings-icon" onclick="window.location.href='/suggerisci'" style="cursor: pointer;">
                 <i class="fa-solid fa-gear"></i>
             </div>
         </header>
 
         <!-- CORPO CENTRALE SCORREVOLE -->
         <main class="app-content">
-            
+
             <!-- Sezione 1: La Tua Lega -->
             <div class="section-title">LA TUA LEGA</div>
             <div class="lega-card">
@@ -60,7 +62,7 @@
                 <tbody>
                     <!-- PYTHON CREA LE RIGHE IN AUTOMATICO CON QUESTO CICLO -->
                     {% for squadra in classifica %}
-                    
+
                     <!-- Se è la mia squadra, Python aggiunge la classe 'highlight' per farla verde -->
                     <tr class="{% if squadra.mia_squadra %}highlight{% endif %}">
                         <td class="rank">{{ squadra.posizione }}</td>
@@ -71,12 +73,12 @@
                     {% endfor %}
                 </tbody>
             </table>
-            
+
         </main>
 
         <!-- BARRA INFERIORE (Bottom Navigation) -->
         <nav class="bottom-nav">
-            <div class="nav-item active">
+            <div class="nav-item active" onclick="window.location.href='/'">
                 <i class="fa-solid fa-house nav-icon"></i>
                 <span>Home</span>
             </div>
@@ -88,7 +90,7 @@
                 <i class="fa-solid fa-trophy nav-icon"></i>
                 <span>Classifica</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" onclick="window.location.href='/mercato'">
                 <i class="fa-solid fa-store nav-icon"></i>
                 <span>Mercato</span>
             </div>
@@ -96,4 +98,5 @@
 
     </div>
 </body>
+
 </html>
