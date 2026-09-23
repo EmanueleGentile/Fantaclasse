@@ -75,6 +75,7 @@ class EventoDisciplinare:
     giornata: int
     assenze: int = 0
     ritardi: int = 0
+    entrate_ritardo: int = 0
     note_generiche: int = 0
     note_disciplinari: int = 0
 

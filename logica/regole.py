@@ -66,20 +66,31 @@ def calcola_malus_disciplina(evento: EventoDisciplinare) -> float:
 #questa parte è complicata, verifica attraverso dei cicli la validità di una materia e se il giocatore è posseduto
 def convalida_formazione(formazione: FormazioneGiornata, rosa: RosaUtente) -> bool:
     """
-    Verifica che la formazione copra le 9 materie ufficiali
-    e che gli studenti appartengano alla rosa acquistata all'asta.
+    Verifica che la formazione copra le 9 materie ufficiali,
+    che gli studenti appartengano alla rosa acquistata all'asta
+    e che nessuno studente sia schierato in più di una materia.
     """
     schieramento = formazione.schieramento
+
+    # Verifica che ci siano esattamente le 9 materie ufficiali
+    if len(schieramento) != len(MATERIE_UFFICIALI):
+        return False
 
     for materia in MATERIE_UFFICIALI:
         if materia not in schieramento:
             return False
 
     ids_posseduti = [acq.id_studente for acq in rosa.giocatori_acquistati]
+    studenti_schierati = set()
 
     for id_schierato in schieramento.values():
+        # Verifica che lo studente appartenga alla rosa
         if id_schierato not in ids_posseduti:
             return False
+        # Verifica che lo studente non sia già stato schierato in un'altra materia
+        if id_schierato in studenti_schierati:
+            return False
+        studenti_schierati.add(id_schierato)
 
     return True
 
@@ -92,16 +103,22 @@ def calcola_punteggio_giornata(
 ) -> float:
     """
     Calcola il totale dei punti della squadra per la giornata corrente.
+    Solo i voti presi nella specifica materia in cui lo studente è schierato contano.
     """
     punteggio_totale = 0.0
-    studenti_schierati = set(formazione.schieramento.values())
+
+    # Crea una mappa id_studente -> materia per un controllo veloce
+    # Nota: assumiamo che convalida_formazione sia già passata, quindi ogni studente ha 1 sola materia
+    studente_a_materia = {id_stud: materia for materia, id_stud in formazione.schieramento.items()}
 
     for v in voti:
-        if v.id_studente in studenti_schierati:
+        # Se lo studente schierato prende un voto nella STESSA materia in cui l'abbiamo schierato
+        if v.id_studente in studente_a_materia and v.materia == studente_a_materia[v.id_studente]:
             punteggio_totale += calcola_punti_voto(v.voto)
 
     for d in disciplina:
-        if d.id_studente in studenti_schierati:
+        # Le note/assenze si applicano a prescindere dalla materia, basta che lo studente sia schierato
+        if d.id_studente in studente_a_materia:
             punteggio_totale += calcola_malus_disciplina(d)
 
     return punteggio_totale
