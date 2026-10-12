@@ -33,6 +33,24 @@
         <!-- CORPO CENTRALE SCORREVOLE -->
         <main class="app-content">
 
+            {% if username %}
+            <div style="background-color: rgba(22, 163, 74, 0.2); border: 1px solid var(--green-primary); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="color: var(--text-light); font-size: 0.8rem;">Benvenuto Mister</span><br>
+                    <strong style="color: white; font-size: 1.1rem;">{{ username }}</strong>
+                </div>
+                <a href="/logout" style="color: #ef4444; font-size: 0.9rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-right-from-bracket"></i> Esci</a>
+            </div>
+            {% else %}
+            <div style="background-color: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">Fai l'accesso per creare la tua squadra e competere nella lega!</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="window.location.href='/login'" style="background-color: var(--accent-gold); color: var(--bg-dark); font-weight: 800; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; flex: 1;">LOGIN</button>
+                    <button onclick="window.location.href='/registrati'" style="background-color: transparent; border: 2px solid var(--accent-gold); color: var(--accent-gold); font-weight: 800; padding: 10px 20px; border-radius: 8px; cursor: pointer; flex: 1;">REGISTRATI</button>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Sezione 1: La Tua Lega -->
             <div class="section-title">LA TUA LEGA</div>
             <div class="lega-card">

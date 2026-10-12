@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: fantaclasse_web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - POCKETBASE_URL=http://db:8090
+      - SECRET_KEY=${SECRET_KEY}
+    networks:
+      - fantaclasse-net
+    restart: unless-stopped
+
+  db:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: fantaclasse_db
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./pb_data:/pb_data
+    networks:
+      - fantaclasse-net
+    restart: unless-stopped
+
+  # --- NUOVO SERVIZIO PER IL SITO WEB ---
+  sito_web:
+    image: nginx:alpine
+    container_name: fantaclasse_sito
+    ports:
+      - "8080:80" # Il sito sarà visibile su http://localhost:8080
+    volumes:
+      - ./sito:/usr/share/nginx/html # Punta alla cartella sito interna al repo
+    networks:
+      - fantaclasse-net
+    restart: unless-stopped
+
+
+networks:
+  fantaclasse-net:
+    driver: bridge

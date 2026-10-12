@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fantaclasse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div style="width: 24px; cursor: pointer;" onclick="window.location.href='/'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="header-logo">
+                <div style="margin-top: -2px;">
+                    <span class="fanta">ACCEDI</span><br>
+                    <span class="classe">AL GIOCO</span>
+                </div>
+            </div>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <main class="app-content" style="display: flex; flex-direction: column; justify-content: center;">
+            {% if errore %}
+            <div style="background-color: #ef4444; padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; margin-bottom: 20px;">
+                {{ errore }}
+            </div>
+            {% endif %}
+
+            <div class="section-title">BENTORNATO MISTER!</div>
+            <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Email</label>
+                    <input type="email" name="email" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Password</label>
+                    <input type="password" name="password" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+                </div>
+
+                <button type="submit" style="margin-top: 20px; background-color: var(--accent-gold); color: var(--bg-dark); border: none; padding: 15px; border-radius: 8px; font-weight: 800; font-family: 'Montserrat', sans-serif; cursor: pointer;">
+                    ENTRA NEGLI SPOGLIATOI
+                </button>
+                
+                <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-light);">
+                    Non hai ancora una squadra? <br><a href="/registrati" style="color: var(--green-primary); font-weight: bold; text-decoration: none;">Registrati ora!</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

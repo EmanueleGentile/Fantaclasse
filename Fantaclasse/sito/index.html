@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fantastudente — Il fantacalcio dove i protagonisti siamo noi ⚽📚</title>
+    <meta name="description"
+        content="Aiutaci a creare Fantastudente! L'app di fantacalcio scolastico dove gli studenti sono i giocatori, i voti diventano bonus e gli eventi scolastici cambiano la classifica." />
+    <meta name="theme-color" content="#0a1628" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+
+    <!-- Canvas Confetti per la celebrazione dell'invio -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <!-- Foglio di stile principale -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <header class="navbar-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="#home" class="nav-logo" aria-label="Fantastudente Home">
+                    <span class="logo-icon-wrap">
+                        <span class="logo-icon">⚽</span>
+                        <span class="logo-badge">PRO</span>
+                    </span>
+                    <span class="logo-text">Fanta<span class="logo-accent">studente</span></span>
+                </a>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Apri menu di navigazione" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">Cos'è?</a></li>
+                    <li><a href="#ideas" class="nav-link">Idee</a></li>
+                    <li><a href="#feedback" class="nav-link">Feedback</a></li>
+                    <li><a href="#community" class="nav-link">Community</a></li>
+                </ul>
+
+                <div class="nav-right">
+                    <div class="nav-counter" id="navCounterPill" title="Feedback inviati dagli studenti finora">
+                        <span class="counter-pulse"></span>
+                        <span class="counter-icon">💬</span>
+                        <span id="feedbackCounter">127 feedback ricevuti</span>
+                    </div>
+                    <a href="#feedback" class="btn-nav-cta">Partecipa</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ====== HERO ====== -->
+        <section class="hero" id="home">
+            <div class="hero-bg-pitch"></div>
+            <div class="hero-bg-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+
+            <div class="floating-emojis" aria-hidden="true">
+                <span class="float-emoji" style="--delay: 0s; --x: 6%; --y: 18%">⚽</span>
+                <span class="float-emoji" style="--delay: 0.6s; --x: 92%; --y: 16%">📚</span>
+                <span class="float-emoji" style="--delay: 1.2s; --x: 12%; --y: 72%">🏆</span>
+                <span class="float-emoji" style="--delay: 1.8s; --x: 88%; --y: 68%">⭐</span>
+                <span class="float-emoji" style="--delay: 0.9s; --x: 48%; --y: 12%">📈</span>
+                <span class="float-emoji" style="--delay: 1.5s; --x: 75%; --y: 84%">🔥</span>
+                <span class="float-emoji" style="--delay: 0.4s; --x: 28%; --y: 86%">📝</span>
+            </div>
+
+            <div class="container hero-container">
+                <div class="hero-content reveal">
+                    <div class="hero-badge">
+                        <span class="badge-dot"></span>
+                        <span>🎒 Progetto scolastico • In fase di sviluppo con la classe</span>
+                    </div>
+
+                    <h1 class="hero-title">
+                        Aiutaci a creare<br />
+                        <span class="gradient-text">Fantastudente</span>
+                    </h1>
+
+                    <p class="hero-subtitle">
+                        Il fantacalcio dove i protagonisti siamo noi. Hai un'idea? Facci sapere.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#feedback" class="btn btn-primary btn-glow">
+                            <span>💬</span> Lascia il tuo feedback
+                        </a>
+                        <a href="#about" class="btn btn-secondary">
+                            <span>🏆</span> Scopri il progetto
+                        </a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="stat-num" id="heroFeedbackNum" data-target="127">0</span>
+                            <span class="stat-plus">+</span>
+                            <span class="stat-label">Feedback</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat">
+                            <span class="stat-num" data-target="45">0</span>
+                            <span class="stat-plus">+</span>
+                            <span class="stat-label">Idee proposte</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat">
+                            <span class="stat-num" data-target="12">0</span>
+                            <span class="stat-label">Classi pronte</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat">
+                            <span class="stat-num" data-target="380">0</span>
+                            <span class="stat-plus">+</span>
+                            <span class="stat-label">Fanta-Mister</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Illustrazione Fantacalcio Scolastico (Card Studente FUT Edition) -->
+                <div class="hero-illustration reveal">
+                    <div class="card-player-showcase" id="interactiveCard">
+                        <div class="card-player">
+                            <div class="card-player-glow"></div>
+                            <div class="card-player-header">
+                                <div class="card-rating-group">
+                                    <span class="card-rating">92</span>
+                                    <span class="card-pos">BOM</span>
+                                </div>
+                                <div class="card-flag">🇮🇹</div>
+                                <div class="card-team-badge">4°A</div>
+                            </div>
+
+                            <div class="card-player-avatar-wrap">
+                                <div class="card-player-avatar">🧑‍🎓</div>
+                                <div class="avatar-star-badge">⭐ Fanta-Top</div>
+                            </div>
+
+                            <div class="card-player-info">
+                                <div class="card-player-name">Marco "Il Bomber"</div>
+                                <div class="card-player-meta">Liceo Scientifico • Classe 4A</div>
+                            </div>
+
+                            <div class="card-divider"></div>
+
+                            <div class="card-player-stats">
+                                <div class="cs-item">
+                                    <span class="cs-label">VT</span>
+                                    <span class="cs-val">9.5</span>
+                                    <span class="cs-desc">Voti</span>
+                                </div>
+                                <div class="cs-item">
+                                    <span class="cs-label">INT</span>
+                                    <span class="cs-val">90</span>
+                                    <span class="cs-desc">Interrog.</span>
+                                </div>
+                                <div class="cs-item">
+                                    <span class="cs-label">CRE</span>
+                                    <span class="cs-val">94</span>
+                                    <span class="cs-desc">Creatività</span>
+                                </div>
+                                <div class="cs-item">
+                                    <span class="cs-label">SLT</span>
+                                    <span class="cs-val">88</span>
+                                    <span class="cs-desc">Salva-Verifica</span>
+                                </div>
+                                <div class="cs-item">
+                                    <span class="cs-label">CAR</span>
+                                    <span class="cs-val">96</span>
+                                    <span class="cs-desc">Carisma</span>
+                                </div>
+                                <div class="cs-item">
+                                    <span class="cs-label">SPI</span>
+                                    <span class="cs-val">92</span>
+                                    <span class="cs-desc">Squadra</span>
+                                </div>
+                            </div>
+
+                            <div class="card-footer-quote">
+                                "Domani mi offro volontario io, tranquilli!"
+                            </div>
+                        </div>
+
+                        <!-- Floating Badges Bonus & Malus -->
+                        <div class="bonus-badge bonus-gold float-badge-1">
+                            <span class="badge-icon">🏆</span>
+                            <div class="badge-text">
+                                <b>+3 Punti</b>
+                                <small>Voto 10 in matematica</small>
+                            </div>
+                        </div>
+
+                        <div class="bonus-badge bonus-green float-badge-2">
+                            <span class="badge-icon">⭐</span>
+                            <div class="badge-text">
+                                <b>+2 Punti</b>
+                                <small>Salva la classe con un'alzata di mano</small>
+                            </div>
+                        </div>
+
+                        <div class="bonus-badge bonus-red float-badge-3">
+                            <span class="badge-icon">🔴</span>
+                            <div class="badge-text">
+                                <b>-2 Punti</b>
+                                <small>Dimenticata la relazione a casa</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticker infinito Bonus & Malus di Giornata -->
+            <div class="bonus-ticker-wrapper">
+                <div class="bonus-ticker-label">
+                    <span>⚡ BONUS & MALUS IN DIRETTA:</span>
+                </div>
+                <div class="bonus-ticker-track">
+                    <div class="ticker-content">
+                        <span class="ticker-item bonus-pos">🟢 +3 Voto sopra il 9 in verifica</span>
+                        <span class="ticker-item bonus-pos">🟢 +2 Volontario a sorpresa salva-compagni</span>
+                        <span class="ticker-item bonus-neg">🔴 -2 Nota sul registro di classe</span>
+                        <span class="ticker-item bonus-pos">🟢 +1 Compiti dimenticati ma non controllati</span>
+                        <span class="ticker-item bonus-neg">🔴 -3 Interrogazione scena muta</span>
+                        <span class="ticker-item bonus-pos">🟢 +1.5 Caffè offerto all'intervallo al compagno</span>
+                        <span class="ticker-item bonus-neg">🔴 -1 Dimenticato il libro a casa</span>
+                        <span class="ticker-item bonus-pos">🟢 +2 Risposta geniale che fa ridere il prof</span>
+                        <!-- Clone per loop continuo -->
+                        <span class="ticker-item bonus-pos">🟢 +3 Voto sopra il 9 in verifica</span>
+                        <span class="ticker-item bonus-pos">🟢 +2 Volontario a sorpresa salva-compagni</span>
+                        <span class="ticker-item bonus-neg">🔴 -2 Nota sul registro di classe</span>
+                        <span class="ticker-item bonus-pos">🟢 +1 Compiti dimenticati ma non controllati</span>
+                        <span class="ticker-item bonus-neg">🔴 -3 Interrogazione scena muta</span>
+                        <span class="ticker-item bonus-pos">🟢 +1.5 Caffè offerto all'intervallo al compagno</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ABOUT: COS'È FANTASTUDENTE? ====== -->
+        <section class="about" id="about">
+            <div class="container">
+                <div class="section-header reveal">
+                    <div class="section-badge">📖 Il Progetto</div>
+                    <h2>Cos'è Fantastudente?</h2>
+                    <p class="section-lead">
+                        Fantastudente trasforma la vita scolastica in un vero fantacalcio. Gli studenti diventano i
+                        giocatori, i voti possono diventare bonus, gli eventi scolastici possono cambiare la classifica
+                        e ogni settimana può succedere qualcosa di nuovo.
+                    </p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="feature-card reveal" style="--card-color: #2563eb">
+                        <div class="feature-icon-wrapper blue">
+                            <span class="feature-icon">🧑‍🎓</span>
+                        </div>
+                        <h3>I Compagni come Giocatori</h3>
+                        <p>
+                            Crea la tua rosa scegliendo tra i tuoi compagni di classe o dell'istituto. Ogni studente ha
+                            un valore di fanta-crediti e caratteristiche uniche: dal secchione al bomber dell'intervallo!
+                        </p>
+                        <div class="feature-pill">⚽ Ruoli & Statistiche</div>
+                    </div>
+
+                    <div class="feature-card reveal" style="--card-color: #10b981">
+                        <div class="feature-icon-wrapper green">
+                            <span class="feature-icon">📈</span>
+                        </div>
+                        <h3>Voti come Bonus & Malus</h3>
+                        <p>
+                            Un 8 in storia si trasforma in un +2, un 10 è una tripletta da +3! Ma occhio alle note sul
+                            registro, ai ritardi e alle interrogazioni a sorpresa che possono farti precipitare la media.
+                        </p>
+                        <div class="feature-pill">📝 Voti reali = Punti reali</div>
+                    </div>
+
+                    <div class="feature-card reveal" style="--card-color: #f59e0b">
+                        <div class="feature-icon-wrapper gold">
+                            <span class="feature-icon">🏆</span>
+                        </div>
+                        <h3>Leghe di Classe & Tornei</h3>
+                        <p>
+                            Crea la lega privata della tua classe per sfidare i tuoi amici banco a banco, oppure partecipa
+                            al grande torneo d'istituto per scoprire quale sezione vincerà lo scudetto della scuola.
+                        </p>
+                        <div class="feature-pill">🥇 Classifiche settimanali</div>
+                    </div>
+
+                    <div class="feature-card reveal" style="--card-color: #8b5cf6">
+                        <div class="feature-icon-wrapper purple">
+                            <span class="feature-icon">🔄</span>
+                        </div>
+                        <h3>Asta alla LIM & Mercato</h3>
+                        <p>
+                            Sessioni d'asta epiche durante l'ora buca o l'intervallo. Gestisci i tuoi fanta-crediti, fai
+                            scambi di mercato strategici e costruisci la formazione imbattibile della settimana.
+                        </p>
+                        <div class="feature-pill">💰 Crediti & Trattative</div>
+                    </div>
+                </div>
+
+                <!-- Banner di chiamata alle idee -->
+                <div class="quote-banner reveal">
+                    <div class="quote-content">
+                        <span class="quote-icon">💡</span>
+                        <div class="quote-text">
+                            <h3>Un progetto creato dagli studenti, per gli studenti</h3>
+                            <p>
+                                Non vogliamo un'app noiosa o aziendale: vogliamo il gioco definitivo per divertirci ogni
+                                giorno a scuola. E per farlo epico, <strong>abbiamo bisogno della tua voce</strong>!
+                            </p>
+                        </div>
+                    </div>
+                    <a href="#feedback" class="btn btn-gold">
+                        <span>🚀</span> Dì la tua adesso
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== HAI UN'IDEA? ====== -->
+        <section class="ideas-section" id="ideas">
+            <div class="container">
+                <div class="section-header reveal">
+                    <div class="section-badge">✨ Accendi la Creatività</div>
+                    <h2>Hai un'Idea?</h2>
+                    <p>Non sai da dove iniziare? Clicca su una di queste domande per darci il tuo suggerimento:</p>
+                </div>
+
+                <div class="prompts-grid">
+                    <!-- Prompt 1 -->
+                    <div class="prompt-card reveal" data-category="idea"
+                        data-prompt="Vorrei proporre questo BONUS: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">🏅</div>
+                            <span class="prompt-tag tag-bonus">Bonus</span>
+                        </div>
+                        <h3>Quale bonus aggiungeresti?</h3>
+                        <p>Un 10 in matematica? Chi porta la focaccia a tutti? Dicci il bonus che non può assolutamente
+                            mancare!</p>
+                        <button type="button" class="prompt-btn">Suggerisci questo bonus →</button>
+                    </div>
+
+                    <!-- Prompt 2 -->
+                    <div class="prompt-card reveal" data-category="idea"
+                        data-prompt="Come MALUS divertente propongo: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">💀</div>
+                            <span class="prompt-tag tag-malus">Malus</span>
+                        </div>
+                        <h3>Quale malus sarebbe troppo divertente per non inserirlo?</h3>
+                        <p>Dimenticare la chiavetta col powerpoint? Nota di gruppo? Qual è il malus più comico e
+                            devastante?</p>
+                        <button type="button" class="prompt-btn">Suggerisci questo malus →</button>
+                    </div>
+
+                    <!-- Prompt 3 -->
+                    <div class="prompt-card reveal" data-category="feature"
+                        data-prompt="Vorrei vedere questa NUOVA FUNZIONALITÀ: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">🚀</div>
+                            <span class="prompt-tag tag-feature">Feature</span>
+                        </div>
+                        <h3>Che funzionalità vorresti vedere nell'app?</h3>
+                        <p>Aste dal vivo con timer sonoro? Notifiche istantanee sui voti? Badge personalizzabili per la
+                            rosa?</p>
+                        <button type="button" class="prompt-btn">Proponi funzionalità →</button>
+                    </div>
+
+                    <!-- Prompt 4 -->
+                    <div class="prompt-card reveal" data-category="idea"
+                        data-prompt="Per rendere Fantastudente più competitivo farei: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">⚔️</div>
+                            <span class="prompt-tag tag-comp">Competizione</span>
+                        </div>
+                        <h3>Come renderesti Fantastudente ancora più competitivo?</h3>
+                        <p>Scontri diretti stile Champions League tra sezioni? Trofeo del bidello d'oro a fine quadrimestre?</p>
+                        <button type="button" class="prompt-btn">Aggiungi competizione →</button>
+                    </div>
+
+                    <!-- Prompt 5 -->
+                    <div class="prompt-card reveal" data-category="improve"
+                        data-prompt="Nel progetto cambierei o migliorerei: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">🔧</div>
+                            <span class="prompt-tag tag-improve">Migliorie</span>
+                        </div>
+                        <h3>Cosa cambieresti?</h3>
+                        <p>C'è qualcosa nell'idea che non ti convince o che faresti diversamente? Siamo aperti a tutto!</p>
+                        <button type="button" class="prompt-btn">Dì cosa cambieresti →</button>
+                    </div>
+
+                    <!-- Prompt 6 -->
+                    <div class="prompt-card reveal" data-category="like"
+                        data-prompt="La cosa che mi piace di più di Fantastudente è: ">
+                        <div class="prompt-top">
+                            <div class="prompt-emoji">⭐</div>
+                            <span class="prompt-tag tag-like">Cosa ti piace</span>
+                        </div>
+                        <h3>Cosa ti piace di più dell'idea?</h3>
+                        <p>Cosa ti entusiasma di più all'idea di giocare a Fantastudente con i tuoi compagni di classe?</p>
+                        <button type="button" class="prompt-btn">Esprimi il tuo parere →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== FEEDBACK: SEZIONE PRINCIPALE ====== -->
+        <section class="feedback-section" id="feedback">
+            <div class="container">
+                <div class="section-header reveal">
+                    <div class="section-badge">🎯 Il Tuo Turno</div>
+                    <h2>Lascia il tuo Feedback</h2>
+                    <p>Ogni suggerimento viene letto direttamente dal team di studenti sviluppatori. Fai la differenza!</p>
+                </div>
+
+                <div class="feedback-wrapper">
+                    <!-- Form Card -->
+                    <div class="form-card reveal" id="feedbackFormCard">
+                        <form id="feedbackForm" novalidate>
+
+                            <!-- Selezione Anonimato (Richiesta fondamentale) -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span>👤 1. Scegli come vuoi inviare il feedback:</span>
+                                    <small class="label-help">Puoi decidere liberamente</small>
+                                </label>
+                                <div class="anon-choice-grid">
+                                    <label class="anon-card" id="cardAnon">
+                                        <input type="radio" name="anonymity" value="anon" id="radioAnon" checked />
+                                        <div class="anon-card-inner">
+                                            <div class="anon-icon">🕵️</div>
+                                            <div class="anon-info">
+                                                <span class="anon-title">Voglio restare anonimo</span>
+                                                <span class="anon-desc">Il feedback viene inviato senza mostrare il tuo nome</span>
+                                            </div>
+                                            <div class="anon-check">✓</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="anon-card" id="cardNamed">
+                                        <input type="radio" name="anonymity" value="named" id="radioNamed" />
+                                        <div class="anon-card-inner">
+                                            <div class="anon-icon">👋</div>
+                                            <div class="anon-info">
+                                                <span class="anon-title">Voglio mostrare il mio nome</span>
+                                                <span class="anon-desc">Inserisci il tuo nome/nickname così sappiamo chi sei</span>
+                                            </div>
+                                            <div class="anon-check">✓</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Campo Nome o Nickname (visibile solo se non anonimo) -->
+                            <div class="form-group slide-expand" id="nameGroup" style="display: none;">
+                                <label class="form-label" for="userName">
+                                    <span>✏️ Nome o Nickname</span>
+                                    <small class="label-required">* Richiesto se scegli di farti sapere</small>
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="input-icon">👤</span>
+                                    <input type="text" id="userName" name="userName" class="form-input"
+                                        placeholder="Es. Marco_4A, FantaMister, Sofia..." maxlength="40" />
+                                </div>
+                                <span class="form-error" id="nameError">Per favore inserisci il tuo nome o nickname!</span>
+                            </div>
+
+                            <!-- Categoria del Feedback -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span>🗂️ 2. Categoria del feedback:</span>
+                                </label>
+                                <div class="category-grid" role="radiogroup" aria-label="Categoria feedback">
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="idea" checked />
+                                        <span class="cat-pill-inner">💡 Idea</span>
+                                    </label>
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="like" />
+                                        <span class="cat-pill-inner">⭐ Cosa ti piace</span>
+                                    </label>
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="improve" />
+                                        <span class="cat-pill-inner">🔧 Cosa migliorare</span>
+                                    </label>
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="bug" />
+                                        <span class="cat-pill-inner">🐛 Problema</span>
+                                    </label>
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="feature" />
+                                        <span class="cat-pill-inner">🚀 Nuova funzionalità</span>
+                                    </label>
+                                    <label class="cat-pill">
+                                        <input type="radio" name="category" value="other" />
+                                        <span class="cat-pill-inner">🎯 Altro</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Campo Testo Grande Feedback -->
+                            <div class="form-group">
+                                <label class="form-label" for="feedbackText">
+                                    <span>📝 3. Scrivi qui il tuo feedback...</span>
+                                    <small class="label-help">Sii spontaneo e divertente!</small>
+                                </label>
+                                <div class="textarea-wrap">
+                                    <textarea id="feedbackText" name="feedbackText" class="form-textarea"
+                                        placeholder="Scrivi qui cosa ne pensi, proponi un bonus o malus epico, racconta cosa ti entusiasma o cosa cambieresti... 💡"
+                                        rows="5" maxlength="1000"></textarea>
+                                </div>
+                                <div class="textarea-footer">
+                                    <span class="form-error" id="textError">Scrivi almeno 5 caratteri per inviare il tuo feedback! 😅</span>
+                                    <span class="char-count"><span id="charCount">0</span>/1000</span>
+                                </div>
+                            </div>
+
+                            <!-- Valutazione a Stelle da 1 a 5 -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span>⭐ 4. Che voto dai all'idea dell'app? (1-5 stelle)</span>
+                                </label>
+                                <div class="star-rating-box">
+                                    <div class="star-rating" id="starRating" role="group"
+                                        aria-label="Valutazione dell'idea dell'app da 1 a 5 stelle">
+                                        <button type="button" class="star-btn" data-val="1" aria-label="1 stella">★</button>
+                                        <button type="button" class="star-btn" data-val="2" aria-label="2 stelle">★</button>
+                                        <button type="button" class="star-btn" data-val="3" aria-label="3 stelle">★</button>
+                                        <button type="button" class="star-btn" data-val="4" aria-label="4 stelle">★</button>
+                                        <button type="button" class="star-btn" data-val="5" aria-label="5 stelle">★</button>
+                                    </div>
+                                    <span class="star-feedback-label" id="starHint">Clicca sulle stelle per votare</span>
+                                </div>
+                            </div>
+
+                            <!-- Pulsante Invia Feedback -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                                    <span id="submitText">⚽ Invia feedback</span>
+                                    <span id="submitSpinner" class="spinner" style="display:none" aria-hidden="true"></span>
+                                </button>
+                                <div class="submit-note">
+                                    🔒 Feedback salvato in tempo reale nel progetto
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Schermata di Successo Celebrativa -->
+                        <div class="success-card" id="successCard" style="display: none;">
+                            <div class="success-trophy">🏆</div>
+                            <div class="success-emoji-row">⚽🔥</div>
+                            <h3 class="success-title">Feedback ricevuto! ⚽🔥</h3>
+                            <p class="success-subtitle">
+                                Grazie per aver aiutato a migliorare <strong>Fantastudente</strong>!
+                            </p>
+                            <p class="success-desc">
+                                Il tuo contributo è stato aggiunto subito alla bacheca della community e verrà analizzato
+                                durante la prossima riunione del nostro team di sviluppo a scuola.
+                            </p>
+
+                            <div class="success-preview-card" id="successPreview">
+                                <!-- Riassunto del feedback appena inviato -->
+                            </div>
+
+                            <div class="success-actions">
+                                <button type="button" class="btn btn-secondary" id="newFeedbackBtn">
+                                    ✍️ Invia un altro feedback
+                                </button>
+                                <a href="#community" class="btn btn-outline" id="goToCommunityBtn">
+                                    🌍 Guarda nella Community
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar informativa -->
+                    <aside class="feedback-sidebar reveal">
+                        <div class="sidebar-box tip-box">
+                            <div class="sidebar-icon">💡</div>
+                            <h4>Perché il tuo feedback conta?</h4>
+                            <p>
+                                Stiamo programmando Fantastudente direttamente a scuola. Le funzionalità più votate dagli
+                                studenti saranno le prime ad essere introdotte nell'app!
+                            </p>
+                        </div>
+
+                        <div class="sidebar-box privacy-box">
+                            <div class="sidebar-icon">🛡️</div>
+                            <h4>Privacy & Rispetto</h4>
+                            <p>
+                                Se scegli <strong>"Anonimo"</strong>, nessun nome o dato personale viene mostrato.
+                                È uno spazio sicuro per divertirsi ed essere onesti al 100%!
+                            </p>
+                        </div>
+
+                        <div class="sidebar-box stats-live-box">
+                            <div class="sidebar-header">
+                                <span class="live-indicator"></span>
+                                <h4>Statistiche Partecipazione</h4>
+                            </div>
+                            <div class="sidebar-stats-list">
+                                <div class="sidebar-stat-row">
+                                    <span>Feedback Totali:</span>
+                                    <b id="sideTotalFeedback">127</b>
+                                </div>
+                                <div class="sidebar-stat-row">
+                                    <span>Idee & Feature:</span>
+                                    <b>58</b>
+                                </div>
+                                <div class="sidebar-stat-row">
+                                    <span>Voto medio app:</span>
+                                    <b class="gold-text">⭐ 4.8 / 5</b>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== COMMUNITY: IDEE DELLA COMMUNITY ====== -->
+        <section class="community-section" id="community">
+            <div class="container">
+                <div class="section-header reveal">
+                    <div class="section-badge">🌍 Bacheca Aperta</div>
+                    <h2>Idee della Community</h2>
+                    <p>Scopri cosa hanno suggerito gli altri studenti, vota le idee più geniali o aggiungi la tua!</p>
+                </div>
+
+                <!-- Filtri Categoria Community -->
+                <div class="community-filters reveal" id="communityFilters">
+                    <button class="filter-chip active" data-category="all">
+                        <span>Tutte le idee</span>
+                        <small class="filter-count" id="countAll">0</small>
+                    </button>
+                    <button class="filter-chip" data-category="idea">
+                        <span>💡 Idee</span>
+                    </button>
+                    <button class="filter-chip" data-category="feature">
+                        <span>🚀 Nuove Feature</span>
+                    </button>
+                    <button class="filter-chip" data-category="like">
+                        <span>⭐ Cosa piace</span>
+                    </button>
+                    <button class="filter-chip" data-category="improve">
+                        <span>🔧 Migliorie</span>
+                    </button>
+                    <button class="filter-chip" data-category="bug">
+                        <span>🐛 Segnalazioni</span>
+                    </button>
+                </div>
+
+                <!-- Griglia delle Card Idee -->
+                <div class="community-grid" id="communityGrid">
+                    <!-- Popolata via JavaScript con dati demo + salvati -->
+                </div>
+
+                <div class="community-bottom-cta reveal">
+                    <div class="community-cta-card">
+                        <div class="cta-badge">🔥 La tua voce conta</div>
+                        <h3>Hai un'idea ancora più pazza per il fantacalcio della scuola?</h3>
+                        <p>Non tenerla per te: proponila ora al team di sviluppo e guarda quanti like riceve dai tuoi compagni!</p>
+                        <a href="#feedback" class="btn btn-primary btn-glow">
+                            <span>💡</span> Proponi la tua idea adesso
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">⚽</span>
+                        <span class="logo-text">Fanta<span class="logo-accent">studente</span></span>
+                    </div>
+                    <p class="footer-tagline">
+                        Fantastudente — Il fantacalcio dove i giocatori siamo noi ⚽📚
+                    </p>
+                    <p class="footer-sub">
+                        Progetto scolastico realizzato dagli studenti.
+                    </p>
+                </div>
+
+                <div class="footer-nav">
+                    <h4>Navigazione</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">Cos'è Fantastudente?</a></li>
+                        <li><a href="#ideas">Spunti & Idee</a></li>
+                        <li><a href="#feedback">Lascia un Feedback</a></li>
+                        <li><a href="#community">Bacheca Community</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-badges">
+                    <h4>Progetto Scuola</h4>
+                    <div class="footer-pill-list">
+                        <span class="f-pill">🎓 100% No-Profit</span>
+                        <span class="f-pill">🏫 Fatto tra i banchi</span>
+                        <span class="f-pill">🤝 Privacy Friendly</span>
+                        <span class="f-pill">⚽ Passione Fantacalcio</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copy">
+                    <span>© 2025/2026 <strong>Fantastudente</strong>. Tutti i diritti riservati agli studenti.</span>
+                    <span class="footer-heart">Creato con 💚, risate in classe e tanta voglia di vincere lo scudetto.</span>
+                </div>
+                <div class="footer-dev-link">
+                    <a href="dev.html" class="dev-link" title="Pannello di amministrazione per il team di sviluppo">
+                        🔒 Area Sviluppatori
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script principale -->
+    <script src="script.js"></script>
+</body>
+
+</html>
