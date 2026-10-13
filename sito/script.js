@@ -203,13 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ── 8. CONFIGURAZIONE ENDPOINT POCKETBASE DINAMICO ── */
     function getPocketBaseUrl() {
         const hostname = window.location.hostname;
-        // Se siamo sul server VPS pubblico o dietro Nginx (porta 80)
-        if (hostname === '148.113.194.186') {
-            return window.location.origin; // http://148.113.194.186 (Nginx instrada /api verso PocketBase)
-        }
-        // Se stiamo testando localmente su porta 8080 o localhost
-        if (window.location.port === '8080' || hostname === 'localhost' || hostname === '127.0.0.1') {
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return 'http://127.0.0.1:8090';
+        }
+        if (window.location.port === '8080') {
+            return `${window.location.protocol}//${hostname}:8090`;
         }
         return window.location.origin;
     }
