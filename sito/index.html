@@ -108,26 +108,26 @@
 
                     <div class="hero-stats">
                         <div class="hero-stat">
-                            <span class="stat-num" id="heroFeedbackNum" data-target="127">0</span>
+                            <span class="stat-num" id="heroFeedbackNum" data-target="0">0</span>
                             <span class="stat-plus">+</span>
-                            <span class="stat-label">Feedback</span>
+                            <span class="stat-label">Feedback Reali</span>
                         </div>
                         <div class="hero-stat-divider"></div>
                         <div class="hero-stat">
-                            <span class="stat-num" data-target="45">0</span>
+                            <span class="stat-num" id="heroIdeasNum" data-target="0">0</span>
                             <span class="stat-plus">+</span>
-                            <span class="stat-label">Idee proposte</span>
+                            <span class="stat-label">Idee & Feature</span>
                         </div>
                         <div class="hero-stat-divider"></div>
                         <div class="hero-stat">
-                            <span class="stat-num" data-target="12">0</span>
-                            <span class="stat-label">Classi pronte</span>
+                            <span class="stat-num" id="heroImplementedNum" data-target="0">0</span>
+                            <span class="stat-label">Implementate</span>
                         </div>
                         <div class="hero-stat-divider"></div>
                         <div class="hero-stat">
-                            <span class="stat-num" data-target="380">0</span>
-                            <span class="stat-plus">+</span>
-                            <span class="stat-label">Fanta-Mister</span>
+                            <span class="stat-num" id="heroRatingNum" data-target="5.0">5.0</span>
+                            <span class="stat-plus">★</span>
+                            <span class="stat-label">Voto Medio</span>
                         </div>
                     </div>
                 </div>
@@ -515,10 +515,23 @@
                                 </div>
                             </div>
 
+                            <!-- Titolo Sintetico Idea -->
+                            <div class="form-group">
+                                <label class="form-label" for="feedbackTitle">
+                                    <span>💡 3. Titolo sintetico dell'idea (opzionale):</span>
+                                    <small class="label-help">Breve e chiaro (es. "Bonus volontario")</small>
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="input-icon">🎯</span>
+                                    <input type="text" id="feedbackTitle" name="feedbackTitle" class="form-input"
+                                        placeholder="Es. Bonus salva-classe all'interrogazione..." maxlength="80" />
+                                </div>
+                            </div>
+
                             <!-- Campo Testo Grande Feedback -->
                             <div class="form-group">
                                 <label class="form-label" for="feedbackText">
-                                    <span>📝 3. Scrivi qui il tuo feedback...</span>
+                                    <span>📝 4. Scrivi qui la tua proposta o recensione...</span>
                                     <small class="label-help">Sii spontaneo e divertente!</small>
                                 </label>
                                 <div class="textarea-wrap">
@@ -535,7 +548,7 @@
                             <!-- Valutazione a Stelle da 1 a 5 -->
                             <div class="form-group">
                                 <label class="form-label">
-                                    <span>⭐ 4. Che voto dai all'idea dell'app? (1-5 stelle)</span>
+                                    <span>⭐ 5. Che voto dai all'idea dell'app? (1-5 stelle)</span>
                                 </label>
                                 <div class="star-rating-box">
                                     <div class="star-rating" id="starRating" role="group"
@@ -613,20 +626,24 @@
                         <div class="sidebar-box stats-live-box">
                             <div class="sidebar-header">
                                 <span class="live-indicator"></span>
-                                <h4>Statistiche Partecipazione</h4>
+                                <h4>Statistiche Partecipazione (Live)</h4>
                             </div>
                             <div class="sidebar-stats-list">
                                 <div class="sidebar-stat-row">
                                     <span>Feedback Totali:</span>
-                                    <b id="sideTotalFeedback">127</b>
+                                    <b id="sideTotalFeedback">0</b>
                                 </div>
                                 <div class="sidebar-stat-row">
                                     <span>Idee & Feature:</span>
-                                    <b>58</b>
+                                    <b id="sideIdeasCount">0</b>
                                 </div>
                                 <div class="sidebar-stat-row">
-                                    <span>Voto medio app:</span>
-                                    <b class="gold-text">⭐ 4.8 / 5</b>
+                                    <span>Implementate nell'App:</span>
+                                    <b id="sideImplementedCount" style="color: #4ade80;">0</b>
+                                </div>
+                                <div class="sidebar-stat-row">
+                                    <span>Voto medio reale:</span>
+                                    <b class="gold-text" id="sideAvgRating">⭐ 5.0 / 5</b>
                                 </div>
                             </div>
                         </div>
@@ -644,6 +661,23 @@
                     <p>Scopri cosa hanno suggerito gli altri studenti, vota le idee più geniali o aggiungi la tua!</p>
                 </div>
 
+                <!-- Barra di Ricerca e Ordinamento Live -->
+                <div class="community-toolbar reveal">
+                    <div class="community-search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="communitySearch" placeholder="Cerca tra idee, bonus, proposte o autori..." autocomplete="off" />
+                        <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Cancella ricerca" style="display:none;">✕</button>
+                    </div>
+                    <div class="community-sort-wrap">
+                        <label for="communitySort">⚡ Ordina:</label>
+                        <select id="communitySort" class="community-sort-select">
+                            <option value="popular">🔥 Più Popolari (Top Like)</option>
+                            <option value="newest" selected>⏱️ Più Recenti</option>
+                            <option value="rating">⭐ Voto Più Alto</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Filtri Categoria Community -->
                 <div class="community-filters reveal" id="communityFilters">
                     <button class="filter-chip active" data-category="all">
@@ -652,18 +686,23 @@
                     </button>
                     <button class="filter-chip" data-category="idea">
                         <span>💡 Idee</span>
+                        <small class="filter-count" id="countIdea">0</small>
                     </button>
                     <button class="filter-chip" data-category="feature">
                         <span>🚀 Nuove Feature</span>
+                        <small class="filter-count" id="countFeature">0</small>
                     </button>
                     <button class="filter-chip" data-category="like">
                         <span>⭐ Cosa piace</span>
+                        <small class="filter-count" id="countLike">0</small>
                     </button>
                     <button class="filter-chip" data-category="improve">
                         <span>🔧 Migliorie</span>
+                        <small class="filter-count" id="countImprove">0</small>
                     </button>
                     <button class="filter-chip" data-category="bug">
                         <span>🐛 Segnalazioni</span>
+                        <small class="filter-count" id="countBug">0</small>
                     </button>
                 </div>
 
