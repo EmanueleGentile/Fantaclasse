@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Mazzo Carte Tattiche</title>
+    <title>FantaClasse RPG — Mazzo Carte Collezionabili</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="false">
@@ -12,10 +12,10 @@
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,4 56,14 50,44 32,60 14,44 8,14" fill="#121917" stroke="#16A34A" stroke-width="3"/>
-                <polygon points="32,9 51,17 46,41 32,54 18,41 13,17" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M22 24 L32 16 L42 24 L38 38 L26 38 Z" fill="#16A34A" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5" fill="#FBBF24"/>
+                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
+                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
             </symbol>
             <symbol id="svg-crown-gold" viewBox="0 0 24 24">
                 <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -45,78 +45,108 @@
     </svg>
 
     <header class="app-header">
-        <div class="logo-area">
-            <a href="{{ url_for('home') }}" class="brand-link">
-                <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                <div class="brand-title-wrap">
-                    <h1>MAZZO TATTICO</h1>
-                    <span class="brand-subtag">Collezione Carte RPG</span>
-                </div>
-            </a>
-        </div>
+        <div class="header-inner">
+            <div class="logo-area">
+                <a href="{{ url_for('home') }}" class="brand-link">
+                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                    <div class="brand-title-wrap">
+                        <h1>MAZZO TATTICO</h1>
+                        <span class="brand-subtag">Collezione Carte Ufficiali PocketBase</span>
+                    </div>
+                </a>
+            </div>
 
-        <div class="user-profile-pill">
-            {% if utente %}
-                <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                <span class="user-name">{{ utente.name }}</span>
-                <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
-                <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
-            {% endif %}
+            <nav class="header-nav-links" aria-label="Menu Desktop">
+                <a href="{{ url_for('home') }}" class="header-nav-link">Lavagna Arena</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link active">Mazzo Carte</a>
+                {% if utente %}
+                    <a href="{{ url_for('suggerisci') }}" class="header-nav-link">Forgia Carta</a>
+                {% endif %}
+                <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
+            </nav>
+
+            <div class="user-profile-pill">
+                {% if utente %}
+                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                    <span class="user-name">{{ utente.name }}</span>
+                    <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
+                {% endif %}
+            </div>
         </div>
     </header>
 
     <main class="dashboard-container">
 
+        <!-- PANNELLO CONTROLLI & FILTRI TATTICI -->
         <section class="section-card">
             <div class="section-header-inline">
                 <div>
-                    <span class="section-tag">ARSENALE LAVAGNA // COLLEZIONE CARTE</span>
-                    <h2 class="section-heading">Schieramento Carte PocketBase</h2>
-                    <p class="hero-subtitle">
-                        {% if utente %}
-                            Modalità Allenatore: visualizza sia le carte Approvate in campo sia quelle al vaglio della Cattedra.
-                        {% else %}
-                            Modalità Spettatore: visualizzazione delle carte ufficiali Approvate. Effettua l'ingresso per forgiare nuove carte.
-                        {% endif %}
-                    </p>
+                    <span class="section-tag">
+                        <span class="pulse-dot" aria-hidden="true"></span>
+                        ARSENALE CARTE // COLLEZIONE POCKETBASE
+                    </span>
+                    <h2 class="section-heading">Esplora il Mazzo Tattico</h2>
                 </div>
-                <span class="count-pill">Carte: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
+                <span class="count-pill">Carte nel Settore: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
             </div>
 
-            <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per stato">
-                {% if utente %}
-                    <button
-                        type="button"
-                        class="filter-btn {% if not stato_selezionato %}filter-btn-active{% endif %}"
-                        data-stato-filter=""
-                    >Tutto il Mazzo</button>
-                    <button
-                        type="button"
-                        class="filter-btn {% if stato_selezionato == 'approvata' %}filter-btn-active{% endif %}"
-                        data-stato-filter="approvata"
-                    >In Campo (Approvate)</button>
-                    <button
-                        type="button"
-                        class="filter-btn {% if stato_selezionato == 'in_attesa' %}filter-btn-active{% endif %}"
-                        data-stato-filter="in_attesa"
-                    >Cattedra (In Attesa)</button>
-                {% else %}
-                    <button
-                        type="button"
-                        class="filter-btn filter-btn-active"
-                        data-stato-filter="approvata"
-                    >In Campo (Approvate)</button>
-                {% endif %}
+            <div class="catalog-controls-grid">
+                <div class="search-bar-wrap">
+                    <input
+                        type="search"
+                        id="search-carte-input"
+                        class="search-input-tactical"
+                        placeholder="Cerca una carta per nome o ruolo (es. Mario Rossi, Attaccante)..."
+                        aria-label="Cerca carta nel mazzo"
+                    >
+                    <button type="button" id="btn-refresh-carte" class="btn-secondary btn-small">
+                        Sincronizza DB
+                    </button>
+                </div>
 
-                <button type="button" id="btn-refresh-carte" class="btn-secondary btn-small">
-                    Sincronizza
-                </button>
+                <!-- Filtro Stato Database -->
+                <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per stato database">
+                    <span class="filter-group-label">Stato DB:</span>
+                    {% if utente %}
+                        <button
+                            type="button"
+                            class="filter-btn {% if not stato_selezionato %}filter-btn-active{% endif %}"
+                            data-stato-filter=""
+                        >Tutto il Mazzo</button>
+                        <button
+                            type="button"
+                            class="filter-btn {% if stato_selezionato == 'approvata' %}filter-btn-active{% endif %}"
+                            data-stato-filter="approvata"
+                        >In Campo (Approvate)</button>
+                        <button
+                            type="button"
+                            class="filter-btn {% if stato_selezionato == 'in_attesa' %}filter-btn-active{% endif %}"
+                            data-stato-filter="in_attesa"
+                        >Vaglio Cattedra (In Attesa)</button>
+                    {% else %}
+                        <button
+                            type="button"
+                            class="filter-btn filter-btn-active"
+                            data-stato-filter="approvata"
+                        >In Campo (Approvate)</button>
+                    {% endif %}
+                </div>
+
+                <!-- Filtro Ruolo Tattico -->
+                <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per ruolo in campo">
+                    <span class="filter-group-label">Ruolo:</span>
+                    <button type="button" class="role-filter-btn role-filter-active" data-ruolo-filter="">Tutti i Ruoli</button>
+                    {% for r in ruoli_ammessi %}
+                        <button type="button" class="role-filter-btn" data-ruolo-filter="{{ r }}">{{ r }}</button>
+                    {% endfor %}
+                </div>
             </div>
         </section>
 
-        <!-- Contenitore Gestito dai 4 Stati Asincroni (loading, success, empty-state, error) -->
+        <!-- GRIGLIA CARTE COLLEZIONABILI (4 STATI ASINCRONI: loading, success, empty-state, error) -->
         <section
             id="carte-async-container"
             class="players-grid"
@@ -127,20 +157,22 @@
                 <div class="state-box state-error">
                     <h4 class="state-title">Errore di Sincronizzazione</h4>
                     <p class="state-desc">{{ errore_caricamento }}</p>
-                    <a href="{{ url_for('mercato') }}" class="btn-retry">Riprova</a>
+                    <a href="{{ url_for('mercato') }}" class="btn-retry">Riprova Connessione</a>
                 </div>
             {% elif carte %}
                 {% for s in carte %}
                 <article
                     class="player-card {% if s.stato != 'approvata' %}player-card--pending{% endif %}"
                     data-record-id="{{ s.id }}"
+                    data-card-ruolo="{{ s.ruolo or '' }}"
+                    data-card-nome="{{ (s.nome or '') | lower }}"
                 >
                     <div class="rpg-card-top">
                         <span class="rpg-faction-tag">
                             {% if s.stato == 'approvata' %}
-                                FAZIONE CAMPO // SCHIERABILE
+                                CAMPO // SCHIERABILE
                             {% else %}
-                                FAZIONE CATTEDRA // VERIFICA
+                                CATTEDRA // VERIFICA
                             {% endif %}
                         </span>
                         {% if s.stato == 'approvata' %}
@@ -168,10 +200,10 @@
                 {% endfor %}
             {% else %}
                 <div class="state-box state-empty">
-                    <h4 class="state-title">Nessuna Carta nel Settore</h4>
-                    <p class="state-desc">Non ci sono carte corrispondenti al filtro tattico selezionato.</p>
+                    <h4 class="state-title">Nessuna Carta Trovata nel Settore</h4>
+                    <p class="state-desc">Non ci sono carte corrispondenti ai filtri selezionati nel database PocketBase.</p>
                     {% if utente %}
-                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Forgia una Carta</a>
+                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Forgia una Nuova Carta</a>
                     {% else %}
                         <a href="{{ url_for('login') }}" class="btn-primary state-action-link">Scendi in Campo per Proporre</a>
                     {% endif %}

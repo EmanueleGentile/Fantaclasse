@@ -11,123 +11,142 @@
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,4 56,14 50,44 32,60 14,44 8,14" fill="#121917" stroke="#16A34A" stroke-width="3"/>
-                <polygon points="32,9 51,17 46,41 32,54 18,41 13,17" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M22 24 L32 16 L42 24 L38 38 L26 38 Z" fill="#16A34A" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5" fill="#FBBF24"/>
+                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
+                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
             </symbol>
         </defs>
     </svg>
 
-    <main class="auth-card">
-        <div class="logo-area auth-logo">
-            <a href="{{ url_for('home') }}" class="brand-link">
-                <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                <div class="brand-title-wrap">
-                    <h1>FANTACLASSE</h1>
-                    <span class="brand-subtag">Tactical School RPG</span>
+    <main class="auth-split-container">
+        <!-- LATO SINISTRO: STADIUM SHOWCASE -->
+        <aside class="auth-showcase-side">
+            <div>
+                <div class="logo-area auth-logo">
+                    <a href="{{ url_for('home') }}" class="brand-link">
+                        <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                        <div class="brand-title-wrap">
+                            <h1>FANTACLASSE</h1>
+                            <span class="brand-subtag">Tactical School RPG</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        <h2 class="auth-heading">Tesseramento Allenatore</h2>
-        <p class="auth-subtext">Bonus Ingresso: 100 FantaMilioni Ufficiali</p>
-
-        <form id="form-register" action="{{ url_for('registrati') }}" method="POST" novalidate>
-            <div
-                class="alert-box alert-error"
-                data-form-banner
-                role="alert"
-                {% if not errore %}hidden{% endif %}
-            >{{ errore or '' }}</div>
-
-            <div class="input-group">
-                <label class="input-label" for="reg-name">Nickname Tattico (Mister)</label>
-                <input
-                    id="reg-name"
-                    type="text"
-                    name="name"
-                    class="form-input {% if field_errors and field_errors.get('name') %}input-invalid{% endif %}"
-                    placeholder="Es. MisterMarco_3A"
-                    value="{{ form_values.get('name', '') if form_values else '' }}"
-                    minlength="2"
-                    maxlength="255"
-                    autocomplete="nickname"
-                    required
-                >
-                <span
-                    class="field-error-msg"
-                    data-field-error="name"
-                    {% if not (field_errors and field_errors.get('name')) %}hidden{% endif %}
-                >{{ field_errors.get('name', '') if field_errors else '' }}</span>
+                <span class="section-tag">TESSERAMENTO UFFICIALE</span>
+                <h2 class="hero-title">DIVENTA UN<br><span class="hero-title-accent">MISTER TATTICO</span></h2>
+                <p class="hero-subtitle">
+                    Crea il tuo profilo in pochi secondi. Ricevi immediatamente 100 FantaMilioni di budget iniziale nel database PocketBase e inizia a forgiare nuove carte per la tua scuola.
+                </p>
             </div>
 
-            <div class="input-group">
-                <label class="input-label" for="reg-email">Email Fantallenatore</label>
-                <input
-                    id="reg-email"
-                    type="email"
-                    name="email"
-                    class="form-input {% if field_errors and field_errors.get('email') %}input-invalid{% endif %}"
-                    placeholder="studente@scuola.it"
-                    value="{{ form_values.get('email', '') if form_values else '' }}"
-                    maxlength="255"
-                    autocomplete="email"
-                    required
-                >
-                <span
-                    class="field-error-msg"
-                    data-field-error="email"
-                    {% if not (field_errors and field_errors.get('email')) %}hidden{% endif %}
-                >{{ field_errors.get('email', '') if field_errors else '' }}</span>
+            <div class="stat-tile stat-tile--gold">
+                <span class="stat-label">Dotazione Iniziale Garantita</span>
+                <strong class="stat-value text-gold">100 FantaMilioni</strong>
             </div>
+        </aside>
 
-            <div class="input-group">
-                <label class="input-label" for="reg-password">Parola d'Ordine (min. 8 caratteri)</label>
-                <input
-                    id="reg-password"
-                    type="password"
-                    name="password"
-                    class="form-input {% if field_errors and field_errors.get('password') %}input-invalid{% endif %}"
-                    placeholder="Almeno 8 caratteri"
-                    minlength="8"
-                    maxlength="72"
-                    autocomplete="new-password"
-                    required
-                >
-                <span
-                    class="field-error-msg"
-                    data-field-error="password"
-                    {% if not (field_errors and field_errors.get('password')) %}hidden{% endif %}
-                >{{ field_errors.get('password', '') if field_errors else '' }}</span>
+        <!-- LATO DESTRO: FORM DI REGISTRAZIONE -->
+        <section class="auth-card">
+            <h2 class="auth-heading">Nuovo Tesseramento</h2>
+            <p class="auth-subtext">Compila i campi per creare il tuo account PocketBase</p>
+
+            <form id="form-register" action="{{ url_for('registrati') }}" method="POST" novalidate>
+                <div
+                    class="alert-box alert-error"
+                    data-form-banner
+                    role="alert"
+                    {% if not errore %}hidden{% endif %}
+                >{{ errore or '' }}</div>
+
+                <div class="input-group">
+                    <label class="input-label" for="reg-name">Nickname Tattico (Mister)</label>
+                    <input
+                        id="reg-name"
+                        type="text"
+                        name="name"
+                        class="form-input {% if field_errors and field_errors.get('name') %}input-invalid{% endif %}"
+                        placeholder="Es. MisterMarco_3A"
+                        value="{{ form_values.get('name', '') if form_values else '' }}"
+                        minlength="2"
+                        maxlength="255"
+                        autocomplete="nickname"
+                        required
+                    >
+                    <span
+                        class="field-error-msg"
+                        data-field-error="name"
+                        {% if not (field_errors and field_errors.get('name')) %}hidden{% endif %}
+                    >{{ field_errors.get('name', '') if field_errors else '' }}</span>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="reg-email">Email Fantallenatore</label>
+                    <input
+                        id="reg-email"
+                        type="email"
+                        name="email"
+                        class="form-input {% if field_errors and field_errors.get('email') %}input-invalid{% endif %}"
+                        placeholder="studente@scuola.it"
+                        value="{{ form_values.get('email', '') if form_values else '' }}"
+                        maxlength="255"
+                        autocomplete="email"
+                        required
+                    >
+                    <span
+                        class="field-error-msg"
+                        data-field-error="email"
+                        {% if not (field_errors and field_errors.get('email')) %}hidden{% endif %}
+                    >{{ field_errors.get('email', '') if field_errors else '' }}</span>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="reg-password">Parola d'Ordine (min. 8 caratteri)</label>
+                    <input
+                        id="reg-password"
+                        type="password"
+                        name="password"
+                        class="form-input {% if field_errors and field_errors.get('password') %}input-invalid{% endif %}"
+                        placeholder="Almeno 8 caratteri"
+                        minlength="8"
+                        maxlength="72"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <span
+                        class="field-error-msg"
+                        data-field-error="password"
+                        {% if not (field_errors and field_errors.get('password')) %}hidden{% endif %}
+                    >{{ field_errors.get('password', '') if field_errors else '' }}</span>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="reg-password-confirm">Conferma Parola d'Ordine</label>
+                    <input
+                        id="reg-password-confirm"
+                        type="password"
+                        name="passwordConfirm"
+                        class="form-input {% if field_errors and field_errors.get('passwordConfirm') %}input-invalid{% endif %}"
+                        placeholder="Ripeti la password"
+                        minlength="8"
+                        maxlength="72"
+                        autocomplete="new-password"
+                        required
+                    >
+                    <span
+                        class="field-error-msg"
+                        data-field-error="passwordConfirm"
+                        {% if not (field_errors and field_errors.get('passwordConfirm')) %}hidden{% endif %}
+                    >{{ field_errors.get('passwordConfirm', '') if field_errors else '' }}</span>
+                </div>
+
+                <button type="submit" class="btn-primary btn-full">Completa Tesseramento</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Sei già tesserato? <a href="{{ url_for('login') }}">Scendi in Campo</a></p>
+                <p class="auth-back-row"><a href="{{ url_for('home') }}">&larr; Torna alla Lavagna Arena</a></p>
             </div>
-
-            <div class="input-group">
-                <label class="input-label" for="reg-password-confirm">Conferma Parola d'Ordine</label>
-                <input
-                    id="reg-password-confirm"
-                    type="password"
-                    name="passwordConfirm"
-                    class="form-input {% if field_errors and field_errors.get('passwordConfirm') %}input-invalid{% endif %}"
-                    placeholder="Ripeti la password"
-                    minlength="8"
-                    maxlength="72"
-                    autocomplete="new-password"
-                    required
-                >
-                <span
-                    class="field-error-msg"
-                    data-field-error="passwordConfirm"
-                    {% if not (field_errors and field_errors.get('passwordConfirm')) %}hidden{% endif %}
-                >{{ field_errors.get('passwordConfirm', '') if field_errors else '' }}</span>
-            </div>
-
-            <button type="submit" class="btn-primary btn-full">Completa Tesseramento</button>
-        </form>
-
-        <div class="auth-links">
-            <p>Sei già tesserato? <a href="{{ url_for('login') }}">Scendi in Campo</a></p>
-            <p class="auth-back-row"><a href="{{ url_for('home') }}">&larr; Torna alla Lavagna Tattica</a></p>
-        </div>
+        </section>
     </main>
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>

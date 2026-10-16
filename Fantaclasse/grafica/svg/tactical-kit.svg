@@ -1,35 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <!-- Pattern Lavagna Tattica (Griglia Gesso + Schemi X / O) -->
-    <pattern id="chalk-grid" width="120" height="120" patternUnits="userSpaceOnUse">
-      <path d="M 120 0 L 0 0 0 120" fill="none" stroke="#16A34A" stroke-width="0.6" stroke-opacity="0.12"/>
-      <path d="M 60 0 L 60 120 M 0 60 L 120 60" fill="none" stroke="#F5F5F5" stroke-width="0.4" stroke-dasharray="4 6" stroke-opacity="0.06"/>
-      <!-- Segni tattici gesso X e O -->
-      <circle cx="30" cy="30" r="6" fill="none" stroke="#16A34A" stroke-width="1.2" stroke-opacity="0.12"/>
-      <path d="M 85 85 L 95 95 M 95 85 L 85 95" stroke="#FBBF24" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.12"/>
+    <pattern id="chalk-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#16A34A" stroke-width="0.6" stroke-opacity="0.10"/>
+      <path d="M 40 0 L 40 80 M 0 40 L 80 40" fill="none" stroke="#F5F5F5" stroke-width="0.4" stroke-dasharray="3 6" stroke-opacity="0.05"/>
     </pattern>
 
-    <linearGradient id="emerald-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#16A34A" stop-opacity="0.25"/>
+    <radialGradient id="stadium-emerald" cx="18%" cy="18%" r="55%">
+      <stop offset="0%" stop-color="#16A34A" stop-opacity="0.24"/>
+      <stop offset="55%" stop-color="#059669" stop-opacity="0.07"/>
       <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
-    </linearGradient>
+    </radialGradient>
 
-    <linearGradient id="gold-glow" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FBBF24" stop-opacity="0.20"/>
+    <radialGradient id="stadium-gold" cx="85%" cy="22%" r="50%">
+      <stop offset="0%" stop-color="#FBBF24" stop-opacity="0.18"/>
+      <stop offset="50%" stop-color="#D97706" stop-opacity="0.05"/>
       <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
-    </linearGradient>
+    </radialGradient>
+
+    <radialGradient id="stadium-blue" cx="50%" cy="88%" r="55%">
+      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
-  <rect width="800" height="600" fill="#0B0F0E"/>
-  <rect width="800" height="600" fill="url(#chalk-grid)"/>
-  <circle cx="120" cy="100" r="260" fill="url(#emerald-glow)"/>
-  <circle cx="680" cy="500" r="240" fill="url(#gold-glow)"/>
+  <rect width="1440" height="900" fill="#0B0F0E"/>
+  <rect width="1440" height="900" fill="url(#chalk-grid)"/>
+  <rect width="1440" height="900" fill="url(#stadium-emerald)"/>
+  <rect width="1440" height="900" fill="url(#stadium-gold)"/>
+  <rect width="1440" height="900" fill="url(#stadium-blue)"/>
 
-  <!-- Linee Tattiche Lavagna in Gesso -->
-  <g stroke="#F5F5F5" stroke-opacity="0.07" fill="none" stroke-width="1.8" stroke-dasharray="8 8">
-    <path d="M 90 480 Q 240 280 420 310"/>
-    <polygon points="425,310 412,303 414,317" fill="#F5F5F5" fill-opacity="0.07" stroke="none"/>
-    <path d="M 670 140 Q 520 260 390 220" stroke="#FBBF24" stroke-opacity="0.12"/>
-    <circle cx="400" cy="300" r="95" stroke="#16A34A" stroke-opacity="0.12" stroke-dasharray="none"/>
+  <!-- Linee Campo Lavagna Tattica Sottili in Sottofondo -->
+  <g stroke="#F5F5F5" stroke-opacity="0.05" fill="none" stroke-width="1.5">
+    <rect x="140" y="90" width="1160" height="720" rx="18"/>
+    <line x1="720" y1="90" x2="720" y2="810"/>
+    <circle cx="720" cy="450" r="110"/>
+    <circle cx="720" cy="450" r="4" fill="#F5F5F5" fill-opacity="0.08"/>
+    <rect x="140" y="270" width="170" height="360"/>
+    <rect x="1130" y="270" width="170" height="360"/>
+  </g>
+
+  <!-- Schemi Tattici in Gesso (Frecce & Posizioni) -->
+  <g stroke="#16A34A" stroke-opacity="0.14" fill="none" stroke-width="2" stroke-dasharray="8 8">
+    <path d="M 280 640 C 420 520, 520 500, 660 460"/>
+    <path d="M 1120 240 C 980 310, 880 340, 770 420" stroke="#FBBF24" stroke-opacity="0.14"/>
   </g>
 </svg>

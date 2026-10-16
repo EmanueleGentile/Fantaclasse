@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Forgia Nuova Carta</title>
+    <title>FantaClasse RPG — Laboratorio Forgia Carta</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="true">
@@ -12,10 +12,10 @@
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,4 56,14 50,44 32,60 14,44 8,14" fill="#121917" stroke="#16A34A" stroke-width="3"/>
-                <polygon points="32,9 51,17 46,41 32,54 18,41 13,17" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M22 24 L32 16 L42 24 L38 38 L26 38 Z" fill="#16A34A" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5" fill="#FBBF24"/>
+                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
+                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
             </symbol>
             <symbol id="svg-crown-gold" viewBox="0 0 24 24">
                 <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -41,98 +41,143 @@
     </svg>
 
     <header class="app-header">
-        <div class="logo-area">
-            <a href="{{ url_for('home') }}" class="brand-link">
-                <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                <div class="brand-title-wrap">
-                    <h1>FORGIA CARTA</h1>
-                    <span class="brand-subtag">Laboratorio Tattico</span>
-                </div>
-            </a>
-        </div>
+        <div class="header-inner">
+            <div class="logo-area">
+                <a href="{{ url_for('home') }}" class="brand-link">
+                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                    <div class="brand-title-wrap">
+                        <h1>FORGIA CARTA</h1>
+                        <span class="brand-subtag">Laboratorio Tattico Ufficiale</span>
+                    </div>
+                </a>
+            </div>
 
-        <div class="user-profile-pill">
-            {% if utente %}
-                <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                <span class="user-name">{{ utente.name }}</span>
-                <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
-                <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
-            {% endif %}
+            <nav class="header-nav-links" aria-label="Menu Desktop">
+                <a href="{{ url_for('home') }}" class="header-nav-link">Lavagna Arena</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link">Mazzo Carte</a>
+                <a href="{{ url_for('suggerisci') }}" class="header-nav-link active">Forgia Carta</a>
+                <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
+            </nav>
+
+            <div class="user-profile-pill">
+                {% if utente %}
+                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                    <span class="user-name">{{ utente.name }}</span>
+                    <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
+                {% endif %}
+            </div>
         </div>
     </header>
 
     <main class="dashboard-container">
 
-        <section class="section-card section-card--gold">
-            <span class="section-tag">
-                <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                PROPOSTA ALLA CATTEDRA // COLLEZIONE CARTE
-            </span>
-            <h2 class="hero-title">Forgia una Nuova Carta RPG</h2>
-            <p class="hero-subtitle">
-                Ogni carta creata viene registrata in PocketBase con stato <strong>in_attesa</strong> e passa al vaglio della Cattedra prima di scendere in campo.
-            </p>
+        <!-- STUDIO DI FORGIATURA SPLIT-SCREEN (FORM + ANTEPRIMA CARTA 3D LIVE) -->
+        <div class="forge-studio-grid">
+            <section class="section-card section-card--gold">
+                <span class="section-tag">
+                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                    PROPOSTA ALLA CATTEDRA // COLLEZIONE CARTE
+                </span>
+                <h2 class="hero-title">Forgia una Nuova Carta</h2>
+                <p class="hero-subtitle">
+                    Compila i dati qui sotto e osserva l'anteprima della tua carta in tempo reale. Una volta inviata, sarà salvata in PocketBase con stato <strong>in_attesa</strong> per l'approvazione della Cattedra.
+                </p>
 
-            {% if successo %}
-                <div class="alert-box alert-success" role="status">
-                    {{ successo }}
-                </div>
-            {% endif %}
+                {% if successo %}
+                    <div class="alert-box alert-success" role="status">
+                        {{ successo }}
+                    </div>
+                {% endif %}
 
-            <form id="form-suggerisci" action="{{ url_for('suggerisci') }}" method="POST" novalidate>
-                <div
-                    class="alert-box alert-error"
-                    data-form-banner
-                    role="alert"
-                    {% if not errore %}hidden{% endif %}
-                >{{ errore or '' }}</div>
+                <form id="form-suggerisci" action="{{ url_for('suggerisci') }}" method="POST" novalidate>
+                    <div
+                        class="alert-box alert-error"
+                        data-form-banner
+                        role="alert"
+                        {% if not errore %}hidden{% endif %}
+                    >{{ errore or '' }}</div>
 
-                <div class="input-group">
-                    <label class="input-label" for="carta-nome">Nome del Giocatore / Protagonista</label>
-                    <input
-                        id="carta-nome"
-                        type="text"
-                        name="nome"
-                        class="form-input {% if field_errors and field_errors.get('nome') %}input-invalid{% endif %}"
-                        placeholder="Es. Mario Rossi"
-                        value="{{ form_values.get('nome', '') if form_values else '' }}"
-                        minlength="2"
-                        maxlength="100"
-                        required
-                    >
-                    <span
-                        class="field-error-msg"
-                        data-field-error="nome"
-                        {% if not (field_errors and field_errors.get('nome')) %}hidden{% endif %}
-                    >{{ field_errors.get('nome', '') if field_errors else '' }}</span>
-                </div>
+                    <div class="input-group">
+                        <label class="input-label" for="carta-nome">Nome del Protagonista sulla Carta</label>
+                        <input
+                            id="carta-nome"
+                            type="text"
+                            name="nome"
+                            class="form-input {% if field_errors and field_errors.get('nome') %}input-invalid{% endif %}"
+                            placeholder="Es. Mario Rossi"
+                            value="{{ form_values.get('nome', '') if form_values else '' }}"
+                            minlength="2"
+                            maxlength="100"
+                            required
+                        >
+                        <span
+                            class="field-error-msg"
+                            data-field-error="nome"
+                            {% if not (field_errors and field_errors.get('nome')) %}hidden{% endif %}
+                        >{{ field_errors.get('nome', '') if field_errors else '' }}</span>
+                    </div>
 
-                <div class="input-group">
-                    <label class="input-label" for="carta-ruolo">Ruolo Tattico in Campo</label>
-                    <select
-                        id="carta-ruolo"
-                        name="ruolo"
-                        class="form-input {% if field_errors and field_errors.get('ruolo') %}input-invalid{% endif %}"
-                        required
-                    >
-                        <option value="">-- Seleziona il ruolo tattico --</option>
-                        {% for r in ruoli_ammessi %}
-                            <option
-                                value="{{ r }}"
-                                {% if form_values and form_values.get('ruolo') == r %}selected{% endif %}
-                            >{{ r }}</option>
-                        {% endfor %}
-                    </select>
-                    <span
-                        class="field-error-msg"
-                        data-field-error="ruolo"
-                        {% if not (field_errors and field_errors.get('ruolo')) %}hidden{% endif %}
-                    >{{ field_errors.get('ruolo', '') if field_errors else '' }}</span>
-                </div>
+                    <div class="input-group">
+                        <label class="input-label" for="carta-ruolo">Seleziona il Ruolo Tattico in Campo</label>
+                        <div class="role-quick-selector" role="group" aria-label="Scelta rapida ruolo">
+                            {% for r in ruoli_ammessi %}
+                                <button type="button" class="role-pick-btn" data-pick-ruolo="{{ r }}">{{ r }}</button>
+                            {% endfor %}
+                        </div>
 
-                <button type="submit" class="btn-primary btn-full">Invia Carta alla Cattedra</button>
-            </form>
-        </section>
+                        <select
+                            id="carta-ruolo"
+                            name="ruolo"
+                            class="form-input {% if field_errors and field_errors.get('ruolo') %}input-invalid{% endif %}"
+                            required
+                        >
+                            <option value="">-- Seleziona il ruolo tattico --</option>
+                            {% for r in ruoli_ammessi %}
+                                <option
+                                    value="{{ r }}"
+                                    {% if form_values and form_values.get('ruolo') == r %}selected{% endif %}
+                                >{{ r }}</option>
+                            {% endfor %}
+                        </select>
+                        <span
+                            class="field-error-msg"
+                            data-field-error="ruolo"
+                            {% if not (field_errors and field_errors.get('ruolo')) %}hidden{% endif %}
+                        >{{ field_errors.get('ruolo', '') if field_errors else '' }}</span>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">Invia Carta alla Cattedra</button>
+                </form>
+            </section>
+
+            <!-- ANTEPRIMA LIVE CARTA 3D FUT / RPG -->
+            <aside class="forge-preview-panel" aria-label="Anteprima Live della Carta">
+                <span class="section-tag">LIVE 3D CARD PREVIEW</span>
+
+                <article class="player-card player-card--pending">
+                    <div class="rpg-card-top">
+                        <span class="rpg-faction-tag">CATTEDRA // VERIFICA</span>
+                        <span class="status-pill status-pending">In Revisione</span>
+                    </div>
+
+                    <div class="player-header">
+                        <div class="player-avatar" id="preview-card-avatar">?</div>
+                        <div class="player-info">
+                            <div class="player-name" id="preview-card-name">Nuovo Campione</div>
+                            <div class="player-meta-row">
+                                <span class="role-badge" id="preview-card-role">RUOLO: Da assegnare</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="player-footer">
+                        <span class="record-meta">ID: AUTO-PB-15CHAR</span>
+                        <span class="record-meta">STATO: IN_ATTESA</span>
+                    </div>
+                </article>
+            </aside>
+        </div>
 
     </main>
 

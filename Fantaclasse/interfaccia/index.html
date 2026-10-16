@@ -3,48 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Lavagna Tattica</title>
+    <title>FantaClasse RPG — Arena Lavagna Tattica</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="false">
 
-    <!-- KIT SVG UFFICIALE INTEGRATO (Tactical School RPG & Street Football) -->
+    <!-- KIT SVG UFFICIALE INTEGRATO (Tactical School RPG & FUT Collectible) -->
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
-            <!-- Emblema Scudo FantaClasse RPG -->
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,4 56,14 50,44 32,60 14,44 8,14" fill="#121917" stroke="#16A34A" stroke-width="3"/>
-                <polygon points="32,9 51,17 46,41 32,54 18,41 13,17" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M22 24 L32 16 L42 24 L38 38 L26 38 Z" fill="#16A34A" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5" fill="#FBBF24"/>
+                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
+                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
             </symbol>
-
-            <!-- Corona Dorata Allenatore / Crediti -->
             <symbol id="svg-crown-gold" viewBox="0 0 24 24">
                 <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
             </symbol>
-
-            <!-- Icone Navigazione Lavagna Tattica -->
             <symbol id="svg-nav-board" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="14" rx="2"/>
                 <path d="M8 21h8M12 18v3M7 9l3 3m0-3l-3 3m7-1h4"/>
             </symbol>
-
             <symbol id="svg-nav-cards" viewBox="0 0 24 24">
                 <rect x="5" y="3" width="14" height="18" rx="2"/>
                 <polygon points="12,7 15,12 12,17 9,12"/>
             </symbol>
-
             <symbol id="svg-nav-forge" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="9"/>
                 <path d="M12 8v8M8 12h8"/>
             </symbol>
-
             <symbol id="svg-nav-coach" viewBox="0 0 24 24">
                 <circle cx="12" cy="8" r="4"/>
                 <path d="M5 20c1.5-4 12.5-4 14 0"/>
             </symbol>
-
             <symbol id="svg-nav-exit" viewBox="0 0 24 24">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                 <polyline points="16 17 21 12 16 7"/>
@@ -53,145 +44,193 @@
         </defs>
     </svg>
 
+    <!-- TOP NAVBAR ARENA (1280px) -->
     <header class="app-header">
-        <div class="logo-area">
-            <a href="{{ url_for('home') }}" class="brand-link">
-                <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                <div class="brand-title-wrap">
-                    <h1>FANTACLASSE</h1>
-                    <span class="brand-subtag">Tactical School RPG</span>
-                </div>
-            </a>
-        </div>
+        <div class="header-inner">
+            <div class="logo-area">
+                <a href="{{ url_for('home') }}" class="brand-link">
+                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                    <div class="brand-title-wrap">
+                        <h1>FANTACLASSE</h1>
+                        <span class="brand-subtag">Tactical School RPG • Pro Edition</span>
+                    </div>
+                </a>
+            </div>
 
-        <div class="user-profile-pill">
-            {% if utente %}
-                <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                <span class="user-name">{{ utente.name }}</span>
-                <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
-                <a href="{{ url_for('logout') }}" class="logout-btn" title="Disconnetti sessione">Esci</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
-            {% endif %}
+            <nav class="header-nav-links" aria-label="Menu Desktop">
+                <a href="{{ url_for('home') }}" class="header-nav-link active">Lavagna Arena</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link">Mazzo Carte</a>
+                {% if utente %}
+                    <a href="{{ url_for('suggerisci') }}" class="header-nav-link">Forgia Carta</a>
+                {% endif %}
+                <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
+            </nav>
+
+            <div class="user-profile-pill">
+                {% if utente %}
+                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                    <span class="user-name">{{ utente.name }}</span>
+                    <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn" title="Disconnetti sessione">Esci</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
+                {% endif %}
+            </div>
         </div>
     </header>
 
     <main class="dashboard-container">
 
-        <!-- PANNELLO 1: SPOGLIATOIO FANTALLENATORE (Collezione: users) -->
-        <section class="section-card {% if utente %}section-card--gold{% endif %}">
-            <div class="card-top-row">
-                <span class="section-tag">
-                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                    LAVAGNA SPOGLIATOIO // DOCENTI VS STUDENTI
-                </span>
-                {% if utente %}
-                    <span class="status-pill status-approved">In Campo</span>
-                {% else %}
-                    <span class="status-pill status-pending">Spettatore</span>
-                {% endif %}
+        <!-- HERO SPLIT ARENA (2 COLONNE DESKTOP: SPOGLIATOIO + CAMPO TATTICO LIVE) -->
+        <section class="hero-arena">
+            <div class="hero-copy-card">
+                <div>
+                    <span class="section-tag">
+                        <span class="pulse-dot" aria-hidden="true"></span>
+                        STAGIONE UFFICIALE • DOCENTI VS STUDENTI
+                    </span>
+
+                    {% if utente %}
+                        <h2 class="hero-title">
+                            BENTORNATO IN CAMPO,<br>
+                            <span class="hero-title-accent">MISTER {{ utente.name }}</span>
+                        </h2>
+                        <p class="hero-subtitle">
+                            Sessione PocketBase verificata ({{ utente.email }}). Esplora il mazzo ufficiale delle carte approvate o forgia un nuovo protagonista per la sfida scolastica.
+                        </p>
+                        <div class="cta-row">
+                            <a href="{{ url_for('mercato') }}" class="btn-primary">Apri Mazzo Tattico</a>
+                            <a href="{{ url_for('suggerisci') }}" class="btn-secondary">+ Forgia Nuova Carta</a>
+                        </div>
+                    {% else %}
+                        <h2 class="hero-title">
+                            LA SFIDA TATTICA<br>
+                            <span class="hero-title-accent">DELLA TUA SCUOLA</span>
+                        </h2>
+                        <p class="hero-subtitle">
+                            Il primo RPG Card Game scolastico alimentato in tempo reale da PocketBase. Tesserati come Fantallenatore, sblocca 100 FantaMilioni iniziali e forgia le carte dei protagonisti.
+                        </p>
+                        <div class="cta-row">
+                            <a href="{{ url_for('login') }}" class="btn-primary">Scendi in Campo</a>
+                            <a href="{{ url_for('registrati') }}" class="btn-secondary">Tesserati (100 FM Bonus)</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- TELEMETRIA REALE DATABASE POCKETBASE -->
+                <div class="stats-grid">
+                    <div class="stat-tile">
+                        <span class="stat-label">Carte Schierabili</span>
+                        <strong class="stat-value text-green">{{ totale_approvate }}</strong>
+                    </div>
+                    {% if utente %}
+                        <div class="stat-tile stat-tile--gold">
+                            <span class="stat-label">In Revisione Cattedra</span>
+                            <strong class="stat-value text-gold">{{ totale_in_attesa }}</strong>
+                        </div>
+                        <div class="stat-tile stat-tile--gold">
+                            <span class="stat-label">Budget Disponibile</span>
+                            <strong class="stat-value text-gold">{{ utente.fanta_milioni }} FM</strong>
+                        </div>
+                    {% else %}
+                        <div class="stat-tile stat-tile--gold">
+                            <span class="stat-label">Bonus Tesseramento</span>
+                            <strong class="stat-value text-gold">100 FM</strong>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
-            {% if utente %}
-                <h2 class="hero-title">Mister {{ utente.name }}</h2>
-                <p class="hero-subtitle">Account Tattico registrato: {{ utente.email }}</p>
-                <div class="stats-grid">
-                    <div class="stat-tile stat-tile--gold">
-                        <span class="stat-label">Cassa FantaMilioni</span>
-                        <strong class="stat-value text-gold">{{ utente.fanta_milioni }} FM</strong>
+            <!-- LAVAGNA CAMPO TATTICO 3D (Mappata sui Ruoli Reali di PocketBase) -->
+            <aside class="tactical-pitch-card" aria-label="Schema Lavagna Campo Tattico">
+                <div class="pitch-header">
+                    <span class="pitch-title">SCHIERAMENTO LAVAGNA 4-3-3</span>
+                    <span class="pitch-badge">DB LIVE SYNC</span>
+                </div>
+
+                <div class="pitch-field-visual">
+                    <div class="pitch-zone-row">
+                        <span class="pitch-zone-label">LINEA ATTACCO</span>
+                        <span class="pitch-zone-desc">Ruolo: Attaccante</span>
                     </div>
-                    <div class="stat-tile">
-                        <span class="stat-label">ID Tesseramento PB</span>
-                        <strong class="stat-value stat-mono">{{ utente.id }}</strong>
+                    <div class="pitch-zone-row">
+                        <span class="pitch-zone-label">LINEA REGIA</span>
+                        <span class="pitch-zone-desc">Ruolo: Centrocampista</span>
+                    </div>
+                    <div class="pitch-zone-row">
+                        <span class="pitch-zone-label">LINEA BASTIONE</span>
+                        <span class="pitch-zone-desc">Ruolo: Difensore</span>
+                    </div>
+                    <div class="pitch-zone-row">
+                        <span class="pitch-zone-label">ULTIMO BALUARDO</span>
+                        <span class="pitch-zone-desc">Ruolo: Portiere</span>
                     </div>
                 </div>
-            {% else %}
-                <h2 class="hero-title">Docenti vs Studenti: La Sfida Tattica</h2>
-                <p class="hero-subtitle">
-                    Entra nello spogliatoio di FantaClasse per sbloccare i tuoi 100 FantaMilioni iniziali e forgiare nuove carte tattiche nel database ufficiale.
-                </p>
-                <div class="cta-row">
-                    <a href="{{ url_for('login') }}" class="btn-primary">Ingresso in Campo</a>
-                    <a href="{{ url_for('registrati') }}" class="btn-secondary">Tesseramento Studente</a>
-                </div>
-            {% endif %}
+            </aside>
         </section>
 
-        <!-- PANNELLO 2: MAZZO TATTICO UFFICIALE (Collezione: Carte) -->
+        <!-- VETRINA CARTE COLLEZIONABILI FUT / RPG (Dati Reali Collezione Carte) -->
         <section class="section-card">
             <div class="section-header-inline">
-                <h3 class="section-heading">Mazzo Carte Tattiche</h3>
-                <a href="{{ url_for('mercato') }}" class="text-link">Apri Mazzo Completo &rarr;</a>
+                <div>
+                    <span class="section-tag">COLLEZIONE UFFICIALE POCKETBASE</span>
+                    <h3 class="section-heading">Carte Tattiche Schierabili</h3>
+                </div>
+                <a href="{{ url_for('mercato') }}" class="text-link">Esplora Tutto il Mazzo &rarr;</a>
             </div>
 
             {% if errore_caricamento %}
                 <div class="state-box state-error" data-async-state="error">
                     <h4 class="state-title">Connessione alla Lavagna Interrotta</h4>
                     <p class="state-desc">{{ errore_caricamento }}</p>
-                    <a href="{{ url_for('home') }}" class="btn-retry">Riprova</a>
+                    <a href="{{ url_for('home') }}" class="btn-retry">Riprova Connessione</a>
+                </div>
+            {% elif carte_recenti %}
+                <div class="players-grid" data-async-state="success">
+                    {% for c in carte_recenti %}
+                    <article class="player-card" data-record-id="{{ c.id }}">
+                        <div class="rpg-card-top">
+                            <span class="rpg-faction-tag">CAMPO // SCHIERABILE</span>
+                            <span class="status-pill status-approved">Approvata</span>
+                        </div>
+                        <div class="player-header">
+                            <div class="player-avatar">{{ (c.nome or '?')[0] | upper }}</div>
+                            <div class="player-info">
+                                <div class="player-name">{{ c.nome }}</div>
+                                <div class="player-meta-row">
+                                    <span class="role-badge">RUOLO: {{ c.ruolo or 'Non assegnato' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-footer">
+                            <span class="record-meta">ID: {{ c.id }}</span>
+                            <span class="record-meta">{{ ('REG: ' ~ c.created[:10]) if c.created else '' }}</span>
+                        </div>
+                    </article>
+                    {% endfor %}
                 </div>
             {% else %}
-                <div class="stats-grid">
-                    <div class="stat-tile">
-                        <span class="stat-label">Carte Schierabili (Approvate)</span>
-                        <strong class="stat-value text-green">{{ totale_approvate }}</strong>
-                    </div>
+                <div class="state-box state-empty" data-async-state="empty-state">
+                    <h4 class="state-title">Mazzo Tattico Vuoto</h4>
+                    <p class="state-desc">Nessuna carta approvata è ancora presente nel database PocketBase.</p>
                     {% if utente %}
-                    <div class="stat-tile stat-tile--gold">
-                        <span class="stat-label">Al Vaglio della Cattedra (In Attesa)</span>
-                        <strong class="stat-value text-gold">{{ totale_in_attesa }}</strong>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="recent-list-block">
-                    <h4 class="sub-heading">Carte Schierate di Recente</h4>
-                    {% if carte_recenti %}
-                        <div class="players-grid" data-async-state="success">
-                            {% for c in carte_recenti %}
-                            <article class="player-card" data-record-id="{{ c.id }}">
-                                <div class="rpg-card-top">
-                                    <span class="rpg-faction-tag">FAZIONE CAMPO // SCHIERABILE</span>
-                                    <span class="status-pill status-approved">Approvata</span>
-                                </div>
-                                <div class="player-header">
-                                    <div class="player-avatar">{{ (c.nome or '?')[0] | upper }}</div>
-                                    <div class="player-info">
-                                        <div class="player-name">{{ c.nome }}</div>
-                                        <div class="player-meta-row">
-                                            <span class="role-badge">RUOLO: {{ c.ruolo or 'Non assegnato' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="player-footer">
-                                    <span class="record-meta">ID: {{ c.id }}</span>
-                                    <span class="record-meta">{{ ('REG: ' ~ c.created[:10]) if c.created else '' }}</span>
-                                </div>
-                            </article>
-                            {% endfor %}
-                        </div>
+                        <a href="{{ url_for('suggerisci') }}" class="btn-primary">Forgia la Prima Carta</a>
                     {% else %}
-                        <div class="state-box state-empty" data-async-state="empty-state">
-                            <h4 class="state-title">Mazzo Tattico Vuoto</h4>
-                            <p class="state-desc">Nessuna carta approvata è ancora presente sulla lavagna.</p>
-                            {% if utente %}
-                                <a href="{{ url_for('suggerisci') }}" class="btn-primary">Forgia la Prima Carta</a>
-                            {% endif %}
-                        </div>
+                        <a href="{{ url_for('login') }}" class="btn-primary">Accedi per Forgiare una Carta</a>
                     {% endif %}
                 </div>
             {% endif %}
         </section>
 
-        <!-- AZIONI RAPIDE ABILITATE DAL BACKEND -->
+        <!-- AZIONI RAPIDE ARENA -->
         <section class="actions-grid">
             <a href="{{ url_for('mercato') }}" class="action-card">
                 <span class="action-icon" aria-hidden="true">
                     <svg><use href="#svg-nav-cards"></use></svg>
                 </span>
                 <div class="action-text">
-                    <strong>Mazzo Tattico</strong>
-                    <span>Esplora tutte le carte RPG ufficiali</span>
+                    <strong>Mazzo Carte Collezionabili</strong>
+                    <span>Filtra per Ruolo, Stato o cerca i protagonisti approvati</span>
                 </div>
             </a>
 
@@ -201,8 +240,8 @@
                     <svg><use href="#svg-nav-forge"></use></svg>
                 </span>
                 <div class="action-text">
-                    <strong>Forgia Nuova Carta</strong>
-                    <span>Invia una carta al giudizio della Cattedra</span>
+                    <strong>Laboratorio Forgia Carta</strong>
+                    <span>Crea una nuova carta con anteprima 3D in tempo reale</span>
                 </div>
             </a>
             {% else %}
@@ -211,8 +250,8 @@
                     <svg><use href="#svg-nav-coach"></use></svg>
                 </span>
                 <div class="action-text">
-                    <strong>Forgia Carta (Richiede Login)</strong>
-                    <span>Accedi come Allenatore per proporre carte</span>
+                    <strong>Sblocca il Laboratorio Forgia</strong>
+                    <span>Effettua il login per inviare nuove carte alla Cattedra</span>
                 </div>
             </a>
             {% endif %}
@@ -220,7 +259,7 @@
 
     </main>
 
-    <!-- TACTICAL BOTTOM DOCK (Solo Viste Reali Coperte da PocketBase) -->
+    <!-- TACTICAL BOTTOM DOCK -->
     <nav class="bottom-nav" aria-label="Navigazione tattica principale">
         <a href="{{ url_for('home') }}" class="nav-item active">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>

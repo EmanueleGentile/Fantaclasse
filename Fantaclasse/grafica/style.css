@@ -1,9 +1,10 @@
 /* ==========================================================================
-   FANTACLASSE — "TACTICAL SCHOOL RPG & STREET FOOTBALL UI" DESIGN SYSTEM
-   Lavagna Tattica da Spogliatoio Scolastico + RPG Strategy Card Game
+   FANTACLASSE — "TACTICAL SCHOOL RPG & FUT COLLECTIBLE CARD UI" (v3.0 PRO)
+   Design System completo: Arena Split-Screen, Carte Collezionabili FUT/RPG
+   3D, Lavagna Campo Tattico Interattiva e Forgia Carte con Live Preview.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Montserrat:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 :root {
   --bg-chalkboard: #0B0F0E;       /* Nero / Sfondo principale Lavagna Tattica */
@@ -17,17 +18,39 @@
   --font-display: 'Barlow Condensed', 'Montserrat', sans-serif;
   --font-body: 'Montserrat', sans-serif;
 
-  /* Token di supporto Tactical RPG */
-  --surface-elevated: #18221F;
+  /* Token Estesi Arena & FUT Cards */
+  --bg-deep: #070A09;
+  --surface-glass: rgba(18, 25, 23, 0.82);
+  --surface-elevated: #182420;
+  --green-bright: #22C55E;
+  --green-mint: #4ADE80;
+  --gold-bright: #FDE047;
+  --gold-deep: #D97706;
+  --blue-accent: #38BDF8;
   --danger-red: #EF4444;
-  --danger-glow: rgba(239, 68, 68, 0.30);
-  --chalk-line: rgba(245, 245, 245, 0.10);
+  --border-glass: rgba(255, 255, 255, 0.10);
+  --border-emerald: rgba(34, 197, 94, 0.40);
+  --border-gold: rgba(251, 191, 36, 0.45);
+
+  --grad-emerald: linear-gradient(135deg, #22C55E 0%, #16A34A 55%, #059669 100%);
+  --grad-gold: linear-gradient(135deg, #FDE047 0%, #FBBF24 50%, #D97706 100%);
+  --grad-fut-approved: linear-gradient(165deg, #192E26 0%, #0F1A16 55%, #09110E 100%);
+  --grad-fut-pending: linear-gradient(165deg, #2D2412 0%, #19160E 55%, #0E0C08 100%);
+  --shadow-xl: 0 22px 50px rgba(0, 0, 0, 0.65);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
@@ -39,8 +62,9 @@ body {
   color: var(--text-light);
   font-family: var(--font-body);
   min-height: 100vh;
-  padding-bottom: 96px;
-  line-height: 1.5;
+  padding-bottom: 100px;
+  line-height: 1.55;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -53,35 +77,47 @@ body {
 }
 
 /* ==========================================================================
-   1. HEADER TATTICO DA SPOGLIATOIO (TOP BAR)
+   1. TOP NAVBAR ARENA (FULL-WIDTH GLASSMORPHIC)
    ========================================================================== */
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(7, 10, 9, 0.86);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.28);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 18px;
-  background: rgba(11, 15, 14, 0.92);
-  backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 2px solid var(--green-primary);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 1px 12px var(--green-glow);
+  gap: 20px;
 }
 
 .brand-link {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text-light);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.brand-link:hover {
+  transform: translateY(-1px);
 }
 
 .brand-crest-svg {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 8px var(--green-glow));
+  filter: drop-shadow(0 0 12px var(--green-glow));
 }
 
 .brand-title-wrap {
@@ -92,35 +128,84 @@ body {
 
 .logo-area h1 {
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.75rem;
   font-weight: 900;
   font-style: italic;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--text-light);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(135deg, #FFFFFF 0%, #A7F3D0 55%, #FBBF24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .brand-subtag {
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 2.4px;
   color: var(--yellow-accent);
   text-transform: uppercase;
+  margin-top: 2px;
 }
 
-/* Badge Allenatore / Crediti FantaMilioni */
-.user-profile-pill {
+/* Navigazione Desktop Centrale */
+.header-nav-links {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--surface-card);
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.08);
-  font-size: 0.82rem;
+}
+
+.header-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  transition: all 0.2s var(--ease-out);
+}
+
+.header-nav-link:hover {
+  color: var(--text-light);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.header-nav-link.active {
+  color: var(--text-light);
+  background: rgba(22, 163, 74, 0.18);
+  border-color: var(--border-emerald);
+  box-shadow: 0 0 18px rgba(22, 163, 74, 0.25);
+}
+
+.header-nav-link--feedback {
+  color: var(--yellow-accent);
+  border-color: rgba(251, 191, 36, 0.25);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.header-nav-link--feedback:hover {
+  background: rgba(251, 191, 36, 0.18);
+  color: var(--gold-bright);
+}
+
+/* Pillola Profilo Allenatore & Portafoglio FM */
+.user-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(18, 25, 23, 0.9);
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-gold);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(251, 191, 36, 0.08);
 }
 
 .coach-badge-icon {
@@ -132,7 +217,8 @@ body {
 
 .user-name {
   font-weight: 700;
-  max-width: 115px;
+  font-size: 0.86rem;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -143,196 +229,203 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(251, 191, 36, 0.16);
-  color: var(--yellow-accent);
-  border: 1px solid rgba(251, 191, 36, 0.45);
-  padding: 2px 8px;
-  border-radius: 4px;
+  background: var(--grad-gold);
+  color: #0B0F0E;
+  padding: 3px 10px;
+  border-radius: 999px;
   font-family: var(--font-display);
   font-weight: 900;
   font-style: italic;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
+  box-shadow: 0 0 12px var(--yellow-glow);
 }
 
 .logout-btn,
 .login-btn-header {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
   font-size: 0.95rem;
   text-decoration: none;
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: all 0.2s var(--ease-out);
 }
 
 .login-btn-header {
-  background: var(--green-primary);
-  color: var(--bg-chalkboard);
-  box-shadow: 0 0 12px var(--green-glow);
+  background: var(--grad-emerald);
+  color: #06120B;
+  box-shadow: 0 0 16px var(--green-glow);
+}
+
+.login-btn-header:hover {
+  transform: scale(1.03);
 }
 
 .logout-btn {
-  color: var(--danger-red);
+  color: #FCA5A5;
+  background: rgba(239, 68, 68, 0.14);
   border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
-/* ==========================================================================
-   2. LAVAGNA TATTICA & PANNELLI RPG (MAIN CONTAINER)
-   ========================================================================== */
-.dashboard-container {
-  max-width: 720px;
-  margin: 20px auto;
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.28);
+  color: #FFFFFF;
 }
 
-.section-card {
+/* ==========================================================================
+   2. CONTENITORE PRINCIPALE & HERO ARENA (1280PX MULTI-COLONNA)
+   ========================================================================== */
+.dashboard-container {
+  max-width: 1280px;
+  margin: 28px auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Hero Arena a 2 Colonne (Stile EA FC / Fantastudente) */
+.hero-arena {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.hero-copy-card {
   position: relative;
-  background: var(--surface-card);
-  border: 1px solid rgba(22, 163, 74, 0.32);
-  border-left: 4px solid var(--green-primary);
-  border-radius: 10px;
-  padding: 22px 20px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background: linear-gradient(145deg, rgba(22, 36, 31, 0.92) 0%, rgba(12, 18, 16, 0.96) 100%);
+  border: 1px solid var(--border-emerald);
+  border-radius: 24px;
+  padding: 36px 34px;
+  box-shadow: var(--shadow-xl), 0 0 40px rgba(22, 163, 74, 0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
 }
 
-.section-card--gold {
-  border-color: rgba(251, 191, 36, 0.35);
-  border-left: 4px solid var(--yellow-accent);
-}
-
-.card-top-row,
-.section-header-inline {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
+.hero-copy-card::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.25) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .section-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  align-self: flex-start;
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 800;
   font-style: italic;
-  letter-spacing: 1.4px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--yellow-accent);
   background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.35);
-  padding: 3px 10px;
-  border-radius: 4px;
+  border: 1px solid var(--border-gold);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-mint);
+  box-shadow: 0 0 10px var(--green-mint);
+  animation: pulse-live 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-live {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.55; }
 }
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: clamp(2.3rem, 4vw, 3.35rem);
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: 1px;
+  line-height: 0.98;
   color: var(--text-light);
-  line-height: 1.05;
-  margin-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+.hero-title-accent {
+  background: linear-gradient(135deg, #4ADE80 0%, #FBBF24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle {
   color: var(--text-muted);
-  font-size: 0.88rem;
-  margin-bottom: 16px;
+  font-size: 0.98rem;
+  max-width: 580px;
+  margin-bottom: 22px;
 }
 
-.section-heading {
-  font-family: var(--font-display);
-  font-size: 1.45rem;
-  font-weight: 900;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-light);
-}
-
-.sub-heading {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 800;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--yellow-accent);
-  margin: 18px 0 12px;
-}
-
-.text-link {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  font-size: 1rem;
-  color: var(--green-primary);
-  text-decoration: none;
-}
-
-.text-link:hover {
-  color: var(--yellow-accent);
-}
-
-/* ==========================================================================
-   3. STATISTICHE LAVAGNA TATTICA (CHALKBOARD TELEMETRY TILES)
-   ========================================================================== */
+/* Statistiche Telemetria in Stile Glass Tile */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
 }
 
 .stat-tile {
-  background: rgba(11, 15, 14, 0.75);
-  border: 1px dashed var(--chalk-line);
-  border-bottom: 2px solid var(--green-primary);
-  border-radius: 8px;
-  padding: 12px 14px;
+  background: rgba(7, 10, 9, 0.68);
+  border: 1px solid var(--border-glass);
+  border-top: 2px solid var(--green-primary);
+  border-radius: 14px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.stat-tile:hover {
+  transform: translateY(-2px);
 }
 
 .stat-tile--gold {
-  border-bottom-color: var(--yellow-accent);
+  border-top-color: var(--yellow-accent);
 }
 
 .stat-label {
   font-family: var(--font-display);
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.1px;
   color: var(--text-muted);
 }
 
 .stat-value {
   font-family: var(--font-display);
-  font-size: 1.65rem;
+  font-size: 1.95rem;
   font-weight: 900;
   font-style: italic;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .stat-mono {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-style: normal;
   color: var(--text-light);
   word-break: break-all;
@@ -340,176 +433,424 @@ body {
 
 .text-gold {
   color: var(--yellow-accent);
-  text-shadow: 0 0 12px var(--yellow-glow);
+  text-shadow: 0 0 16px var(--yellow-glow);
 }
 
 .text-green {
-  color: var(--green-primary);
-  text-shadow: 0 0 12px var(--green-glow);
+  color: var(--green-mint);
+  text-shadow: 0 0 16px var(--green-glow);
 }
 
 /* ==========================================================================
-   4. RPG TACTICAL CARDS (COLLEZIONE CARTE: CAMPO VS CATTEDRA)
+   3. LAVAGNA CAMPO TATTICO 3D (TACTICAL PITCH BOARD)
    ========================================================================== */
-.players-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+.tactical-pitch-card {
+  position: relative;
+  background: radial-gradient(circle at 50% 35%, #153828 0%, #0C1F17 65%, #08120E 100%);
+  border: 2px solid var(--border-emerald);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow-xl), inset 0 0 50px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
 }
 
+.pitch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  z-index: 2;
+}
+
+.pitch-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+.pitch-badge {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid var(--green-mint);
+  color: var(--green-mint);
+}
+
+.pitch-field-visual {
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  padding: 18px 14px;
+  min-height: 290px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(22, 163, 74, 0.08) 0px,
+      rgba(22, 163, 74, 0.08) 28px,
+      transparent 28px,
+      transparent 56px
+    );
+}
+
+/* Cerchio di centrocampo sulla lavagna */
+.pitch-field-visual::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%);
+  border: 1.5px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pitch-field-visual::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
+.pitch-zone-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7, 10, 9, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 9px 14px;
+  backdrop-filter: blur(6px);
+}
+
+.pitch-zone-label {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--yellow-accent);
+}
+
+.pitch-zone-desc {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   4. SEZIONI & CARTE COLLEZIONABILI FUT / RPG (VERTICAL SHIELD CARDS)
+   ========================================================================== */
+.section-card {
+  position: relative;
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: var(--shadow-xl);
+}
+
+.section-card--gold {
+  border-color: var(--border-gold);
+}
+
+.card-top-row,
+.section-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--text-light);
+}
+
+.sub-heading {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--yellow-accent);
+  margin: 22px 0 14px;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.05rem;
+  color: var(--green-mint);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(22, 163, 74, 0.14);
+  border: 1px solid var(--border-emerald);
+  transition: all 0.2s var(--ease-out);
+}
+
+.text-link:hover {
+  background: var(--green-primary);
+  color: #070A09;
+}
+
+/* Griglia Carte Collezionabili FUT / RPG */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 22px;
+}
+
+/* Singola Carta Collezionabile Verticale (FUT / Sorare / Clash Style) */
 .player-card {
   position: relative;
-  background: linear-gradient(160deg, #16211E 0%, #0E1513 100%);
-  border: 2px solid var(--green-primary);
-  border-radius: 12px;
-  padding: 16px;
+  background: var(--grad-fut-approved);
+  border: 2px solid var(--border-emerald);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  min-height: 330px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 14px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65), 0 0 18px var(--green-glow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(22, 163, 74, 0.18);
+  transition: transform 0.28s var(--ease-out), box-shadow 0.28s var(--ease-out), border-color 0.28s ease;
   overflow: hidden;
+  isolation: isolate;
 }
 
+/* Riflesso Olografico sulla Carta */
 .player-card::before {
   content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(225deg, rgba(22, 163, 74, 0.28) 0%, transparent 70%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(34, 197, 94, 0.22) 0%, transparent 62%),
+    linear-gradient(125deg, transparent 30%, rgba(255, 255, 255, 0.06) 48%, transparent 66%);
   pointer-events: none;
+  z-index: 0;
+}
+
+/* Cornice Interna Scudo FUT */
+.player-card::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .player-card--pending {
-  border-color: var(--yellow-accent);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65), 0 0 18px var(--yellow-glow);
+  background: var(--grad-fut-pending);
+  border-color: var(--border-gold);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(251, 191, 36, 0.18);
 }
 
 .player-card--pending::before {
-  background: linear-gradient(225deg, rgba(251, 191, 36, 0.28) 0%, transparent 70%);
+  background:
+    radial-gradient(circle at 50% 28%, rgba(251, 191, 36, 0.22) 0%, transparent 62%),
+    linear-gradient(125deg, transparent 30%, rgba(255, 255, 255, 0.06) 48%, transparent 66%);
 }
 
 .player-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-8px) scale(1.015);
+  border-color: var(--green-mint);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8), 0 0 32px rgba(34, 197, 94, 0.35);
 }
 
+.player-card--pending:hover {
+  border-color: var(--gold-bright);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8), 0 0 32px rgba(251, 191, 36, 0.35);
+}
+
+/* Barra Superiore Carta FUT */
 .rpg-card-top {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px dashed var(--chalk-line);
-  padding-bottom: 8px;
 }
 
 .rpg-faction-tag {
   font-family: var(--font-display);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 900;
   font-style: italic;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
+/* Centro Scudo & Avatar Monogramma Gigante */
 .player-header {
+  position: relative;
+  z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 14px;
+  padding: 10px 6px 4px;
 }
 
 .player-avatar {
-  width: 54px;
-  height: 54px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--green-primary), #0D5C2A);
-  border: 2px solid var(--yellow-accent);
-  color: var(--text-light);
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 30% 30%, #22C55E 0%, #15803D 65%, #064E3B 100%);
+  border: 2.5px solid var(--yellow-accent);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 900;
   font-style: italic;
-  font-size: 1.55rem;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-size: 2.6rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55), 0 0 22px rgba(22, 163, 74, 0.4);
+  transform: rotate(-3deg);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.player-card--pending .player-avatar {
+  background: radial-gradient(circle at 30% 30%, #FBBF24 0%, #D97706 65%, #78350F 100%);
+  border-color: #FEF08A;
+  color: #0B0F0E;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55), 0 0 22px rgba(251, 191, 36, 0.4);
+}
+
+.player-card:hover .player-avatar {
+  transform: rotate(0deg) scale(1.06);
 }
 
 .player-info {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .player-name {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.7rem;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--text-light);
-  line-height: 1.1;
-  margin-bottom: 6px;
+  letter-spacing: 0.8px;
+  color: #FFFFFF;
+  line-height: 1.05;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
   word-break: break-word;
 }
 
 .player-meta-row {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .role-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 800;
+  font-size: 0.95rem;
+  font-weight: 900;
   font-style: italic;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  background: rgba(245, 245, 245, 0.08);
-  border: 1px solid rgba(245, 245, 245, 0.18);
-  color: var(--text-light);
-  padding: 3px 10px;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--yellow-accent);
+  padding: 4px 14px;
+  border-radius: 999px;
 }
 
 .status-pill {
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 900;
   font-style: italic;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 4px;
+  padding: 4px 11px;
+  border-radius: 999px;
 }
 
 .status-approved {
-  background: rgba(22, 163, 74, 0.18);
-  border: 1px solid var(--green-primary);
-  color: #4ADE80;
+  background: rgba(34, 197, 94, 0.22);
+  border: 1px solid var(--green-mint);
+  color: var(--green-mint);
 }
 
 .status-pending {
-  background: rgba(251, 191, 36, 0.16);
+  background: rgba(251, 191, 36, 0.20);
   border: 1px solid var(--yellow-accent);
   color: var(--yellow-accent);
 }
 
 .player-footer {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px dashed var(--chalk-line);
+  border-top: 1px dashed rgba(255, 255, 255, 0.14);
   font-size: 0.72rem;
   color: var(--text-muted);
 }
@@ -519,11 +860,11 @@ body {
 }
 
 /* ==========================================================================
-   5. BOTTONI TATTICI, FILTRI & AZIONI RAPIDE
+   5. BOTTONI, FILTRI INTERATTIVI & BARRA DI RICERCA
    ========================================================================== */
 .cta-row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -534,49 +875,51 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 20px;
-  border-radius: 6px;
+  padding: 13px 24px;
+  border-radius: 12px;
   font-family: var(--font-display);
   font-weight: 900;
   font-style: italic;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   border: none;
-  transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  transition: all 0.2s var(--ease-out);
 }
 
 .btn-primary {
-  background: var(--green-primary);
-  color: var(--bg-chalkboard);
-  box-shadow: 0 4px 16px var(--green-glow);
+  background: var(--grad-emerald);
+  color: #06120B;
+  box-shadow: 0 8px 24px var(--green-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px var(--green-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(34, 197, 94, 0.5);
 }
 
 .btn-secondary {
   background: rgba(251, 191, 36, 0.12);
   color: var(--yellow-accent);
-  border: 1px solid var(--yellow-accent);
+  border: 1.5px solid var(--border-gold);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(251, 191, 36, 0.22);
+  background: rgba(251, 191, 36, 0.24);
+  transform: translateY(-2px);
 }
 
 .btn-small {
-  padding: 7px 14px;
-  font-size: 0.92rem;
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  border-radius: 999px;
 }
 
 .btn-full {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 button:disabled {
@@ -584,43 +927,49 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Card Azioni Rapide */
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
 }
 
 .action-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: var(--surface-card);
-  border: 1px solid rgba(22, 163, 74, 0.35);
-  border-bottom: 3px solid var(--green-primary);
-  border-radius: 10px;
-  padding: 16px;
+  gap: 16px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-emerald);
+  border-radius: 18px;
+  padding: 20px;
   text-decoration: none;
   color: var(--text-light);
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.22s var(--ease-out);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
 }
 
 .action-card--gold {
-  border-color: rgba(251, 191, 36, 0.35);
-  border-bottom-color: var(--yellow-accent);
+  border-color: var(--border-gold);
 }
 
 .action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
+  border-color: var(--green-mint);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 22px rgba(22, 163, 74, 0.25);
+}
+
+.action-card--gold:hover {
+  border-color: var(--gold-bright);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 22px rgba(251, 191, 36, 0.25);
 }
 
 .action-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 8px;
-  background: rgba(22, 163, 74, 0.16);
-  border: 1px solid var(--green-primary);
-  color: var(--green-primary);
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: rgba(22, 163, 74, 0.18);
+  border: 1.5px solid var(--green-primary);
+  color: var(--green-mint);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -628,51 +977,99 @@ button:disabled {
 }
 
 .action-card--gold .action-icon {
-  background: rgba(251, 191, 36, 0.16);
+  background: rgba(251, 191, 36, 0.18);
   border-color: var(--yellow-accent);
   color: var(--yellow-accent);
 }
 
 .action-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
 }
 
 .action-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .action-text strong {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.7px;
 }
 
 .action-text span {
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
 }
 
-/* Toolbar Filtri */
+/* Barra Filtri & Ricerca Mazzo Carte */
+.catalog-controls-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.search-bar-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input-tactical {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(7, 10, 9, 0.85);
+  border: 1.5px solid var(--border-glass);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input-tactical:focus {
+  outline: none;
+  border-color: var(--green-mint);
+  box-shadow: 0 0 16px var(--green-glow);
+}
+
 .filter-toolbar {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
-  margin-top: 10px;
 }
 
-.filter-btn {
-  background: rgba(11, 15, 14, 0.75);
+.filter-group-label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--text-muted);
-  border: 1px solid var(--chalk-line);
-  padding: 7px 14px;
-  border-radius: 6px;
+  margin-right: 4px;
+}
+
+.filter-btn,
+.role-filter-btn {
+  background: rgba(7, 10, 9, 0.75);
+  color: var(--text-muted);
+  border: 1px solid var(--border-glass);
+  padding: 8px 16px;
+  border-radius: 999px;
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 800;
@@ -680,56 +1077,132 @@ button:disabled {
   text-transform: uppercase;
   letter-spacing: 0.8px;
   cursor: pointer;
+  transition: all 0.18s var(--ease-out);
+}
+
+.filter-btn:hover,
+.role-filter-btn:hover {
+  color: var(--text-light);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .filter-btn-active {
-  background: rgba(22, 163, 74, 0.22);
-  color: var(--text-light);
-  border-color: var(--green-primary);
-  box-shadow: 0 0 12px var(--green-glow);
+  background: var(--grad-emerald);
+  color: #06120B;
+  border-color: transparent;
+  box-shadow: 0 0 16px var(--green-glow);
+}
+
+.role-filter-active {
+  background: rgba(251, 191, 36, 0.22);
+  color: var(--yellow-accent);
+  border-color: var(--yellow-accent);
 }
 
 .count-pill {
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
   color: var(--yellow-accent);
   background: rgba(251, 191, 36, 0.12);
-  padding: 4px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-gold);
 }
 
 /* ==========================================================================
-   6. 4 STATI ASINCRONI (LOADING, EMPTY-STATE, ERROR, SUCCESS)
+   6. LABORATORIO FORGIA CARTA CON LIVE 3D PREVIEW (/suggerisci)
+   ========================================================================== */
+.forge-studio-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.forge-preview-panel {
+  position: sticky;
+  top: 96px;
+  background: radial-gradient(circle at 50% 30%, rgba(251, 191, 36, 0.14) 0%, rgba(18, 25, 23, 0.9) 75%);
+  border: 1.5px solid var(--border-gold);
+  border-radius: 24px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-xl);
+}
+
+.forge-preview-panel .player-card {
+  width: 100%;
+  max-width: 290px;
+}
+
+.role-quick-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.role-pick-btn {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(7, 10, 9, 0.75);
+  border: 1px solid var(--border-glass);
+  color: var(--text-light);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.role-pick-btn:hover,
+.role-pick-btn.active {
+  background: rgba(22, 163, 74, 0.22);
+  border-color: var(--green-mint);
+  color: var(--green-mint);
+  box-shadow: 0 0 14px var(--green-glow);
+}
+
+/* ==========================================================================
+   7. 4 STATI ASINCRONI (LOADING, EMPTY-STATE, ERROR, SUCCESS)
    ========================================================================== */
 .skeleton-card {
   background: var(--surface-card);
-  border: 1px dashed var(--chalk-line);
-  border-radius: 12px;
-  padding: 20px;
+  border: 1px solid var(--border-glass);
+  border-radius: 22px;
+  padding: 24px;
+  min-height: 310px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
 
 .skeleton-line {
-  height: 14px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, rgba(22,163,74,0.06) 25%, rgba(22,163,74,0.22) 50%, rgba(22,163,74,0.06) 75%);
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(34,197,94,0.06) 25%, rgba(34,197,94,0.22) 50%, rgba(34,197,94,0.06) 75%);
   background-size: 200% 100%;
   animation: pulse-skeleton 1.3s infinite linear;
 }
 
 .skeleton-title {
-  width: 60%;
-  height: 20px;
+  width: 70%;
+  height: 24px;
 }
 
 .skeleton-subtitle {
-  width: 40%;
+  width: 45%;
 }
 
 @keyframes pulse-skeleton {
@@ -739,15 +1212,15 @@ button:disabled {
 
 .state-box {
   grid-column: 1 / -1;
-  background: var(--surface-card);
-  border: 2px dashed rgba(251, 191, 36, 0.35);
-  border-radius: 12px;
-  padding: 28px 20px;
+  background: var(--surface-glass);
+  border: 2px dashed var(--border-gold);
+  border-radius: 22px;
+  padding: 38px 24px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .state-error {
@@ -757,7 +1230,7 @@ button:disabled {
 
 .state-title {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
@@ -765,9 +1238,9 @@ button:disabled {
 }
 
 .state-desc {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
-  max-width: 440px;
+  max-width: 460px;
 }
 
 .btn-retry {
@@ -777,35 +1250,51 @@ button:disabled {
 }
 
 /* ==========================================================================
-   7. SCHERMATE INGRESSO IN CAMPO (AUTH: LOGIN & REGISTRAZIONE)
+   8. SCHERMATE INGRESSO IN CAMPO (AUTH SPLIT-SCREEN)
    ========================================================================== */
 .auth-body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
+  padding: 32px 20px;
+}
+
+.auth-split-container {
+  max-width: 980px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px);
+  border: 1.5px solid var(--border-emerald);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl), 0 0 45px rgba(22, 163, 74, 0.18);
+}
+
+.auth-showcase-side {
+  background: radial-gradient(circle at 30% 25%, #163E2C 0%, #0B1B14 65%, #070E0B 100%);
+  padding: 40px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--border-glass);
 }
 
 .auth-card {
-  background: var(--surface-card);
   width: 100%;
-  max-width: 430px;
-  padding: 28px 24px;
-  border-radius: 12px;
-  border: 2px solid var(--green-primary);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 24px var(--green-glow);
+  padding: 40px 34px;
+  background: rgba(12, 17, 15, 0.92);
 }
 
 .auth-logo {
-  justify-content: center;
   display: flex;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .auth-heading {
-  text-align: center;
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
@@ -814,10 +1303,9 @@ button:disabled {
 }
 
 .auth-subtext {
-  text-align: center;
   color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-bottom: 20px;
+  font-size: 0.9rem;
+  margin-bottom: 22px;
 }
 
 .input-group {
@@ -828,30 +1316,31 @@ button:disabled {
 .input-label {
   display: block;
   font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 800;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
   color: var(--yellow-accent);
   margin-bottom: 6px;
 }
 
 .form-input {
   width: 100%;
-  padding: 11px 14px;
-  border-radius: 6px;
-  background: rgba(11, 15, 14, 0.85);
-  border: 1px solid rgba(245, 245, 245, 0.16);
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(7, 10, 9, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
   color: var(--text-light);
   font-family: var(--font-body);
   font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--green-primary);
-  box-shadow: 0 0 10px var(--green-glow);
+  border-color: var(--green-mint);
+  box-shadow: 0 0 14px var(--green-glow);
 }
 
 .input-invalid {
@@ -867,10 +1356,10 @@ button:disabled {
 }
 
 .alert-box {
-  padding: 12px 14px;
-  border-radius: 6px;
-  font-size: 0.86rem;
-  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  margin-bottom: 18px;
   font-weight: 600;
 }
 
@@ -881,15 +1370,15 @@ button:disabled {
 }
 
 .alert-success {
-  background: rgba(22, 163, 74, 0.16);
-  border: 1px solid var(--green-primary);
+  background: rgba(22, 163, 74, 0.18);
+  border: 1px solid var(--green-mint);
   color: #BBF7D0;
 }
 
 .auth-links {
-  margin-top: 20px;
+  margin-top: 22px;
   text-align: center;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
 }
 
@@ -904,21 +1393,21 @@ button:disabled {
 }
 
 /* ==========================================================================
-   8. TACTICAL BOTTOM DOCK (NAVIGAZIONE MOBILE-FIRST)
+   9. TACTICAL BOTTOM DOCK (MOBILE & TABLET) & RESPONSIVE BREAKPOINTS
    ========================================================================== */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(11, 15, 14, 0.96);
-  backdrop-filter: blur(12px);
+  background: rgba(7, 10, 9, 0.94);
+  backdrop-filter: blur(16px);
   display: flex;
   justify-content: space-around;
   padding: 8px 6px 10px;
-  border-top: 2px solid rgba(22, 163, 74, 0.45);
-  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.65);
-  z-index: 100;
+  border-top: 1.5px solid var(--border-emerald);
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.7);
+  z-index: 200;
 }
 
 .nav-item {
@@ -928,15 +1417,15 @@ button:disabled {
   gap: 3px;
   color: var(--text-muted);
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 800;
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   text-decoration: none;
   padding: 4px 14px;
-  border-radius: 6px;
-  transition: color 0.15s ease, transform 0.15s ease;
+  border-radius: 8px;
+  transition: all 0.15s ease;
 }
 
 .nav-icon-svg {
@@ -950,10 +1439,45 @@ button:disabled {
 }
 
 .nav-item.active {
-  color: var(--green-primary);
-  text-shadow: 0 0 10px var(--green-glow);
+  color: var(--green-mint);
 }
 
 .nav-item.active .nav-icon-svg {
   color: var(--yellow-accent);
+}
+
+@media (max-width: 960px) {
+  .hero-arena,
+  .forge-studio-grid,
+  .auth-split-container {
+    grid-template-columns: 1fr;
+  }
+
+  .header-nav-links {
+    display: none;
+  }
+
+  .auth-showcase-side {
+    display: none;
+  }
+
+  .forge-preview-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-inner {
+    padding: 12px 14px;
+  }
+
+  .dashboard-container {
+    padding: 0 14px;
+    margin: 18px auto;
+  }
+
+  .hero-copy-card,
+  .section-card {
+    padding: 22px 18px;
+  }
 }

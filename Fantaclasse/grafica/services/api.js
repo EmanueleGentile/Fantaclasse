@@ -1,8 +1,8 @@
 /**
- * Fantaclasse Frontend Service Layer, AuthStore & 4-State UI Engine
+ * Fantaclasse Frontend Service Layer, AuthStore, Live Card Forge & 4-State UI Engine
  * - Zero utilizzi di innerHTML / outerHTML / document.write (100% DOM API sicure + textContent)
  * - Gestione deterministica dei 4 stati asincroni: loading, success, empty-state, error (con retry)
- * - Validazione client-side speculare allo schema PocketBase (users, Carte)
+ * - Filtro combinato (Stato DB + Ruolo Tattico + Ricerca Testuale Live) e Live Preview Forgia Carta
  */
 (function () {
   "use strict";
@@ -289,7 +289,7 @@
 
   /**
    * 6. Gestore Deterministico dei 4 Stati Asincroni (loading, success, empty-state, error)
-   * Costruisce i nodi DOM esclusivamente con document.createElement e textContent.
+   * Costruisce le Carte Collezionabili FUT/RPG esclusivamente con document.createElement e textContent.
    */
   const UIStateManager = {
     clearContainer(container) {
@@ -309,7 +309,7 @@
         });
       }
 
-      for (let i = 0; i < 3; i += 1) {
+      for (let i = 0; i < 4; i += 1) {
         const skel = document.createElement("div");
         skel.className = "skeleton-card";
         const line1 = document.createElement("div");
@@ -332,12 +332,12 @@
 
       const title = document.createElement("h4");
       title.className = "state-title";
-      title.textContent = "Nessuna carta presente";
+      title.textContent = "Nessuna Carta Trovata nel Settore";
 
       const desc = document.createElement("p");
       desc.className = "state-desc";
       desc.textContent =
-        message || "Non sono state trovate carte per il filtro selezionato nel database.";
+        message || "Non sono state trovate carte per i filtri tattici selezionati.";
 
       box.appendChild(title);
       box.appendChild(desc);
@@ -363,7 +363,7 @@
 
       const title = document.createElement("h4");
       title.className = "state-title";
-      title.textContent = "Errore di caricamento";
+      title.textContent = "Errore di Sincronizzazione";
 
       const desc = document.createElement("p");
       desc.className = "state-desc";
@@ -377,7 +377,7 @@
         const retryBtn = document.createElement("button");
         retryBtn.type = "button";
         retryBtn.className = "btn-retry";
-        retryBtn.textContent = "Riprova";
+        retryBtn.textContent = "Riprova Connessione";
         retryBtn.addEventListener("click", onRetry);
         box.appendChild(retryBtn);
       }
@@ -399,6 +399,8 @@
         if (SchemaValidator.isValidPocketBaseId(carta.id)) {
           card.setAttribute("data-record-id", carta.id);
         }
+        card.setAttribute("data-card-ruolo", carta.ruolo || "");
+        card.setAttribute("data-card-nome", (carta.nome || "").toLowerCase());
 
         const topBar = document.createElement("div");
         topBar.className = "rpg-card-top";
@@ -406,8 +408,8 @@
         const factionTag = document.createElement("span");
         factionTag.className = "rpg-faction-tag";
         factionTag.textContent = isApproved
-          ? "FAZIONE CAMPO // SCHIERABILE"
-          : "FAZIONE CATTEDRA // VERIFICA";
+          ? "CAMPO // SCHIERABILE"
+          : "CATTEDRA // VERIFICA";
 
         const statusBadge = document.createElement("span");
         statusBadge.className = isApproved
@@ -471,10 +473,66 @@
   };
 
   /**
-   * 7. Bootstrap dei Form e delle Viste Dinamiche
+   * 7. Live Card Forge Preview (/suggerisci) & Validazione Form
    */
+  function initForgeLivePreview() {
+    const cartaForm = document.getElementById("form-suggerisci");
+    if (!cartaForm) return;
+
+    const nomeInput = document.getElementById("carta-nome");
+    const ruoloSelect = document.getElementById("carta-ruolo");
+    const previewAvatar = document.getElementById("preview-card-avatar");
+    const previewName = document.getElementById("preview-card-name");
+    const previewRole = document.getElementById("preview-card-role");
+    const quickRoleBtns = Array.from(document.querySelectorAll("[data-pick-ruolo]"));
+
+    function syncPreview() {
+      const currentName = ((nomeInput && nomeInput.value) || "").trim();
+      const currentRole = ((ruoloSelect && ruoloSelect.value) || "").trim();
+
+      if (previewName) {
+        previewName.textContent = currentName || "Nuovo Campione";
+      }
+      if (previewAvatar) {
+        previewAvatar.textContent = currentName
+          ? currentName.charAt(0).toUpperCase()
+          : "?";
+      }
+      if (previewRole) {
+        previewRole.textContent = "RUOLO: " + (currentRole || "Da assegnare");
+      }
+
+      quickRoleBtns.forEach((btn) => {
+        const val = btn.getAttribute("data-pick-ruolo");
+        if (val === currentRole) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    }
+
+    if (nomeInput) {
+      nomeInput.addEventListener("input", syncPreview);
+    }
+    if (ruoloSelect) {
+      ruoloSelect.addEventListener("change", syncPreview);
+    }
+
+    quickRoleBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const picked = btn.getAttribute("data-pick-ruolo") || "";
+        if (ruoloSelect) {
+          ruoloSelect.value = picked;
+        }
+        syncPreview();
+      });
+    });
+
+    syncPreview();
+  }
+
   function initFormsValidation() {
-    // Form Login
     const loginForm = document.getElementById("form-login");
     if (loginForm) {
       loginForm.addEventListener("submit", function (e) {
@@ -499,7 +557,6 @@
       });
     }
 
-    // Form Registrazione
     const registerForm = document.getElementById("form-register");
     if (registerForm) {
       registerForm.addEventListener("submit", function (e) {
@@ -536,7 +593,6 @@
       });
     }
 
-    // Form Suggerisci Carta
     const cartaForm = document.getElementById("form-suggerisci");
     if (cartaForm) {
       cartaForm.addEventListener("submit", function (e) {
@@ -556,44 +612,70 @@
         const submitBtn = cartaForm.querySelector('button[type="submit"]');
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = "Invio in corso...";
+          submitBtn.textContent = "Invio alla Cattedra...";
         }
       });
     }
   }
 
+  /**
+   * 8. Catalogo Carte Asincrono con Filtro Stato + Filtro Ruolo + Ricerca Live
+   */
   function initMercatoAsyncCatalog() {
     const container = document.getElementById("carte-async-container");
     if (!container) return;
 
     const filterButtons = Array.from(document.querySelectorAll("[data-stato-filter]"));
+    const roleButtons = Array.from(document.querySelectorAll("[data-ruolo-filter]"));
+    const searchInput = document.getElementById("search-carte-input");
     const countBadge = document.getElementById("carte-count-badge");
-    let activeFilter = "";
 
-    async function loadCarte(filterValue) {
-      activeFilter = filterValue || "";
+    let activeStatoFilter = "";
+    let activeRoleFilter = "";
+    let searchQuery = "";
+    let cachedItems = null;
+
+    function applyLocalFiltersAndRender(itemsSource) {
+      const filtered = itemsSource.filter((item) => {
+        const matchesRole = !activeRoleFilter || (item.ruolo || "") === activeRoleFilter;
+        const matchesQuery =
+          !searchQuery ||
+          String(item.nome || "")
+            .toLowerCase()
+            .includes(searchQuery) ||
+          String(item.ruolo || "")
+            .toLowerCase()
+            .includes(searchQuery);
+        return matchesRole && matchesQuery;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = String(filtered.length);
+      }
+
+      if (filtered.length === 0) {
+        UIStateManager.renderEmptyState(
+          container,
+          "Nessuna carta corrisponde ai filtri di stato, ruolo o ricerca selezionati.",
+          "Forgia una Nuova Carta",
+          "/suggerisci"
+        );
+      } else {
+        UIStateManager.renderCarteSuccess(container, filtered);
+      }
+    }
+
+    async function loadCarte(statoValue) {
+      activeStatoFilter = statoValue || "";
       UIStateManager.renderLoading(container, filterButtons);
 
       try {
-        const items = await FantaclasseAPI.fetchCarte(activeFilter);
-        if (countBadge) {
-          countBadge.textContent = String(items.length);
-        }
-        if (items.length === 0) {
-          UIStateManager.renderEmptyState(
-            container,
-            activeFilter === "in_attesa"
-              ? "Non ci sono carte in attesa di approvazione in questo momento."
-              : "Nessuna carta approvata disponibile nel catalogo PocketBase.",
-            "Proponi una Carta",
-            "/suggerisci"
-          );
-        } else {
-          UIStateManager.renderCarteSuccess(container, items);
-        }
+        const items = await FantaclasseAPI.fetchCarte(activeStatoFilter);
+        cachedItems = items;
+        applyLocalFiltersAndRender(items);
       } catch (err) {
         UIStateManager.renderError(container, err.message, function () {
-          loadCarte(activeFilter);
+          loadCarte(activeStatoFilter);
         });
       } finally {
         filterButtons.forEach((btn) => {
@@ -611,11 +693,34 @@
       });
     });
 
-    // Esegue il caricamento reattivo iniziale se richiesto o al click sul pulsante aggiorna
+    roleButtons.forEach((btn) => {
+      btn.addEventListener("click", async function () {
+        activeRoleFilter = btn.getAttribute("data-ruolo-filter") || "";
+        roleButtons.forEach((b) => b.classList.remove("role-filter-active"));
+        btn.classList.add("role-filter-active");
+        if (cachedItems === null) {
+          await loadCarte(activeStatoFilter);
+        } else {
+          applyLocalFiltersAndRender(cachedItems);
+        }
+      });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener("input", async function () {
+        searchQuery = (searchInput.value || "").trim().toLowerCase();
+        if (cachedItems === null) {
+          await loadCarte(activeStatoFilter);
+        } else {
+          applyLocalFiltersAndRender(cachedItems);
+        }
+      });
+    }
+
     const refreshBtn = document.getElementById("btn-refresh-carte");
     if (refreshBtn) {
       refreshBtn.addEventListener("click", function () {
-        loadCarte(activeFilter);
+        loadCarte(activeStatoFilter);
       });
     }
   }
@@ -623,6 +728,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     FantaclasseAuthStore.verifySessionOnStartup();
     initFormsValidation();
+    initForgeLivePreview();
     initMercatoAsyncCatalog();
   });
 })();
