@@ -1,87 +1,94 @@
-import uuid
-from dataclasses import dataclass, field
-from typing import List, Dict
+"""
+Modelli dati rigorosamente allineati allo schema reale di PocketBase (pb_data/data.db).
+Zero campi fantasma o collezioni inesistenti (rimossi i vecchi modelli mock Lega/Squadra).
+"""
 
-# Le 9 materie ufficiali del regolamento Fantastudente
-MATERIE_UFFICIALI: List[str] = [
-    "informatica",
-    "italiano",
-    "matematica",
-    "scienze",
-    "storia",
-    "filosofia",
-    "inglese",
-    "scienze motorie",
-    "disegno e storia dell’arte"
-]
+from dataclasses import dataclass
+from typing import Optional, Dict, Any
 
-@dataclass
-class Utente:
-    id_utente: str = field(default_factory=lambda: str(uuid.uuid4()))
-    email: str = ""
-    password_hash: str = ""      # Password salvata in modo sicuro
-    nome_visualizzato: str = ""  # Nickname o nome reale
-    leghe_iscritte_ids: List[str] = field(default_factory=list)
 
-@dataclass
-class Lega:
-    nome_lega: str
-    id_admin: str                          # L'Utente che crea la lega
-    crediti_iniziali: int                  # SCELTI DALL'ADMIN
-    id_lega: str = field(default_factory=lambda: str(uuid.uuid4())[:8])  # Codice d'invito breve
-    partecipanti_ids: List[str] = field(default_factory=list)
+@dataclass(frozen=True)
+class UserModel:
+    """Rappresenta un record reale della collezione auth `users` (_pb_users_auth_)."""
+    id: str
+    email: str
+    name: str = ""
+    fanta_milioni: float = 0.0
+    verified: bool = False
+    email_visibility: bool = False
+    avatar: str = ""
+    created: str = ""
+    updated: str = ""
+
+    @classmethod
+    def from_pb_record(cls, data: Dict[str, Any]) -> "UserModel":
+        raw_fm = data.get("fanta_milioni", 0)
+        try:
+            fm_val = float(raw_fm) if raw_fm is not None else 0.0
+        except (TypeError, ValueError):
+            fm_val = 0.0
+
+        return cls(
+            id=str(data.get("id", "")).strip(),
+            email=str(data.get("email", "")).strip(),
+            name=str(data.get("name", "") or "").strip(),
+            fanta_milioni=fm_val,
+            verified=bool(data.get("verified", False)),
+            email_visibility=bool(data.get("emailVisibility", False)),
+            avatar=str(data.get("avatar", "") or "").strip(),
+            created=str(data.get("created", "") or ""),
+            updated=str(data.get("updated", "") or ""),
+        )
+
+    def to_public_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "email": self.email,
+            "name": self.name or self.email.split("@")[0],
+            "fanta_milioni": int(self.fanta_milioni) if self.fanta_milioni.is_integer() else round(self.fanta_milioni, 2),
+            "verified": self.verified,
+            "created": self.created,
+        }
+
+
+@dataclass(frozen=True)
+class CartaModel:
+    """Rappresenta un record reale della collezione base `Carte` (pbc_2958257682)."""
+    id: str
+    nome: str
+    ruolo: str
+    stato: str
+    created: str = ""
+    updated: str = ""
+
+    @classmethod
+    def from_pb_record(cls, data: Dict[str, Any]) -> "CartaModel":
+        return cls(
+            id=str(data.get("id", "")).strip(),
+            nome=str(data.get("nome", "") or "").strip(),
+            ruolo=str(data.get("ruolo", "") or "").strip(),
+            stato=str(data.get("stato", "") or "in_attesa").strip(),
+            created=str(data.get("created", "") or ""),
+            updated=str(data.get("updated", "") or ""),
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "ruolo": self.ruolo,
+            "stato": self.stato,
+            "created": self.created,
+            "updated": self.updated,
+        }
+
+
+@dataclass(frozen=True)
+class AuthSession:
+    """Stato della sessione autenticata PocketBase (token JWT + modello utente)."""
+    token: str
+    user: Optional[UserModel]
 
     @property
-    def link_invito(self) -> str:
-        """Genera il link d'invito unico per far unire i compagni via WhatsApp/Telegram."""
-        return f"https://fantastudente.app/join/{self.id_lega}"
-
-@dataclass
-class Studente:
-    id_studente: int
-    id_lega: str            # Ogni lega ha il suo listone di compagni
-    nome: str
-    classe: str
-    quotazione_base: int    # Prezzo di partenza indicativo per l'asta
-    foto_url: str = ""      # Foto del campioncino
-
-@dataclass
-class AcquistoAsta:
-    id_studente: int
-    prezzo_acquisto: int    # Prezzo finale battuto all'asta
-
-@dataclass
-class RosaUtente:
-    id_utente: str          # L'Utente proprietario della squadra
-    id_lega: str            # La lega di appartenenza
-    nome_squadra: str
-    crediti_rimasti: int    # Parte dai crediti_iniziali della Lega e scende con gli acquisti
-    # Lista dei giocatori acquistati all'asta (indipendenti dalla materia)
-    giocatori_acquistati: List[AcquistoAsta] = field(default_factory=list)
-
-@dataclass
-class FormazioneGiornata:
-    id_utente: str
-    id_lega: str
-    giornata: int
-    # Qui assegni liberamente lo studente acquistato alla materia desiderata per la settimana:
-    # Mappa: materia -> id_studente
-    schieramento: Dict[str, int] = field(default_factory=dict)
-
-@dataclass
-class EventoDisciplinare:
-    id_studente: int
-    id_lega: str
-    giornata: int
-    assenze: int = 0
-    ritardi: int = 0
-    note_generiche: int = 0
-    note_disciplinari: int = 0
-
-@dataclass
-class VotoScolastico:
-    id_studente: int
-    id_lega: str
-    giornata: int
-    materia: str
-    voto: float             # Es. 8.5, 6.0, 4.5
+    def is_valid(self) -> bool:
+        return bool(self.token and self.user and self.user.id)

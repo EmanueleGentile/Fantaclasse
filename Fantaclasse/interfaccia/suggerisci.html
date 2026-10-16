@@ -1,86 +1,121 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" data-pb-url="{{ pb_base_url }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suggerisci Carta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>FantaClasse - Proponi Carta</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <div class="app-container">
-        
-        <header class="app-header">
-            <div style="width: 24px; cursor: pointer;" onclick="window.location.href='/'">
-                <i class="fa-solid fa-arrow-left"></i>
-            </div>
-            <div class="header-logo">
-                <div style="margin-top: -2px;">
-                    <span class="fanta">SUGGERISCI</span><br>
-                    <span class="classe">CARTA</span>
-                </div>
-            </div>
-            <div style="width: 24px;"></div>
-        </header>
+<body data-require-auth="true">
 
-        <main class="app-content">
-            {% if messaggio %}
-            <div style="background-color: var(--green-primary); padding: 15px; border-radius: 12px; text-align: center; font-weight: bold; margin-bottom: 20px;">
-                {{ messaggio }}
-            </div>
+    <header class="app-header">
+        <div class="logo-area">
+            <a href="{{ url_for('home') }}" class="brand-link">
+                <span class="brand-badge" aria-hidden="true">FC</span>
+                <h1>PROPONI CARTA</h1>
+            </a>
+        </div>
+
+        <div class="user-profile-pill">
+            {% if utente %}
+                <span class="user-name">{{ utente.name }}</span>
+                <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+
+        <section class="section-card">
+            <span class="section-tag">NUOVO RECORD COLLEZIONE CARTE</span>
+            <h2 class="hero-title">Suggerisci una Nuova Carta</h2>
+            <p class="hero-subtitle">
+                La carta verrà salvata in PocketBase con stato <strong>in_attesa</strong> e diventerà visibile a tutti dopo la verifica dell'amministratore.
+            </p>
+
+            {% if successo %}
+                <div class="alert-box alert-success" role="status">
+                    {{ successo }}
+                </div>
             {% endif %}
 
-            <div class="section-title">NUOVO STUDENTE</div>
-            <form action="/suggerisci" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
-                
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Nome Completo</label>
-                    <input type="text" name="nome" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+            <form id="form-suggerisci" action="{{ url_for('suggerisci') }}" method="POST" novalidate>
+                <div
+                    class="alert-box alert-error"
+                    data-form-banner
+                    role="alert"
+                    {% if not errore %}hidden{% endif %}
+                >{{ errore or '' }}</div>
+
+                <div class="input-group">
+                    <label class="input-label" for="carta-nome">Nome della Carta</label>
+                    <input
+                        id="carta-nome"
+                        type="text"
+                        name="nome"
+                        class="form-input {% if field_errors and field_errors.get('nome') %}input-invalid{% endif %}"
+                        placeholder="Es. Mario Rossi"
+                        value="{{ form_values.get('nome', '') if form_values else '' }}"
+                        minlength="2"
+                        maxlength="100"
+                        required
+                    >
+                    <span
+                        class="field-error-msg"
+                        data-field-error="nome"
+                        {% if not (field_errors and field_errors.get('nome')) %}hidden{% endif %}
+                    >{{ field_errors.get('nome', '') if field_errors else '' }}</span>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Classe (Es. 3DIA)</label>
-                    <input type="text" name="classe" required style="padding: 12px; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: white; font-family: 'Montserrat', sans-serif;">
+                <div class="input-group">
+                    <label class="input-label" for="carta-ruolo">Ruolo in Campo</label>
+                    <select
+                        id="carta-ruolo"
+                        name="ruolo"
+                        class="form-input {% if field_errors and field_errors.get('ruolo') %}input-invalid{% endif %}"
+                        required
+                    >
+                        <option value="">-- Seleziona un ruolo --</option>
+                        {% for r in ruoli_ammessi %}
+                            <option
+                                value="{{ r }}"
+                                {% if form_values and form_values.get('ruolo') == r %}selected{% endif %}
+                            >{{ r }}</option>
+                        {% endfor %}
+                    </select>
+                    <span
+                        class="field-error-msg"
+                        data-field-error="ruolo"
+                        {% if not (field_errors and field_errors.get('ruolo')) %}hidden{% endif %}
+                    >{{ field_errors.get('ruolo', '') if field_errors else '' }}</span>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <label style="color: var(--text-light); font-size: 0.8rem; font-weight: 700;">Materie (Seleziona tutte quelle che fa)</label>
-                    <div style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-                        <label><input type="checkbox" name="materie" value="Informatica"> Informatica</label>
-                        <label><input type="checkbox" name="materie" value="Matematica"> Matematica</label>
-                        <label><input type="checkbox" name="materie" value="Italiano"> Italiano</label>
-                        <label><input type="checkbox" name="materie" value="Storia"> Storia</label>
-                        <label><input type="checkbox" name="materie" value="Fisica"> Fisica</label>
-                        <label><input type="checkbox" name="materie" value="Scienze"> Scienze</label>
-                        <label><input type="checkbox" name="materie" value="Inglese"> Inglese</label>
-                        <label><input type="checkbox" name="materie" value="Filosofia"> Filosofia</label>
-                    </div>
-                </div>
-
-                <button type="submit" style="margin-top: 10px; background-color: var(--green-primary); color: var(--bg-dark); border: none; padding: 15px; border-radius: 8px; font-weight: 800; font-family: 'Montserrat', sans-serif; cursor: pointer;">
-                    INVIA ALL'ADMIN
-                </button>
+                <button type="submit" class="btn-primary btn-full">Invia Proposta</button>
             </form>
-        </main>
+        </section>
 
-        <nav class="bottom-nav">
-            <div class="nav-item" onclick="window.location.href='/'">
-                <i class="fa-solid fa-house nav-icon"></i>
-                <span>Home</span>
-            </div>
-            <div class="nav-item">
-                <i class="fa-solid fa-users nav-icon"></i>
-                <span>Squadre</span>
-            </div>
-            <div class="nav-item">
-                <i class="fa-solid fa-trophy nav-icon"></i>
-                <span>Classifica</span>
-            </div>
-            <div class="nav-item" onclick="window.location.href='/mercato'">
-                <i class="fa-solid fa-store nav-icon"></i>
-                <span>Mercato</span>
-            </div>
-        </nav>
-    </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigazione principale">
+        <a href="{{ url_for('home') }}" class="nav-item">
+            <span class="nav-symbol" aria-hidden="true">&#8962;</span>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('mercato') }}" class="nav-item">
+            <span class="nav-symbol" aria-hidden="true">&#9733;</span>
+            <span>Carte</span>
+        </a>
+        <a href="{{ url_for('suggerisci') }}" class="nav-item active">
+            <span class="nav-symbol" aria-hidden="true">&#43;</span>
+            <span>Proponi</span>
+        </a>
+        <a href="{{ url_for('logout') }}" class="nav-item">
+            <span class="nav-symbol" aria-hidden="true">&#10162;</span>
+            <span>Esci</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>
 </body>
 </html>

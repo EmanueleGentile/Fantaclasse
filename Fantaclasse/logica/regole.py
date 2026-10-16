@@ -1,107 +1,126 @@
-from typing import List, Dict
-from logica.modelli import (
-    MATERIE_UFFICIALI,
-    VotoScolastico,
-    EventoDisciplinare,
-    FormazioneGiornata,
-    RosaUtente
-)
+"""
+Regole di validazione e costanti applicative speculari allo schema PocketBase (pb_data/data.db).
+Tutte le funzioni restituiscono un dizionario di errori per singolo campo (vuoto se valido).
+"""
 
-#calcolo dei punti
-def calcola_punti_voto(voto: float) -> float:
+import re
+from typing import Dict
+
+BUDGET_INIZIALE_FANTA_MILIONI: int = 100
+
+# Pattern nativo PocketBase per gli ID dei record (15 caratteri alfanumerici minuscoli)
+PB_ID_REGEX = re.compile(r"^[a-z0-9]{15}$")
+
+# Pattern email conforme RFC / PocketBase
+EMAIL_REGEX = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]{2,}$")
+
+# Pattern anti-HTML/XSS per i campi testuali (nessun tag < o >)
+SAFE_TEXT_REGEX = re.compile(r"^[^<>]*$")
+
+# Valori ammessi per i ruoli e gli stati della collezione Carte
+RUOLI_CARTE_AMMESSI = ("Portiere", "Difensore", "Centrocampista", "Attaccante")
+STATI_CARTE_AMMESSI = ("in_attesa", "approvata")
+
+
+def valida_id_pocketbase(record_id: str) -> bool:
+    """Verifica che un ID rispetti il formato a 15 caratteri di PocketBase."""
+    if not isinstance(record_id, str):
+        return False
+    return bool(PB_ID_REGEX.match(record_id.strip()))
+
+
+def valida_login_input(identity: str, password: str) -> Dict[str, str]:
+    """Valida i campi di autenticazione per /api/collections/users/auth-with-password."""
+    errors: Dict[str, str] = {}
+    clean_identity = (identity or "").strip()
+    clean_password = password or ""
+
+    if not clean_identity:
+        errors["email"] = "Inserisci il tuo indirizzo email."
+    elif len(clean_identity) > 255 or not EMAIL_REGEX.match(clean_identity):
+        errors["email"] = "Inserisci un indirizzo email valido."
+
+    if not clean_password:
+        errors["password"] = "Inserisci la password."
+    elif len(clean_password) < 8:
+        errors["password"] = "La password deve contenere almeno 8 caratteri."
+    elif len(clean_password) > 72:
+        errors["password"] = "La password supera la lunghezza massima consentita."
+
+    return errors
+
+
+def valida_registrazione_input(
+    email: str,
+    name: str,
+    password: str,
+    password_confirm: str,
+) -> Dict[str, str]:
     """
-    Converte un voto scolastico numerico nel relativo bonus/malus:
-    - Voto tra 9.0 e 10.0      -> +5.0
-    - Voto tra 8.0 e 9- (8.75) -> +4.0
-    - Voto tra 7- (6.75) e 8-  -> +3.0
-    - Voto tra 6.0 e 6.5       -> +1.0
-    - Voto tra 5.0 e 6- (5.75) -> -1.0
-    - Voto tra 4.5 e 5- (4.75) -> -2.0
-    - Voto tra 4.0 e 4+ (4.25) -> -3.0
-    - Voto < 4.0               -> -5.0
+    Valida il payload di creazione utente sulla collezione `users`:
+    - email: required, formato email valido
+    - name: text opzionale/consigliato, max 255 caratteri, privo di tag HTML
+    - password: required, min 8 caratteri, max 72 caratteri
+    - passwordConfirm: deve coincidere con password
     """
-    if voto >= 9.0:
-        return 5.0
-    elif voto >= 8.0:  # Da 8.0 a 8.75 (9-)
-        return 4.0
-    elif voto >= 6.75: # Da 6.75 (7-) a 7.75 (8-)
-        return 3.0
-    elif voto >= 6.0:  # Da 6.0 a 6.5
-        return 1.0
-    elif voto >= 5.0:  # Da 5.0 a 5.75 (6-)
-        return -1.0
-    elif voto >= 4.5:  # Da 4.5 a 4.75 (5-)
-        return -2.0
-    elif voto >= 4.0:  # Da 4.0 a 4.25 (4+)
-        return -3.0
-    else:              # Minore di 4.0
-        return -5.0
+    errors: Dict[str, str] = {}
+    clean_email = (email or "").strip()
+    clean_name = (name or "").strip()
+    clean_password = password or ""
+    clean_confirm = password_confirm or ""
+
+    if not clean_email:
+        errors["email"] = "L'indirizzo email è obbligatorio."
+    elif len(clean_email) > 255 or not EMAIL_REGEX.match(clean_email):
+        errors["email"] = "Formato email non valido."
+
+    if not clean_name:
+        errors["name"] = "Inserisci un nome o nickname visibile."
+    elif len(clean_name) < 2:
+        errors["name"] = "Il nome deve avere almeno 2 caratteri."
+    elif len(clean_name) > 255:
+        errors["name"] = "Il nome non può superare i 255 caratteri."
+    elif not SAFE_TEXT_REGEX.match(clean_name):
+        errors["name"] = "Il nome contiene caratteri non consentiti (< o >)."
+
+    if not clean_password:
+        errors["password"] = "La password è obbligatoria."
+    elif len(clean_password) < 8:
+        errors["password"] = "La password deve contenere almeno 8 caratteri."
+    elif len(clean_password) > 72:
+        errors["password"] = "La password non può superare i 72 caratteri."
+
+    if not clean_confirm:
+        errors["passwordConfirm"] = "Conferma la password inserita."
+    elif clean_password != clean_confirm:
+        errors["passwordConfirm"] = "Le due password non coincidono."
+
+    return errors
 
 
-#penalità
-def calcola_malus_disciplina(evento: EventoDisciplinare) -> float:
+def valida_carta_input(nome: str, ruolo: str) -> Dict[str, str]:
     """
-    Calcola i malus disciplinari:
-    - Assenza: -1.0
-    - Ritardo: -0.5
-    - Entrata in seconda/terza ora: -0.5
-    - Nota generica (indiv. / gruppo 2-5 persone): -2.0
-    - Nota disciplinare (indiv. / gruppo 2-5 persone): -4.0
+    Valida il payload di creazione record sulla collezione `Carte`:
+    - Campi reali nello schema: `nome` (text), `ruolo` (text), `stato` (text)
     """
-    malus_assenze = evento.assenze * -1.0
-    malus_ritardi = evento.ritardi * -0.5
-    malus_entrate_ritardo = getattr(evento, 'entrate_ritardo', 0) * -0.5
-    malus_note_gen = evento.note_generiche * -2.0
-    malus_note_disc = evento.note_disciplinari * -4.0
+    errors: Dict[str, str] = {}
+    clean_nome = (nome or "").strip()
+    clean_ruolo = (ruolo or "").strip()
 
-    return (
-        malus_assenze +
-        malus_ritardi +
-        malus_entrate_ritardo +
-        malus_note_gen +
-        malus_note_disc
-    )
+    if not clean_nome:
+        errors["nome"] = "Il nome della carta è obbligatorio."
+    elif len(clean_nome) < 2:
+        errors["nome"] = "Il nome della carta deve contenere almeno 2 caratteri."
+    elif len(clean_nome) > 100:
+        errors["nome"] = "Il nome della carta non può superare i 100 caratteri."
+    elif not SAFE_TEXT_REGEX.match(clean_nome):
+        errors["nome"] = "Il nome contiene caratteri HTML non ammessi (< o >)."
+    elif re.search(r"(https?://|www\.)", clean_nome, re.IGNORECASE):
+        errors["nome"] = "Non è consentito inserire link nel nome della carta."
 
+    if not clean_ruolo:
+        errors["ruolo"] = "Seleziona un ruolo per la carta."
+    elif clean_ruolo not in RUOLI_CARTE_AMMESSI:
+        errors["ruolo"] = f"Ruolo non valido. Scegli tra: {', '.join(RUOLI_CARTE_AMMESSI)}."
 
-#questa parte è complicata, verifica attraverso dei cicli la validità di una materia e se il giocatore è posseduto
-def convalida_formazione(formazione: FormazioneGiornata, rosa: RosaUtente) -> bool:
-    """
-    Verifica che la formazione copra le 9 materie ufficiali
-    e che gli studenti appartengano alla rosa acquistata all'asta.
-    """
-    schieramento = formazione.schieramento
-
-    for materia in MATERIE_UFFICIALI:
-        if materia not in schieramento:
-            return False
-
-    ids_posseduti = [acq.id_studente for acq in rosa.giocatori_acquistati]
-
-    for id_schierato in schieramento.values():
-        if id_schierato not in ids_posseduti:
-            return False
-
-    return True
-
-
-#calcolo punteggio
-def calcola_punteggio_giornata(
-    formazione: FormazioneGiornata,
-    voti: List[VotoScolastico],
-    disciplina: List[EventoDisciplinare]
-) -> float:
-    """
-    Calcola il totale dei punti della squadra per la giornata corrente.
-    """
-    punteggio_totale = 0.0
-    studenti_schierati = set(formazione.schieramento.values())
-
-    for v in voti:
-        if v.id_studente in studenti_schierati:
-            punteggio_totale += calcola_punti_voto(v.voto)
-
-    for d in disciplina:
-        if d.id_studente in studenti_schierati:
-            punteggio_totale += calcola_malus_disciplina(d)
-
-    return punteggio_totale
+    return errors

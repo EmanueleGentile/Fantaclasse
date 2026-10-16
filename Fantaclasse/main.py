@@ -1,147 +1,354 @@
-from flask import Flask, render_template, request, session, redirect, url_for
-from logica.regole import calcola_punti_voto
-from logica.modelli import Lega
-import os
-from pocketbase import PocketBase
+"""
+Entry-point Flask per Fantaclasse (Strict-Mode Backend-Driven).
+- Zero mock-data statici o collezioni fantasma.
+- Comunicazione isolata tramite PocketBaseService (logica/pb_service.py).
+- Gestione sessione basata su token JWT PocketBase verificato ad ogni richiesta protetta.
+"""
 
-# --- CONNESSIONE POCKETBASE GLOBALE ---
-PB_URL = os.environ.get('POCKETBASE_URL', 'http://127.0.0.1:8090')
-pb = PocketBase(PB_URL)
+from functools import wraps
+import os
+import secrets
+from typing import Optional
+
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+
+from logica.modelli import AuthSession
+from logica.pb_service import PocketBaseService, get_pocketbase_base_url
+from logica.regole import RUOLI_CARTE_AMMESSI, STATI_CARTE_AMMESSI
 
 app = Flask(__name__, template_folder="interfaccia", static_folder="grafica")
-app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32).hex()
+app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
-    SESSION_COOKIE_SECURE=os.environ.get("FLASK_ENV") == "production"
 )
+
+pb_service = PocketBaseService()
+
+
+def _clear_auth_session() -> None:
+    session.pop("pb_token", None)
+    session.pop("pb_user", None)
+
+
+def _save_auth_session(auth_session: AuthSession) -> None:
+    session["pb_token"] = auth_session.token
+    if auth_session.user:
+        session["pb_user"] = auth_session.user.to_public_dict()
+
+
+def _get_active_auth_session() -> Optional[AuthSession]:
+    """
+    Verifica la validità del token JWT salvato in sessione (authStore.isValid).
+    Se il token è scaduto o rifiutato da PocketBase, pulisce immediatamente lo stato locale.
+    """
+    token = session.get("pb_token")
+    if not token:
+        return None
+
+    validated, err = pb_service.validate_session(token)
+    if err or not validated or not validated.is_valid:
+        _clear_auth_session()
+        return None
+
+    _save_auth_session(validated)
+    return validated
+
+
+def login_required(view_func):
+    """Route Guard per le viste che richiedono autenticazione PocketBase (`@request.auth.id != ''`)."""
+    @wraps(view_func)
+    def wrapped(*args, **kwargs):
+        auth_session = _get_active_auth_session()
+        if not auth_session:
+            return redirect(url_for("login"))
+        return view_func(*args, **kwargs)
+    return wrapped
+
+
+@app.context_processor
+def inject_global_context():
+    return {
+        "pb_base_url": get_pocketbase_base_url(),
+        "ruoli_ammessi": RUOLI_CARTE_AMMESSI,
+    }
+
+
+@app.after_request
+def apply_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self'; "
+        "img-src 'self' data:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'"
+    )
+    return response
+
 
 @app.route("/")
 def home():
-    # 1. Dati finti della lega per ora
-    lega_corrente = Lega(nome_lega="Classe 3Dia", id_admin="admin_id", crediti_iniziali=500)
-    
-    classifica_squadre = [
-        {"posizione": 1, "nome": "Real Prof", "punti": 312, "mia_squadra": False},
-        {"posizione": 2, "nome": "I Sognatori", "punti": 298, "mia_squadra": False},
-        {"posizione": 3, "nome": "Fanta Classe", "punti": 287, "mia_squadra": True},
-        {"posizione": 4, "nome": "Gli Insospettabili", "punti": 275, "mia_squadra": False},
-        {"posizione": 5, "nome": "ClassiTard", "punti": 260, "mia_squadra": False},
-    ]
+    """
+    Dashboard principale: mostra esclusivamente lo stato reale dell'utente autenticato (`users`)
+    e il riepilogo reale della collezione `Carte` ospitata su PocketBase.
+    """
+    auth_session = _get_active_auth_session()
+    token = auth_session.token if auth_session else None
+    user_dict = auth_session.user.to_public_dict() if (auth_session and auth_session.user) else None
+
+    carte_list, err = pb_service.list_carte(token=token)
+    carte_approvate = []
+    carte_in_attesa = []
+
+    if carte_list is not None:
+        carte_approvate = [c for c in carte_list if c.stato == "approvata"]
+        carte_in_attesa = [c for c in carte_list if c.stato == "in_attesa"]
 
     return render_template(
-        "index.html", 
-        lega=lega_corrente, 
-        classifica=classifica_squadre, 
-        totale_utenti=12,
-        username=session.get('username') # Passiamo il nome utente se è loggato!
+        "index.html",
+        utente=user_dict,
+        carte_recenti=carte_approvate[:5],
+        totale_approvate=len(carte_approvate),
+        totale_in_attesa=len(carte_in_attesa),
+        errore_caricamento=err.message if err else None,
     )
 
-# --- SISTEMA DI AUTENTICAZIONE (LOGIN / REGISTRAZIONE / LOGOUT) ---
-
-@app.route("/registrati", methods=["GET", "POST"])
-def registrati():
-    errore = None
-    if request.method == "POST":
-        dati_utente = {
-            "username": request.form.get("username"),
-            "email": request.form.get("email"),
-            "emailVisibility": True,
-            "password": request.form.get("password"),
-            "passwordConfirm": request.form.get("passwordConfirm"),
-            "name": request.form.get("name")
-        }
-        
-        try:
-            # Creiamo l'utente nella collection 'users' nativa di PocketBase
-            pb.collection('users').create(dati_utente)
-            return redirect(url_for('login', msg="Registrazione completata! Ora puoi fare il login."))
-        except Exception as e:
-            print("Errore PocketBase registrazione:", e)
-            errore = "Errore durante la registrazione. Forse l'email/username è già in uso, o le password non coincidono."
-            
-    return render_template("registrati.html", errore=errore)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    errore = None
-    msg = request.args.get('msg')
-    
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        try:
-            # Autentichiamo l'utente con PocketBase
-            auth_data = pb.collection('users').auth_with_password(email, password)
-            
-            # Salviamo il token e i dati nella sessione del browser (Flask Session)
-            session['pb_token'] = pb.auth_store.token
-            session['user_id'] = auth_data.record.id
-            session['username'] = auth_data.record.username
-            session['name'] = getattr(auth_data.record, 'name', auth_data.record.username)
-            
-            return redirect(url_for('home'))
-        except Exception as e:
-            print("Errore login PocketBase:", e)
-            errore = "Email o password errati."
-            
-    return render_template("login.html", errore=errore, messaggio=msg)
+    if request.method == "GET":
+        if _get_active_auth_session():
+            return redirect(url_for("home"))
+        registered_ok = request.args.get("registered") == "1"
+        return render_template(
+            "login.html",
+            errore=None,
+            field_errors={},
+            email_val="",
+            registered_ok=registered_ok,
+        )
 
-@app.route("/logout")
+    email = request.form.get("email", "")
+    password = request.form.get("password", "")
+
+    auth_session, err = pb_service.login(email, password)
+    if err or not auth_session:
+        return (
+            render_template(
+                "login.html",
+                errore=err.message if err else "Errore durante l'accesso.",
+                field_errors=err.field_errors if err else {},
+                email_val=email.strip(),
+                registered_ok=False,
+            ),
+            err.status_code if err else 400,
+        )
+
+    _save_auth_session(auth_session)
+    return redirect(url_for("home"))
+
+
+@app.route("/registrati", methods=["GET", "POST"])
+def registrati():
+    if request.method == "GET":
+        if _get_active_auth_session():
+            return redirect(url_for("home"))
+        return render_template(
+            "registrati.html",
+            errore=None,
+            field_errors={},
+            form_values={"name": "", "email": ""},
+        )
+
+    name = request.form.get("name", "")
+    email = request.form.get("email", "")
+    password = request.form.get("password", "")
+    password_confirm = request.form.get("passwordConfirm", "")
+
+    _, err = pb_service.register(
+        email=email,
+        name=name,
+        password=password,
+        password_confirm=password_confirm,
+    )
+    if err:
+        return (
+            render_template(
+                "registrati.html",
+                errore=err.message,
+                field_errors=err.field_errors,
+                form_values={"name": name.strip(), "email": email.strip()},
+            ),
+            err.status_code,
+        )
+
+    return redirect(url_for("login", registered="1"))
+
+
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
-    session.clear()
-    return redirect(url_for('home'))
+    _clear_auth_session()
+    return redirect(url_for("home"))
 
-# --- ROTTE DI GIOCO ---
 
 @app.route("/mercato")
 def mercato():
-    carte_disponibili = []
-    try:
-        records = pb.collection('carte').get_full_list(query_params={"filter": "stato='approvata'"})
-        for r in records:
-            carte_disponibili.append({
-                "nome": getattr(r, 'nome', ''),
-                "classe": getattr(r, 'classe', ''),
-                "materie": getattr(r, 'materie', []), 
-                "quotazione": getattr(r, 'quotazione', 0),
-                "media_voti": getattr(r, 'media_voti', 0.0),
-                "assenze_iniziali": getattr(r, 'assenze_iniziali', 0),
-                "ritardi": getattr(r, 'ritardi', 0),
-                "entrate_ritardo": getattr(r, 'entrate_ritardo', 0),
-                "note_generiche": getattr(r, 'note_generiche', 0),
-                "note_disciplinari": getattr(r, 'note_disciplinari', 0)
-            })
-    except Exception as e:
-        print("Errore PocketBase durante il caricamento del mercato:", e)
+    """
+    Catalogo Carte reale collegato a `/api/collections/Carte/records`.
+    - Utenti pubblici: visualizzano solo le carte con `stato = 'approvata'`.
+    - Utenti autenticati: possono filtrare anche `stato = 'in_attesa'`.
+    """
+    auth_session = _get_active_auth_session()
+    token = auth_session.token if auth_session else None
+    user_dict = auth_session.user.to_public_dict() if (auth_session and auth_session.user) else None
 
-    return render_template("mercato.html", carte=carte_disponibili)
+    stato_filter = request.args.get("stato", "").strip()
+    if stato_filter not in STATI_CARTE_AMMESSI:
+        stato_filter = ""
+
+    carte_list, err = pb_service.list_carte(
+        token=token,
+        stato_filter=stato_filter if stato_filter else None,
+    )
+
+    return render_template(
+        "mercato.html",
+        utente=user_dict,
+        carte=carte_list if carte_list is not None else [],
+        stato_selezionato=stato_filter,
+        errore_caricamento=err.message if err else None,
+    )
+
 
 @app.route("/suggerisci", methods=["GET", "POST"])
+@login_required
 def suggerisci():
-    # Se l'utente non è loggato, lo rimandiamo al login!
-    if 'user_id' not in session:
-        return redirect(url_for('login', msg="Devi fare il login per suggerire carte!"))
-        
-    messaggio = None
-    if request.method == "POST":
-        nuova_carta = {
-            "nome": request.form.get("nome"),
-            "classe": request.form.get("classe"),
-            "materie": request.form.getlist("materie"),
-            "stato": "in_attesa",
-            "suggerita_da": session['user_id'] # Salviamo anche chi ha fatto la richiesta
-        }
-        
-        try:
-            pb.collection('carte').create(nuova_carta)
-            messaggio = "Carta inviata con successo! Ora è in attesa di approvazione."
-        except Exception as e:
-            print("Errore PocketBase durante l'inserimento:", e)
-            messaggio = "Errore di connessione al Database. Riprova più tardi."
-        
-    return render_template("suggerisci.html", messaggio=messaggio)
+    """
+    Proposta nuova carta nella collezione `Carte` (protetta da `@login_required`
+    in conformità con `createRule: "@request.auth.id != ''"`).
+    """
+    auth_session = _get_active_auth_session()
+    token = auth_session.token if auth_session else None
+    user_dict = auth_session.user.to_public_dict() if (auth_session and auth_session.user) else None
+
+    if request.method == "GET":
+        return render_template(
+            "suggerisci.html",
+            utente=user_dict,
+            successo=None,
+            errore=None,
+            field_errors={},
+            form_values={"nome": "", "ruolo": ""},
+        )
+
+    nome = request.form.get("nome", "")
+    ruolo = request.form.get("ruolo", "")
+
+    creata, err = pb_service.create_carta(token=token, nome=nome, ruolo=ruolo)
+    if err or not creata:
+        return (
+            render_template(
+                "suggerisci.html",
+                utente=user_dict,
+                successo=None,
+                errore=err.message if err else "Impossibile salvare la carta.",
+                field_errors=err.field_errors if err else {},
+                form_values={"nome": nome.strip(), "ruolo": ruolo.strip()},
+            ),
+            err.status_code if err else 400,
+        )
+
+    return render_template(
+        "suggerisci.html",
+        utente=user_dict,
+        successo=f"La carta '{creata.nome}' ({creata.ruolo}) è stata inviata ed è in attesa di approvazione.",
+        errore=None,
+        field_errors={},
+        form_values={"nome": "", "ruolo": ""},
+    )
+
+
+# ==============================================================================
+# ENDPOINT JSON PER IL SERVICE LAYER FRONTEND (grafica/services/api.js)
+# ==============================================================================
+
+@app.route("/api/auth/session", methods=["GET"])
+def api_auth_session():
+    """Verifica lo stato corrente della sessione PocketBase (`authStore.isValid`)."""
+    auth_session = _get_active_auth_session()
+    if not auth_session or not auth_session.user:
+        return jsonify({"authenticated": False, "user": None}), 200
+    return jsonify({
+        "authenticated": True,
+        "user": auth_session.user.to_public_dict(),
+    }), 200
+
+
+@app.route("/api/carte", methods=["GET", "POST"])
+def api_carte():
+    """
+    Endpoint REST JSON per interrogare o creare record nella collezione `Carte`.
+    Supporta i 4 stati asincroni lato client (`loading`, `success`, `empty-state`, `error`).
+    """
+    auth_session = _get_active_auth_session()
+    token = auth_session.token if auth_session else None
+
+    if request.method == "GET":
+        stato_filter = request.args.get("stato", "").strip()
+        if stato_filter not in STATI_CARTE_AMMESSI:
+            stato_filter = None
+
+        carte_list, err = pb_service.list_carte(token=token, stato_filter=stato_filter)
+        if err or carte_list is None:
+            status = err.status_code if err else 503
+            return jsonify({
+                "items": [],
+                "message": err.message if err else "Errore nel caricamento delle carte.",
+            }), status
+
+        return jsonify({
+            "items": [c.to_dict() for c in carte_list],
+            "total": len(carte_list),
+        }), 200
+
+    # POST /api/carte (Richiede autenticazione)
+    if not auth_session or not token:
+        return jsonify({
+            "message": "Devi effettuare l'accesso per proporre una nuova carta.",
+            "field_errors": {},
+        }), 401
+
+    payload = request.get_json(silent=True) or {}
+    nome = str(payload.get("nome", ""))
+    ruolo = str(payload.get("ruolo", ""))
+
+    creata, err = pb_service.create_carta(token=token, nome=nome, ruolo=ruolo)
+    if err or not creata:
+        status = err.status_code if err else 400
+        return jsonify({
+            "message": err.message if err else "Errore di validazione.",
+            "field_errors": err.field_errors if err else {},
+        }), status
+
+    return jsonify({
+        "item": creata.to_dict(),
+        "message": "Carta creata con successo e posta in attesa di approvazione.",
+    }), 201
+
 
 if __name__ == "__main__":
-    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
-    app.run(debug=debug_mode, host="127.0.0.1", port=5000)
+    app.run(debug=False, host="127.0.0.1", port=5000)
