@@ -9,7 +9,12 @@ PB_URL = os.environ.get('POCKETBASE_URL', 'http://127.0.0.1:8090')
 pb = PocketBase(PB_URL)
 
 app = Flask(__name__, template_folder="interfaccia", static_folder="grafica")
-app.secret_key = os.environ.get("SECRET_KEY", "fanta_segreto_super_sicuro")  # Chiave per firmare i cookie della sessione
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32).hex()
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("FLASK_ENV") == "production"
+)
 
 @app.route("/")
 def home():
@@ -138,4 +143,5 @@ def suggerisci():
     return render_template("suggerisci.html", messaggio=messaggio)
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug_mode, host="127.0.0.1", port=5000)

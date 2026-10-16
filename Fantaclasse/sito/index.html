@@ -9,18 +9,9 @@
         content="Aiutaci a creare Fantastudente! L'app di fantacalcio scolastico dove gli studenti sono i giocatori, i voti diventano bonus e gli eventi scolastici cambiano la classifica." />
     <meta name="theme-color" content="#0a1628" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap"
-        rel="stylesheet" />
-
-    <!-- Canvas Confetti per la celebrazione dell'invio -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
+    <!-- Nessuna risorsa tracciante esterna (GDPR / Privacy by Design) -->
     <!-- Foglio di stile principale -->
-    <link rel="stylesheet" href="style.css?v=2.2" />
+    <link rel="stylesheet" href="style.css?v=2.3" />
 </head>
 
 <body>
@@ -433,13 +424,19 @@
                 <div class="feedback-wrapper">
                     <!-- Form Card -->
                     <div class="form-card reveal" id="feedbackFormCard">
-                        <form id="feedbackForm" novalidate>
+                        <form id="feedbackForm" novalidate autocomplete="off">
 
-                            <!-- Selezione Anonimato (Richiesta fondamentale) -->
+                            <!-- Honeypot anti-bot (nascosto agli utenti reali) -->
+                            <div class="hp-field" aria-hidden="true">
+                                <label for="websiteHp">Non compilare questo campo</label>
+                                <input type="text" id="websiteHp" name="website" tabindex="-1" autocomplete="off" />
+                            </div>
+
+                            <!-- Selezione Anonimato & Minimizzazione Dati (Art. 5 GDPR) -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <span>👤 1. Scegli come vuoi inviare il feedback:</span>
-                                    <small class="label-help">Puoi decidere liberamente</small>
+                                    <small class="label-help">Minimizzazione dati (Art. 5 GDPR)</small>
                                 </label>
                                 <div class="anon-choice-grid">
                                     <label class="anon-card" id="cardAnon">
@@ -448,7 +445,7 @@
                                             <div class="anon-icon">🕵️</div>
                                             <div class="anon-info">
                                                 <span class="anon-title">Voglio restare anonimo</span>
-                                                <span class="anon-desc">Il feedback viene inviato senza mostrare il tuo nome</span>
+                                                <span class="anon-desc">Consigliato: nessun nickname o dato associato al feedback</span>
                                             </div>
                                             <div class="anon-check">✓</div>
                                         </div>
@@ -459,8 +456,8 @@
                                         <div class="anon-card-inner">
                                             <div class="anon-icon">👋</div>
                                             <div class="anon-info">
-                                                <span class="anon-title">Voglio mostrare il mio nome</span>
-                                                <span class="anon-desc">Inserisci il tuo nome/nickname così sappiamo chi sei</span>
+                                                <span class="anon-title">Usa un Nickname (Opzionale)</span>
+                                                <span class="anon-desc">Usa solo uno pseudonimo di fantasia (non inserire cognomi o dati reali)</span>
                                             </div>
                                             <div class="anon-check">✓</div>
                                         </div>
@@ -468,18 +465,18 @@
                                 </div>
                             </div>
 
-                            <!-- Campo Nome o Nickname (visibile solo se non anonimo) -->
+                            <!-- Campo Nickname Opzionale (visibile solo se selezionato) -->
                             <div class="form-group slide-expand" id="nameGroup" style="display: none;">
                                 <label class="form-label" for="userName">
-                                    <span>✏️ Nome o Nickname</span>
-                                    <small class="label-required">* Richiesto se scegli di farti sapere</small>
+                                    <span>✏️ Nickname / Pseudonimo (Opzionale)</span>
+                                    <small class="label-help">Vietato inserire cognomi reali, email o dati di terzi</small>
                                 </label>
                                 <div class="input-icon-wrap">
                                     <span class="input-icon">👤</span>
                                     <input type="text" id="userName" name="userName" class="form-input"
-                                        placeholder="Es. Marco_4A, FantaMister, Sofia..." maxlength="40" />
+                                        placeholder="Es. FantaMister_99, BomberDelBanco, Capocannoniere..." maxlength="40" />
                                 </div>
-                                <span class="form-error" id="nameError">Per favore inserisci il tuo nome o nickname!</span>
+                                <span class="form-error" id="nameError">Inserisci un nickname valido (2-40 caratteri, senza link, email o tag HTML)!</span>
                             </div>
 
                             <!-- Categoria del Feedback -->
@@ -519,28 +516,29 @@
                             <div class="form-group">
                                 <label class="form-label" for="feedbackTitle">
                                     <span>💡 3. Titolo sintetico dell'idea (opzionale):</span>
-                                    <small class="label-help">Breve e chiaro (es. "Bonus volontario")</small>
+                                    <small class="label-help">Breve e chiaro, senza link o nomi reali (max 80 caratteri)</small>
                                 </label>
                                 <div class="input-icon-wrap">
                                     <span class="input-icon">🎯</span>
                                     <input type="text" id="feedbackTitle" name="feedbackTitle" class="form-input"
                                         placeholder="Es. Bonus salva-classe all'interrogazione..." maxlength="80" />
                                 </div>
+                                <span class="form-error" id="titleError">Il titolo non può contenere link, URL, indirizzi email o codice HTML/script.</span>
                             </div>
 
                             <!-- Campo Testo Grande Feedback -->
                             <div class="form-group">
                                 <label class="form-label" for="feedbackText">
                                     <span>📝 4. Scrivi qui la tua proposta o recensione...</span>
-                                    <small class="label-help">Sii spontaneo e divertente!</small>
+                                    <small class="label-help">No cognomi di prof/studenti, no link o insulti</small>
                                 </label>
                                 <div class="textarea-wrap">
                                     <textarea id="feedbackText" name="feedbackText" class="form-textarea"
-                                        placeholder="Scrivi qui cosa ne pensi, proponi un bonus o malus epico, racconta cosa ti entusiasma o cosa cambieresti... 💡"
+                                        placeholder="Scrivi qui cosa ne pensi, proponi un bonus o malus epico, racconta cosa ti entusiasma o cosa cambieresti (non inserire nomi reali di professori o compagni)... 💡"
                                         rows="5" maxlength="1000"></textarea>
                                 </div>
                                 <div class="textarea-footer">
-                                    <span class="form-error" id="textError">Scrivi almeno 5 caratteri per inviare il tuo feedback! 😅</span>
+                                    <span class="form-error" id="textError">Scrivi almeno 5 caratteri validi (senza link, script o dati personali)! 😅</span>
                                     <span class="char-count"><span id="charCount">0</span>/1000</span>
                                 </div>
                             </div>
@@ -563,6 +561,20 @@
                                 </div>
                             </div>
 
+                            <!-- Checkbox Obbligatoria Età 14+ & Accettazione Termini e Privacy -->
+                            <div class="form-group legal-consent-group">
+                                <label class="legal-checkbox-label" for="legalConsent">
+                                    <input type="checkbox" id="legalConsent" name="legalConsent" required />
+                                    <span class="legal-checkbox-text">
+                                        Dichiaro di avere almeno <strong>14 anni</strong> e accetto i <a href="termini.html" target="_blank" rel="noopener noreferrer" class="legal-inline-link">Termini d'Uso</a> e l'<a href="privacy.html" target="_blank" rel="noopener noreferrer" class="legal-inline-link">Informativa Privacy</a>. <span class="label-required">*</span>
+                                    </span>
+                                </label>
+                                <span class="form-error" id="consentError">Devi dichiarare di avere almeno 14 anni e accettare i Termini d'Uso e l'Informativa Privacy per proseguire.</span>
+                            </div>
+
+                            <!-- Avviso Sicurezza / Cooldown Anti-Spam -->
+                            <div class="form-security-alert" id="securityError" role="alert" style="display: none;"></div>
+
                             <!-- Pulsante Invia Feedback -->
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
@@ -570,7 +582,7 @@
                                     <span id="submitSpinner" class="spinner" style="display:none" aria-hidden="true"></span>
                                 </button>
                                 <div class="submit-note">
-                                    🔒 Feedback salvato in tempo reale nel progetto
+                                    🔒 Protetto da filtri anti-XSS/anti-spam • <a href="privacy.html" class="legal-inline-link">Informativa Privacy</a> • <a href="termini.html" class="legal-inline-link">Termini d'Uso</a>
                                 </div>
                             </div>
                         </form>
@@ -616,11 +628,17 @@
 
                         <div class="sidebar-box privacy-box">
                             <div class="sidebar-icon">🛡️</div>
-                            <h4>Privacy & Rispetto</h4>
+                            <h4>Privacy by Design & Regole</h4>
                             <p>
-                                Se scegli <strong>"Anonimo"</strong>, nessun nome o dato personale viene mostrato.
-                                È uno spazio sicuro per divertirsi ed essere onesti al 100%!
+                                Nel rispetto dell'Art. 5 GDPR raccogliamo solo feedback anonimi o con nickname di fantasia.
+                                Non inserire mai nomi e cognomi reali di professori o compagni. Il sito usa solo storage
+                                tecnico esente da cookie banner.
                             </p>
+                            <div class="sidebar-legal-links">
+                                <a href="privacy.html" class="legal-inline-link">📄 Informativa Privacy</a>
+                                <span>•</span>
+                                <a href="termini.html" class="legal-inline-link">⚖️ Termini d'Uso</a>
+                            </div>
                         </div>
 
                         <div class="sidebar-box stats-live-box">
@@ -665,7 +683,7 @@
                 <div class="community-toolbar reveal">
                     <div class="community-search-box">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="communitySearch" placeholder="Cerca tra idee, bonus, proposte o autori..." autocomplete="off" />
+                        <input type="text" id="communitySearch" placeholder="Cerca tra idee, bonus, proposte o autori..." autocomplete="off" maxlength="80" />
                         <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Cancella ricerca" style="display:none;">✕</button>
                     </div>
                     <div class="community-sort-wrap">
@@ -708,7 +726,7 @@
 
                 <!-- Griglia delle Card Idee -->
                 <div class="community-grid" id="communityGrid">
-                    <!-- Popolata via JavaScript con dati demo + salvati -->
+                    <!-- Popolata via JavaScript con dati sanitizzati -->
                 </div>
 
                 <div class="community-bottom-cta reveal">
@@ -735,51 +753,64 @@
                         <span class="logo-text">Fanta<span class="logo-accent">studente</span></span>
                     </div>
                     <p class="footer-tagline">
-                        Fantastudente — Il fantacalcio dove i giocatori siamo noi ⚽📚
+                        Fantastudente / Fantaclasse — Il fantacalcio dove i giocatori siamo noi ⚽📚
                     </p>
                     <p class="footer-sub">
-                        Progetto scolastico realizzato dagli studenti.
+                        Progetto scolastico e didattico senza scopo di lucro realizzato dagli studenti.
+                    </p>
+                    <p class="footer-dedication">
+                        💚 <em>Un ringraziamento speciale e una dedica di cuore alle nostre famiglie e ai genitori che, con il loro supporto e la loro fiducia, hanno reso possibile questo progetto scolastico.</em>
                     </p>
                 </div>
 
                 <div class="footer-nav">
-                    <h4>Navigazione</h4>
+                    <h4>Navigazione & Legale</h4>
                     <ul>
                         <li><a href="#home">Home</a></li>
                         <li><a href="#about">Cos'è Fantastudente?</a></li>
                         <li><a href="#ideas">Spunti & Idee</a></li>
                         <li><a href="#feedback">Lascia un Feedback</a></li>
                         <li><a href="#community">Bacheca Community</a></li>
+                        <li><a href="privacy.html">🛡️ Informativa Privacy (GDPR)</a></li>
+                        <li><a href="termini.html">⚖️ Termini e Condizioni d'Uso</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-badges">
-                    <h4>Progetto Scuola</h4>
+                    <h4>Progetto Scuola & Sicurezza</h4>
                     <div class="footer-pill-list">
                         <span class="f-pill">🎓 100% No-Profit</span>
-                        <span class="f-pill">🏫 Fatto tra i banchi</span>
-                        <span class="f-pill">🤝 Privacy Friendly</span>
-                        <span class="f-pill">⚽ Passione Fantacalcio</span>
+                        <span class="f-pill">🏫 Fatto dagli Studenti</span>
+                        <span class="f-pill">🛡️ GDPR Compliant</span>
+                        <span class="f-pill">🍪 Solo Storage Tecnico</span>
                     </div>
+                    <p class="footer-cookie-notice">
+                        Questo portale non utilizza cookie di profilazione o tracciamento di terze parti, ma esclusivamente storage/cookie tecnici strettamente necessari (es. anti-doppio voto e sicurezza Cloudflare), esenti da banner di consenso preventivo secondo le Linee Guida del Garante Privacy.
+                    </p>
                 </div>
+            </div>
+
+            <div class="footer-legal-bar">
+                <p>
+                    <strong>Tutela Legale & Titolare del Trattamento (Art. 13 GDPR):</strong> Poiché il portale costituisce un progetto scolastico/amatoriale promosso da studenti, la titolarità e la rappresentanza legale del trattamento sono esercitate ai sensi di legge dagli esercenti la responsabilità genitoriale sul promotore del progetto (estremi identificativi completi consultabili nell'<a href="privacy.html" class="footer-inline-link">Informativa Privacy</a>). Per qualsiasi richiesta o esercizio dei diritti GDPR (accesso, rettifica, cancellazione) scrivere a: <a href="mailto:privacy@playfantaclasse.com" class="footer-inline-link">privacy@playfantaclasse.com</a>.
+                </p>
             </div>
 
             <div class="footer-bottom">
                 <div class="footer-copy">
-                    <span>© 2025/2026 <strong>Fantastudente</strong>. Tutti i diritti riservati agli studenti.</span>
+                    <span>© 2025/2026 <strong>Fantastudente / Fantaclasse</strong> (<code>playfantaclasse.com</code>). Progetto scolastico realizzato dagli studenti.</span>
                     <span class="footer-heart">Creato con 💚, risate in classe e tanta voglia di vincere lo scudetto.</span>
                 </div>
                 <div class="footer-dev-link">
-                    <a href="dev.html" class="dev-link" title="Pannello di amministrazione per il team di sviluppo">
-                        🔒 Area Sviluppatori
-                    </a>
+                    <a href="privacy.html" class="dev-link">🛡️ Privacy Policy</a>
+                    <a href="termini.html" class="dev-link">⚖️ Termini d'Uso</a>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Script principale con cache-busting per caricamento immediato -->
-    <script src="script.js?v=2.2"></script>
+    <script src="script.js?v=2.3"></script>
 </body>
 
 </html>
