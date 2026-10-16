@@ -63,13 +63,14 @@ else
     cd "$TARGET_DIR"
 fi
 
-# Sincronizza i file applicativi se presenti nella sottocartella monorepo Fantaclasse/
+# Sincronizza i file applicativi dalla sottocartella monorepo Fantaclasse/
 mkdir -p "$TARGET_DIR/pb_data" "$TARGET_DIR/pb_hooks" "$TARGET_DIR/sito"
 if [ -d "$TARGET_DIR/Fantaclasse" ]; then
     cp -rn "$TARGET_DIR/Fantaclasse/pb_data/"* "$TARGET_DIR/pb_data/" 2>/dev/null || true
     cp -rf "$TARGET_DIR/Fantaclasse/pb_hooks/"* "$TARGET_DIR/pb_hooks/" 2>/dev/null || true
-    for item in main.py logica interfaccia grafica assets; do
-        if [ -e "$TARGET_DIR/Fantaclasse/$item" ] && [ ! -e "$TARGET_DIR/$item" ]; then
+    for item in main.py logica interfaccia grafica assets test_carte.py; do
+        if [ -e "$TARGET_DIR/Fantaclasse/$item" ]; then
+            rm -rf "$TARGET_DIR/$item"
             cp -rf "$TARGET_DIR/Fantaclasse/$item" "$TARGET_DIR/"
         fi
     done
@@ -405,15 +406,15 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
-    # Altre API di PocketBase (sola lettura / health check, rate limited)
-    location /api/ {
+    # API collezioni e health check di PocketBase (rate limited)
+    location /api/collections/ {
         limit_req zone=api_read_limit burst=10 nodelay;
 
         limit_except GET HEAD POST OPTIONS {
             deny all;
         }
 
-        proxy_pass http://127.0.0.1:8090/api/;
+        proxy_pass http://127.0.0.1:8090/api/collections/;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -421,17 +422,19 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
-    # 6. Portale Pubblico Feedback (cartella sito/) su dominio principale e su /sito/
-    location /sito/ {
+    location = /api/health {
+        proxy_pass http://127.0.0.1:8090/api/health;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+    }
+
+    # 6. Portale Pubblico Feedback (cartella sito/) ESCLUSIVAMENTE su /sito/
+    location = /sito {
+        return 301 /sito/;
+    }
+
+    location ^~ /sito/ {
         proxy_pass http://127.0.0.1:8080/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-
-    location /app/ {
-        proxy_pass http://127.0.0.1:5000/;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -439,8 +442,10 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
+    # 7. Applicazione Principale FantaClasse (Flask/Gunicorn :5000) sul dominio principale /
     location / {
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:5000;
+        proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -481,8 +486,12 @@ sleep 5
 docker compose ps
 
 echo ""
-echo "Verifica risposta Portale Sito (8080):"
-curl -Is http://127.0.0.1:8080 | head -n 5 || echo "Sito in avvio..."
+echo "Verifica risposta App FantaClasse (5000):"
+curl -Is http://127.0.0.1:5000 | head -n 5 || echo "App FantaClasse in avvio..."
+
+echo ""
+echo "Verifica risposta Portale Feedback /sito/ (8080):"
+curl -Is http://127.0.0.1:8080 | head -n 5 || echo "Portale Feedback in avvio..."
 
 echo ""
 echo "Verifica risposta PocketBase (8090):"
@@ -491,7 +500,7 @@ curl -Is http://127.0.0.1:8090/api/health | head -n 5 || echo "PocketBase in avv
 echo ""
 echo "=========================================================="
 echo "🎉 DEPLOY E HARDENING COMPLETATI CON SUCCESSO!"
-echo "👉 Dominio Pubblico:  https://playfantaclasse.com"
+echo "👉 App Principale:    https://playfantaclasse.com"
 echo "👉 Sito Feedback:     https://playfantaclasse.com/sito/"
 echo "🔒 PocketBase Admin:  BLOCCATO DA INTERNET (Accessibile solo via SSH tunnel: ssh -L 8090:127.0.0.1:8090 ubuntu@playfantaclasse.com -> http://127.0.0.1:8090/_/)"
 echo "=========================================================="

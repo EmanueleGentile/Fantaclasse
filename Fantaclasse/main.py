@@ -25,7 +25,11 @@ from logica.pb_service import PocketBaseService, get_pocketbase_base_url
 from logica.regole import RUOLI_CARTE_AMMESSI, STATI_CARTE_AMMESSI
 
 app = Flask(__name__, template_folder="interfaccia", static_folder="grafica")
-app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
+app.secret_key = (
+    os.environ.get("FLASK_SECRET_KEY")
+    or os.environ.get("SECRET_KEY")
+    or secrets.token_hex(32)
+)
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
