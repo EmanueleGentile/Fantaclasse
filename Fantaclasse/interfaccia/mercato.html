@@ -3,26 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse - Catalogo Carte</title>
+    <title>FantaClasse RPG — Mazzo Carte Tattiche</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="false">
 
+    <!-- KIT SVG UFFICIALE INTEGRATO -->
+    <svg class="svg-sprite-defs" aria-hidden="true">
+        <defs>
+            <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
+                <polygon points="32,4 56,14 50,44 32,60 14,44 8,14" fill="#121917" stroke="#16A34A" stroke-width="3"/>
+                <polygon points="32,9 51,17 46,41 32,54 18,41 13,17" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
+                <path d="M22 24 L32 16 L42 24 L38 38 L26 38 Z" fill="#16A34A" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5" fill="#FBBF24"/>
+            </symbol>
+            <symbol id="svg-crown-gold" viewBox="0 0 24 24">
+                <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </symbol>
+            <symbol id="svg-nav-board" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="14" rx="2"/>
+                <path d="M8 21h8M12 18v3M7 9l3 3m0-3l-3 3m7-1h4"/>
+            </symbol>
+            <symbol id="svg-nav-cards" viewBox="0 0 24 24">
+                <rect x="5" y="3" width="14" height="18" rx="2"/>
+                <polygon points="12,7 15,12 12,17 9,12"/>
+            </symbol>
+            <symbol id="svg-nav-forge" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v8M8 12h8"/>
+            </symbol>
+            <symbol id="svg-nav-coach" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M5 20c1.5-4 12.5-4 14 0"/>
+            </symbol>
+            <symbol id="svg-nav-exit" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </symbol>
+        </defs>
+    </svg>
+
     <header class="app-header">
         <div class="logo-area">
             <a href="{{ url_for('home') }}" class="brand-link">
-                <span class="brand-badge" aria-hidden="true">FC</span>
-                <h1>CATALOGO CARTE</h1>
+                <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                <div class="brand-title-wrap">
+                    <h1>MAZZO TATTICO</h1>
+                    <span class="brand-subtag">Collezione Carte RPG</span>
+                </div>
             </a>
         </div>
 
         <div class="user-profile-pill">
             {% if utente %}
+                <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
                 <span class="user-name">{{ utente.name }}</span>
                 <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
                 <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
             {% else %}
-                <a href="{{ url_for('login') }}" class="login-btn-header">Accedi</a>
+                <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
             {% endif %}
         </div>
     </header>
@@ -32,45 +72,46 @@
         <section class="section-card">
             <div class="section-header-inline">
                 <div>
-                    <h2 class="section-heading">Collezione Carte PocketBase</h2>
+                    <span class="section-tag">ARSENALE LAVAGNA // COLLEZIONE CARTE</span>
+                    <h2 class="section-heading">Schieramento Carte PocketBase</h2>
                     <p class="hero-subtitle">
                         {% if utente %}
-                            Visualizzazione completa (carte approvate e proposte in attesa).
+                            Modalità Allenatore: visualizza sia le carte Approvate in campo sia quelle al vaglio della Cattedra.
                         {% else %}
-                            Visualizzazione pubblica (solo carte approvate). Accedi per vedere le carte in attesa o proporne di nuove.
+                            Modalità Spettatore: visualizzazione delle carte ufficiali Approvate. Effettua l'ingresso per forgiare nuove carte.
                         {% endif %}
                     </p>
                 </div>
-                <span class="count-pill">Totale: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
+                <span class="count-pill">Carte: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
             </div>
 
-            <div class="filter-toolbar" role="toolbar" aria-label="Filtra carte per stato">
+            <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per stato">
                 {% if utente %}
                     <button
                         type="button"
                         class="filter-btn {% if not stato_selezionato %}filter-btn-active{% endif %}"
                         data-stato-filter=""
-                    >Tutte</button>
+                    >Tutto il Mazzo</button>
                     <button
                         type="button"
                         class="filter-btn {% if stato_selezionato == 'approvata' %}filter-btn-active{% endif %}"
                         data-stato-filter="approvata"
-                    >Approvate</button>
+                    >In Campo (Approvate)</button>
                     <button
                         type="button"
                         class="filter-btn {% if stato_selezionato == 'in_attesa' %}filter-btn-active{% endif %}"
                         data-stato-filter="in_attesa"
-                    >In Attesa</button>
+                    >Cattedra (In Attesa)</button>
                 {% else %}
                     <button
                         type="button"
                         class="filter-btn filter-btn-active"
                         data-stato-filter="approvata"
-                    >Solo Approvate</button>
+                    >In Campo (Approvate)</button>
                 {% endif %}
 
                 <button type="button" id="btn-refresh-carte" class="btn-secondary btn-small">
-                    Aggiorna
+                    Sincronizza
                 </button>
             </div>
         </section>
@@ -84,41 +125,55 @@
         >
             {% if errore_caricamento %}
                 <div class="state-box state-error">
-                    <h4 class="state-title">Errore di caricamento</h4>
+                    <h4 class="state-title">Errore di Sincronizzazione</h4>
                     <p class="state-desc">{{ errore_caricamento }}</p>
                     <a href="{{ url_for('mercato') }}" class="btn-retry">Riprova</a>
                 </div>
             {% elif carte %}
                 {% for s in carte %}
-                <article class="player-card" data-record-id="{{ s.id }}">
+                <article
+                    class="player-card {% if s.stato != 'approvata' %}player-card--pending{% endif %}"
+                    data-record-id="{{ s.id }}"
+                >
+                    <div class="rpg-card-top">
+                        <span class="rpg-faction-tag">
+                            {% if s.stato == 'approvata' %}
+                                FAZIONE CAMPO // SCHIERABILE
+                            {% else %}
+                                FAZIONE CATTEDRA // VERIFICA
+                            {% endif %}
+                        </span>
+                        {% if s.stato == 'approvata' %}
+                            <span class="status-pill status-approved">Approvata</span>
+                        {% else %}
+                            <span class="status-pill status-pending">In Revisione</span>
+                        {% endif %}
+                    </div>
+
                     <div class="player-header">
                         <div class="player-avatar">{{ (s.nome or '?')[0] | upper }}</div>
                         <div class="player-info">
                             <div class="player-name">{{ s.nome or 'Carta senza nome' }}</div>
                             <div class="player-meta-row">
-                                <span class="role-badge">{{ s.ruolo or 'Ruolo non assegnato' }}</span>
-                                {% if s.stato == 'approvata' %}
-                                    <span class="status-pill status-approved">Approvata</span>
-                                {% else %}
-                                    <span class="status-pill status-pending">In attesa di revisione</span>
-                                {% endif %}
+                                <span class="role-badge">RUOLO: {{ s.ruolo or 'Non assegnato' }}</span>
                             </div>
                         </div>
                     </div>
+
                     <div class="player-footer">
                         <span class="record-meta">ID: {{ s.id }}</span>
-                        <span class="record-meta">{{ ('Creata il ' ~ s.created[:10]) if s.created else '' }}</span>
+                        <span class="record-meta">{{ ('REG: ' ~ s.created[:10]) if s.created else '' }}</span>
                     </div>
                 </article>
                 {% endfor %}
             {% else %}
                 <div class="state-box state-empty">
-                    <h4 class="state-title">Nessuna carta presente</h4>
-                    <p class="state-desc">Non ci sono carte corrispondenti ai criteri selezionati nel database.</p>
+                    <h4 class="state-title">Nessuna Carta nel Settore</h4>
+                    <p class="state-desc">Non ci sono carte corrispondenti al filtro tattico selezionato.</p>
                     {% if utente %}
-                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Proponi una Carta</a>
+                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Forgia una Carta</a>
                     {% else %}
-                        <a href="{{ url_for('login') }}" class="btn-primary state-action-link">Accedi per proporre una Carta</a>
+                        <a href="{{ url_for('login') }}" class="btn-primary state-action-link">Scendi in Campo per Proporre</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -126,32 +181,32 @@
 
     </main>
 
-    <nav class="bottom-nav" aria-label="Navigazione principale">
+    <nav class="bottom-nav" aria-label="Navigazione tattica principale">
         <a href="{{ url_for('home') }}" class="nav-item">
-            <span class="nav-symbol" aria-hidden="true">&#8962;</span>
-            <span>Home</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>
+            <span>Lavagna</span>
         </a>
         <a href="{{ url_for('mercato') }}" class="nav-item active">
-            <span class="nav-symbol" aria-hidden="true">&#9733;</span>
-            <span>Carte</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-cards"></use></svg>
+            <span>Mazzo</span>
         </a>
         {% if utente %}
         <a href="{{ url_for('suggerisci') }}" class="nav-item">
-            <span class="nav-symbol" aria-hidden="true">&#43;</span>
-            <span>Proponi</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
+            <span>Forgia</span>
         </a>
         <a href="{{ url_for('logout') }}" class="nav-item">
-            <span class="nav-symbol" aria-hidden="true">&#10162;</span>
-            <span>Esci</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-exit"></use></svg>
+            <span>Uscita</span>
         </a>
         {% else %}
         <a href="{{ url_for('login') }}" class="nav-item">
-            <span class="nav-symbol" aria-hidden="true">&#128100;</span>
-            <span>Accedi</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-coach"></use></svg>
+            <span>Ingresso</span>
         </a>
         <a href="{{ url_for('registrati') }}" class="nav-item">
-            <span class="nav-symbol" aria-hidden="true">&#9998;</span>
-            <span>Registrati</span>
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
+            <span>Tesserati</span>
         </a>
         {% endif %}
     </nav>

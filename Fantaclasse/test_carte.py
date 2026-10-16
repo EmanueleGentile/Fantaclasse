@@ -219,6 +219,20 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
         self.assertEqual(resp_mercato.status_code, 200)
         self.assertIn("Mario Rossi", resp_mercato.get_data(as_text=True))
 
+        # 1b. Verifica asset SVG Kit Ufficiale e Design System CSS
+        resp_svg = self.client.get("/grafica/svg/tactical-kit.svg")
+        self.assertEqual(resp_svg.status_code, 200)
+        self.assertIn("chalk-grid", resp_svg.get_data(as_text=True))
+        resp_svg.close()
+
+        resp_css = self.client.get("/grafica/style.css")
+        self.assertEqual(resp_css.status_code, 200)
+        css_text = resp_css.get_data(as_text=True)
+        resp_css.close()
+        self.assertIn("--bg-chalkboard: #0B0F0E;", css_text)
+        self.assertIn("--green-primary: #16A34A;", css_text)
+        self.assertIn("--yellow-accent: #FBBF24;", css_text)
+
         # 2. Lettura API Carte pubbliche (solo approvate da data.db)
         resp_api_carte = self.client.get("/api/carte")
         self.assertEqual(resp_api_carte.status_code, 200)

@@ -391,11 +391,33 @@
       container.setAttribute("data-async-state", "success");
 
       items.forEach((carta) => {
+        const isApproved = carta.stato === "approvata";
         const card = document.createElement("article");
-        card.className = "player-card";
+        card.className = isApproved
+          ? "player-card"
+          : "player-card player-card--pending";
         if (SchemaValidator.isValidPocketBaseId(carta.id)) {
           card.setAttribute("data-record-id", carta.id);
         }
+
+        const topBar = document.createElement("div");
+        topBar.className = "rpg-card-top";
+
+        const factionTag = document.createElement("span");
+        factionTag.className = "rpg-faction-tag";
+        factionTag.textContent = isApproved
+          ? "FAZIONE CAMPO // SCHIERABILE"
+          : "FAZIONE CATTEDRA // VERIFICA";
+
+        const statusBadge = document.createElement("span");
+        statusBadge.className = isApproved
+          ? "status-pill status-approved"
+          : "status-pill status-pending";
+        statusBadge.textContent = isApproved ? "Approvata" : "In Revisione";
+
+        topBar.appendChild(factionTag);
+        topBar.appendChild(statusBadge);
+        card.appendChild(topBar);
 
         const header = document.createElement("div");
         header.className = "player-header";
@@ -417,18 +439,9 @@
 
         const roleBadge = document.createElement("span");
         roleBadge.className = "role-badge";
-        roleBadge.textContent = carta.ruolo || "Ruolo non assegnato";
-
-        const statusBadge = document.createElement("span");
-        const isApproved = carta.stato === "approvata";
-        statusBadge.className = isApproved
-          ? "status-pill status-approved"
-          : "status-pill status-pending";
-        statusBadge.textContent = isApproved ? "Approvata" : "In attesa di revisione";
+        roleBadge.textContent = "RUOLO: " + (carta.ruolo || "Non assegnato");
 
         roleRow.appendChild(roleBadge);
-        roleRow.appendChild(statusBadge);
-
         info.appendChild(nameEl);
         info.appendChild(roleRow);
 
@@ -446,7 +459,7 @@
         const dateTag = document.createElement("span");
         dateTag.className = "record-meta";
         const rawDate = String(carta.created || "").slice(0, 10);
-        dateTag.textContent = rawDate ? "Creata il " + rawDate : "";
+        dateTag.textContent = rawDate ? "REG: " + rawDate : "";
 
         footer.appendChild(idTag);
         footer.appendChild(dateTag);

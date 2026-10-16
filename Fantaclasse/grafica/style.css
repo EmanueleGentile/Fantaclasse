@@ -1,687 +1,959 @@
 /* ==========================================================================
-   FANTACLASSE - Mobile-First Strict UI Stylesheet
-   Zero dipendenze esterne, design leggibile e reattivo per smartphone/desktop
+   FANTACLASSE — "TACTICAL SCHOOL RPG & STREET FOOTBALL UI" DESIGN SYSTEM
+   Lavagna Tattica da Spogliatoio Scolastico + RPG Strategy Card Game
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=Montserrat:wght@500;600;700;800&display=swap');
+
 :root {
-    --bg-dark: #0f172a;
-    --bg-card: #1e293b;
-    --bg-card-elevated: #263349;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --accent-blue: #3b82f6;
-    --accent-blue-hover: #2563eb;
-    --accent-green: #10b981;
-    --accent-gold: #f59e0b;
-    --accent-red: #ef4444;
-    --border-subtle: rgba(255, 255, 255, 0.09);
+  --bg-chalkboard: #0B0F0E;       /* Nero / Sfondo principale Lavagna Tattica */
+  --surface-card: #121917;        /* Superficie interna carte e pannelli */
+  --green-primary: #16A34A;       /* Verde principale (Fazione Studenti / Campo / Azione) */
+  --green-glow: rgba(22, 163, 74, 0.35);
+  --yellow-accent: #FBBF24;       /* Giallo accento (Fazione Docenti / Corona / Matita / Gold) */
+  --yellow-glow: rgba(251, 191, 36, 0.30);
+  --text-light: #F5F5F5;          /* Bianco / Testi primari */
+  --text-muted: #9CA3AF;          /* Testi secondari */
+  --font-display: 'Barlow Condensed', 'Montserrat', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+
+  /* Token di supporto Tactical RPG */
+  --surface-elevated: #18221F;
+  --danger-red: #EF4444;
+  --danger-glow: rgba(239, 68, 68, 0.30);
+  --chalk-line: rgba(245, 245, 245, 0.10);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    min-height: 100vh;
-    padding-bottom: 84px;
-    line-height: 1.5;
+  background-color: var(--bg-chalkboard);
+  background-image: url('/grafica/svg/tactical-kit.svg');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  color: var(--text-light);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding-bottom: 96px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Header Applicazione */
+.svg-sprite-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   1. HEADER TATTICO DA SPOGLIATOIO (TOP BAR)
+   ========================================================================== */
 .app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    background: rgba(15, 23, 42, 0.94);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: rgba(11, 15, 14, 0.92);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid var(--green-primary);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 1px 12px var(--green-glow);
 }
 
 .brand-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-light);
 }
 
-.brand-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
-    font-weight: 800;
-    font-size: 0.9rem;
-    color: #fff;
+.brand-crest-svg {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px var(--green-glow));
+}
+
+.brand-title-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
 }
 
 .logo-area h1 {
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
+.brand-subtag {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--yellow-accent);
+  text-transform: uppercase;
+}
+
+/* Badge Allenatore / Crediti FantaMilioni */
 .user-profile-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-card);
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--border-subtle);
-    font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-card);
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.08);
+  font-size: 0.82rem;
+}
+
+.coach-badge-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--yellow-accent);
+  flex-shrink: 0;
 }
 
 .user-name {
-    font-weight: 600;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-weight: 700;
+  max-width: 115px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-light);
 }
 
 .fanta-milioni-badge {
-    background: rgba(245, 158, 11, 0.16);
-    color: var(--accent-gold);
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(251, 191, 36, 0.16);
+  color: var(--yellow-accent);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
 }
 
 .logout-btn,
 .login-btn-header {
-    color: var(--accent-blue);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.82rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.login-btn-header {
+  background: var(--green-primary);
+  color: var(--bg-chalkboard);
+  box-shadow: 0 0 12px var(--green-glow);
 }
 
 .logout-btn {
-    color: var(--accent-red);
+  color: var(--danger-red);
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
-/* Container Principale Mobile-First */
+/* ==========================================================================
+   2. LAVAGNA TATTICA & PANNELLI RPG (MAIN CONTAINER)
+   ========================================================================== */
 .dashboard-container {
-    max-width: 640px;
-    margin: 18px auto;
-    padding: 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .section-card {
-    background: var(--bg-card);
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  position: relative;
+  background: var(--surface-card);
+  border: 1px solid rgba(22, 163, 74, 0.32);
+  border-left: 4px solid var(--green-primary);
+  border-radius: 10px;
+  padding: 22px 20px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.section-card--gold {
+  border-color: rgba(251, 191, 36, 0.35);
+  border-left: 4px solid var(--yellow-accent);
 }
 
 .card-top-row,
 .section-header-inline {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .section-tag {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: var(--accent-blue);
-    background: rgba(59, 130, 246, 0.14);
-    padding: 4px 10px;
-    border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--yellow-accent);
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 3px 10px;
+  border-radius: 4px;
 }
 
 .hero-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  line-height: 1.05;
+  margin-bottom: 6px;
 }
 
 .hero-subtitle {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 14px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
 }
 
 .section-heading {
-    font-size: 1.08rem;
-    font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-light);
 }
 
 .sub-heading {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin: 16px 0 10px;
-    font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--yellow-accent);
+  margin: 18px 0 12px;
 }
 
 .text-link {
-    color: var(--accent-blue);
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 1rem;
+  color: var(--green-primary);
+  text-decoration: none;
 }
 
-/* Griglia Statistiche */
+.text-link:hover {
+  color: var(--yellow-accent);
+}
+
+/* ==========================================================================
+   3. STATISTICHE LAVAGNA TATTICA (CHALKBOARD TELEMETRY TILES)
+   ========================================================================== */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .stat-tile {
-    background: rgba(15, 23, 42, 0.55);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  background: rgba(11, 15, 14, 0.75);
+  border: 1px dashed var(--chalk-line);
+  border-bottom: 2px solid var(--green-primary);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-tile--gold {
+  border-bottom-color: var(--yellow-accent);
 }
 
 .stat-label {
-    font-size: 0.76rem;
-    color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
 }
 
 .stat-value {
-    font-size: 1.15rem;
-    font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1.1;
 }
 
 .stat-mono {
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.82rem;
-    word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.8rem;
+  font-style: normal;
+  color: var(--text-light);
+  word-break: break-all;
 }
 
 .text-gold {
-    color: var(--accent-gold);
+  color: var(--yellow-accent);
+  text-shadow: 0 0 12px var(--yellow-glow);
 }
 
 .text-green {
-    color: var(--accent-green);
+  color: var(--green-primary);
+  text-shadow: 0 0 12px var(--green-glow);
 }
 
-/* Pulsanti e CTA */
+/* ==========================================================================
+   4. RPG TACTICAL CARDS (COLLEZIONE CARTE: CAMPO VS CATTEDRA)
+   ========================================================================== */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.player-card {
+  position: relative;
+  background: linear-gradient(160deg, #16211E 0%, #0E1513 100%);
+  border: 2px solid var(--green-primary);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65), 0 0 18px var(--green-glow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  overflow: hidden;
+}
+
+.player-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(225deg, rgba(22, 163, 74, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.player-card--pending {
+  border-color: var(--yellow-accent);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65), 0 0 18px var(--yellow-glow);
+}
+
+.player-card--pending::before {
+  background: linear-gradient(225deg, rgba(251, 191, 36, 0.28) 0%, transparent 70%);
+}
+
+.player-card:hover {
+  transform: translateY(-3px);
+}
+
+.rpg-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px dashed var(--chalk-line);
+  padding-bottom: 8px;
+}
+
+.rpg-faction-tag {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.player-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--green-primary), #0D5C2A);
+  border: 2px solid var(--yellow-accent);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.55rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-light);
+  line-height: 1.1;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.player-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background: rgba(245, 245, 245, 0.08);
+  border: 1px solid rgba(245, 245, 245, 0.18);
+  color: var(--text-light);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.status-pill {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.status-approved {
+  background: rgba(22, 163, 74, 0.18);
+  border: 1px solid var(--green-primary);
+  color: #4ADE80;
+}
+
+.status-pending {
+  background: rgba(251, 191, 36, 0.16);
+  border: 1px solid var(--yellow-accent);
+  color: var(--yellow-accent);
+}
+
+.player-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px dashed var(--chalk-line);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.record-meta {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+/* ==========================================================================
+   5. BOTTONI TATTICI, FILTRI & AZIONI RAPIDE
+   ========================================================================== */
 .cta-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn-primary,
 .btn-secondary,
 .btn-retry {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 11px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.92rem;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.15s ease, opacity 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-primary {
-    background: var(--accent-blue);
-    color: #fff;
+  background: var(--green-primary);
+  color: var(--bg-chalkboard);
+  box-shadow: 0 4px 16px var(--green-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--accent-blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px var(--green-glow);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-main);
-    border: 1px solid var(--border-subtle);
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--yellow-accent);
+  border: 1px solid var(--yellow-accent);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.22);
 }
 
 .btn-small {
-    padding: 7px 12px;
-    font-size: 0.82rem;
+  padding: 7px 14px;
+  font-size: 0.92rem;
 }
 
 .btn-full {
-    width: 100%;
-    margin-top: 8px;
+  width: 100%;
+  margin-top: 8px;
 }
 
 button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-/* Azioni Rapide */
 .actions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
 }
 
 .action-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 16px;
-    text-decoration: none;
-    color: var(--text-main);
-    transition: border-color 0.15s ease, transform 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-card);
+  border: 1px solid rgba(22, 163, 74, 0.35);
+  border-bottom: 3px solid var(--green-primary);
+  border-radius: 10px;
+  padding: 16px;
+  text-decoration: none;
+  color: var(--text-light);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.action-card--gold {
+  border-color: rgba(251, 191, 36, 0.35);
+  border-bottom-color: var(--yellow-accent);
 }
 
 .action-card:hover {
-    border-color: var(--accent-blue);
-    transform: translateY(-2px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
 }
 
 .action-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: rgba(59, 130, 246, 0.15);
-    color: var(--accent-blue);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    font-weight: 700;
-    flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  background: rgba(22, 163, 74, 0.16);
+  border: 1px solid var(--green-primary);
+  color: var(--green-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-card--gold .action-icon {
+  background: rgba(251, 191, 36, 0.16);
+  border-color: var(--yellow-accent);
+  color: var(--yellow-accent);
+}
+
+.action-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .action-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .action-text strong {
-    font-size: 0.96rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
 
 .action-text span {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-/* Toolbar Filtri Catalogo Carte */
+/* Toolbar Filtri */
 .filter-toolbar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .filter-btn {
-    background: rgba(15, 23, 42, 0.6);
-    color: var(--text-muted);
-    border: 1px solid var(--border-subtle);
-    padding: 7px 14px;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
+  background: rgba(11, 15, 14, 0.75);
+  color: var(--text-muted);
+  border: 1px solid var(--chalk-line);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  cursor: pointer;
 }
 
 .filter-btn-active {
-    background: rgba(59, 130, 246, 0.2);
-    color: #fff;
-    border-color: var(--accent-blue);
+  background: rgba(22, 163, 74, 0.22);
+  color: var(--text-light);
+  border-color: var(--green-primary);
+  box-shadow: 0 0 12px var(--green-glow);
 }
 
 .count-pill {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    background: rgba(15, 23, 42, 0.6);
-    padding: 5px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border-subtle);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  color: var(--yellow-accent);
+  background: rgba(251, 191, 36, 0.12);
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
 }
 
-/* Griglia Carte Reali (Collezione: Carte) */
-.players-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.player-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.player-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.player-avatar {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 1.15rem;
-    flex-shrink: 0;
-}
-
-.player-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.player-name {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    word-break: break-word;
-}
-
-.player-meta-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.role-badge {
-    font-size: 0.76rem;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-main);
-    padding: 3px 9px;
-    border-radius: 6px;
-}
-
-.status-pill {
-    font-size: 0.74rem;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 999px;
-}
-
-.status-approved {
-    background: rgba(16, 185, 129, 0.16);
-    color: var(--accent-green);
-}
-
-.status-pending {
-    background: rgba(245, 158, 11, 0.16);
-    color: var(--accent-gold);
-}
-
-.player-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-.record-meta {
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-}
-
-/* 4 Stati Asincroni (loading, empty-state, error) */
+/* ==========================================================================
+   6. 4 STATI ASINCRONI (LOADING, EMPTY-STATE, ERROR, SUCCESS)
+   ========================================================================== */
 .skeleton-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  background: var(--surface-card);
+  border: 1px dashed var(--chalk-line);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .skeleton-line {
-    height: 14px;
-    border-radius: 6px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
-    background-size: 200% 100%;
-    animation: pulse-skeleton 1.4s infinite linear;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(22,163,74,0.06) 25%, rgba(22,163,74,0.22) 50%, rgba(22,163,74,0.06) 75%);
+  background-size: 200% 100%;
+  animation: pulse-skeleton 1.3s infinite linear;
 }
 
 .skeleton-title {
-    width: 55%;
-    height: 18px;
+  width: 60%;
+  height: 20px;
 }
 
 .skeleton-subtitle {
-    width: 35%;
+  width: 40%;
 }
 
 @keyframes pulse-skeleton {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .state-box {
-    background: var(--bg-card);
-    border: 1px dashed var(--border-subtle);
-    border-radius: 14px;
-    padding: 26px 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+  grid-column: 1 / -1;
+  background: var(--surface-card);
+  border: 2px dashed rgba(251, 191, 36, 0.35);
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .state-error {
-    border-color: rgba(239, 68, 68, 0.45);
-    background: rgba(239, 68, 68, 0.08);
+  border-color: var(--danger-red);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 .state-title {
-    font-size: 1rem;
-    font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .state-desc {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    max-width: 420px;
-}
-
-.state-action-link {
-    margin-top: 6px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 440px;
 }
 
 .btn-retry {
-    background: var(--accent-red);
-    color: #fff;
-    margin-top: 6px;
+  background: var(--danger-red);
+  color: var(--text-light);
+  margin-top: 6px;
 }
 
-/* Autenticazione e Form */
+/* ==========================================================================
+   7. SCHERMATE INGRESSO IN CAMPO (AUTH: LOGIN & REGISTRAZIONE)
+   ========================================================================== */
 .auth-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
 }
 
 .auth-card {
-    background: var(--bg-card);
-    width: 100%;
-    max-width: 420px;
-    padding: 28px 24px;
-    border-radius: 18px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  background: var(--surface-card);
+  width: 100%;
+  max-width: 430px;
+  padding: 28px 24px;
+  border-radius: 12px;
+  border: 2px solid var(--green-primary);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 24px var(--green-glow);
 }
 
 .auth-logo {
-    justify-content: center;
-    display: flex;
-    margin-bottom: 12px;
+  justify-content: center;
+  display: flex;
+  margin-bottom: 14px;
 }
 
 .auth-heading {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin-bottom: 4px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
 }
 
 .auth-subtext {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.86rem;
-    margin-bottom: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
 }
 
 .input-group {
-    margin-bottom: 16px;
-    text-align: left;
+  margin-bottom: 16px;
+  text-align: left;
 }
 
 .input-label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--yellow-accent);
+  margin-bottom: 6px;
 }
 
 .form-input {
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 10px;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-main);
-    font-size: 0.95rem;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 6px;
+  background: rgba(11, 15, 14, 0.85);
+  border: 1px solid rgba(245, 245, 245, 0.16);
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
 }
 
 .form-input:focus {
-    outline: none;
-    border-color: var(--accent-blue);
+  outline: none;
+  border-color: var(--green-primary);
+  box-shadow: 0 0 10px var(--green-glow);
 }
 
 .input-invalid {
-    border-color: var(--accent-red) !important;
+  border-color: var(--danger-red) !important;
 }
 
 .field-error-msg {
-    display: block;
-    color: #fca5a5;
-    font-size: 0.78rem;
-    margin-top: 5px;
-    font-weight: 500;
+  display: block;
+  color: #FCA5A5;
+  font-size: 0.78rem;
+  margin-top: 5px;
+  font-weight: 600;
 }
 
 .alert-box {
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 0.86rem;
-    margin-bottom: 16px;
-    font-weight: 500;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 0.86rem;
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
 .alert-error {
-    background: rgba(239, 68, 68, 0.14);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    color: #fecaca;
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid var(--danger-red);
+  color: #FECACA;
 }
 
 .alert-success {
-    background: rgba(16, 185, 129, 0.14);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    color: #a7f3d0;
+  background: rgba(22, 163, 74, 0.16);
+  border: 1px solid var(--green-primary);
+  color: #BBF7D0;
 }
 
 .auth-links {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 0.86rem;
-    color: var(--text-muted);
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--text-muted);
 }
 
 .auth-links a {
-    color: var(--accent-blue);
-    text-decoration: none;
-    font-weight: 600;
+  color: var(--yellow-accent);
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .auth-back-row {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
-/* Barra di Navigazione Inferiore Mobile-First */
+/* ==========================================================================
+   8. TACTICAL BOTTOM DOCK (NAVIGAZIONE MOBILE-FIRST)
+   ========================================================================== */
 .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(15, 23, 42, 0.96);
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 8px;
-    border-top: 1px solid var(--border-subtle);
-    z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(11, 15, 14, 0.96);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 6px 10px;
+  border-top: 2px solid rgba(22, 163, 74, 0.45);
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.65);
+  z-index: 100;
 }
 
 .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 4px 12px;
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  padding: 4px 14px;
+  border-radius: 6px;
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
-.nav-symbol {
-    font-size: 1.15rem;
-    line-height: 1;
+.nav-icon-svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .nav-item.active {
-    color: var(--accent-blue);
+  color: var(--green-primary);
+  text-shadow: 0 0 10px var(--green-glow);
+}
+
+.nav-item.active .nav-icon-svg {
+  color: var(--yellow-accent);
 }
