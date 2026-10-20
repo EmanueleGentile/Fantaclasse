@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Mazzo Carte Collezionabili</title>
+    <title>Fantaclasse — Listone Ufficiale &amp; Catalogo Carte</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="false">
+    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
 
-    <!-- KIT SVG UFFICIALE INTEGRATO -->
+    <!-- KIT ICONE VETTORIALI UFFICIALI -->
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
-                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
+                <polygon points="32,4 57,14 51,45 32,60 13,45 7,14" fill="#172033" stroke="#C5F36A" stroke-width="3"/>
+                <polygon points="32,10 50,18 46,42 32,53 18,42 14,18" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5"/>
+                <path d="M22 25 L32 16 L42 25 L38 40 L26 40 Z" fill="#19865B" stroke="#C5F36A" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5" fill="#C5F36A"/>
             </symbol>
             <symbol id="svg-crown-gold" viewBox="0 0 24 24">
                 <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </symbol>
+            <symbol id="svg-search" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="20" y1="20" x2="16.2" y2="16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </symbol>
             <symbol id="svg-nav-board" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="14" rx="2"/>
@@ -50,103 +55,153 @@
                 <a href="{{ url_for('home') }}" class="brand-link">
                     <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
                     <div class="brand-title-wrap">
-                        <h1>MAZZO TATTICO</h1>
-                        <span class="brand-subtag">Collezione Carte Ufficiali PocketBase</span>
+                        <h1>FANTACLASSE</h1>
+                        <span class="brand-subtag">Listone &amp; Catalogo Ufficiale</span>
                     </div>
                 </a>
             </div>
 
-            <nav class="header-nav-links" aria-label="Menu Desktop">
-                <a href="{{ url_for('home') }}" class="header-nav-link">Lavagna Arena</a>
-                <a href="{{ url_for('mercato') }}" class="header-nav-link active">Mazzo Carte</a>
+            <nav class="header-nav-links" aria-label="Navigazione principale">
+                <a href="{{ url_for('home') }}" class="header-nav-link">Panoramica</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link active" aria-current="page">Listone &amp; Carte</a>
                 {% if utente %}
-                    <a href="{{ url_for('suggerisci') }}" class="header-nav-link">Forgia Carta</a>
+                    <a href="{{ url_for('suggerisci') }}" class="header-nav-link">Proponi Carta</a>
                 {% endif %}
                 <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
             </nav>
 
             <div class="user-profile-pill">
                 {% if utente %}
-                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                    <span class="user-name">{{ utente.name }}</span>
-                    <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                    <span class="user-identity-chip">
+                        <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                        <span class="user-name" title="{{ utente.name }}">{{ utente.name }}</span>
+                    </span>
+                    <span class="fanta-milioni-badge" title="Budget FantaMilioni disponibile">{{ utente.fanta_milioni }} FM</span>
                     <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
                 {% else %}
-                    <a href="{{ url_for('login') }}" class="login-btn-header">Scendi in Campo</a>
+                    <a href="{{ url_for('login') }}" class="login-btn-header">Accedi</a>
                 {% endif %}
             </div>
         </div>
     </header>
 
-    <main class="dashboard-container">
+    <main id="main-content" tabindex="-1" class="dashboard-container">
 
-        <!-- PANNELLO CONTROLLI & FILTRI TATTICI -->
-        <section class="section-card">
+        <!-- PANNELLO CONTROLLI, RICERCA & FILTRI TATTICI -->
+        <section class="section-card" aria-labelledby="heading-listone">
             <div class="section-header-inline">
                 <div>
                     <span class="section-tag">
                         <span class="pulse-dot" aria-hidden="true"></span>
-                        ARSENALE CARTE // COLLEZIONE POCKETBASE
+                        CATALOGO UFFICIALE // COLLEZIONE POCKETBASE
                     </span>
-                    <h2 class="section-heading">Esplora il Mazzo Tattico</h2>
+                    <h2 id="heading-listone" class="section-heading">Esplora il Listone Tattico</h2>
+                    <p class="section-desc">Consulta le carte per ruolo, filtra lo stato di approvazione o passa alla vista tabellare comparativa.</p>
                 </div>
-                <span class="count-pill">Carte nel Settore: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
+
+                <div class="cta-row">
+                    <span class="count-pill">Carte visualizzate: <strong id="carte-count-badge">{{ carte | length }}</strong></span>
+                    <div class="view-switcher-group" role="group" aria-label="Modalità di visualizzazione">
+                        <button type="button" class="view-mode-btn active" data-view-mode="grid" aria-pressed="true">Griglia</button>
+                        <button type="button" class="view-mode-btn" data-view-mode="list" aria-pressed="false">Tabella</button>
+                    </div>
+                </div>
             </div>
+
+            <div id="carte-status-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
             <div class="catalog-controls-grid">
                 <div class="search-bar-wrap">
-                    <input
-                        type="search"
-                        id="search-carte-input"
-                        class="search-input-tactical"
-                        placeholder="Cerca una carta per nome o ruolo (es. Mario Rossi, Attaccante)..."
-                        aria-label="Cerca carta nel mazzo"
-                    >
+                    <label for="search-carte-input" class="sr-only">Cerca una carta per nome o ruolo</label>
+                    <div class="search-input-container">
+                        <svg class="search-icon-inline" aria-hidden="true"><use href="#svg-search"></use></svg>
+                        <input
+                            type="search"
+                            id="search-carte-input"
+                            class="search-input-tactical"
+                            placeholder="Cerca per nome o ruolo (es. Mario Rossi, Attaccante)..."
+                            aria-label="Cerca carta nel mazzo"
+                        >
+                        <button
+                            type="button"
+                            id="btn-clear-search"
+                            class="search-clear-btn"
+                            aria-label="Cancella testo di ricerca"
+                            hidden
+                        >&times;</button>
+                    </div>
                     <button type="button" id="btn-refresh-carte" class="btn-secondary btn-small">
                         Sincronizza DB
                     </button>
-                </div>
-
-                <!-- Filtro Stato Database -->
-                <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per stato database">
-                    <span class="filter-group-label">Stato DB:</span>
                     {% if utente %}
-                        <button
-                            type="button"
-                            class="filter-btn {% if not stato_selezionato %}filter-btn-active{% endif %}"
-                            data-stato-filter=""
-                        >Tutto il Mazzo</button>
-                        <button
-                            type="button"
-                            class="filter-btn {% if stato_selezionato == 'approvata' %}filter-btn-active{% endif %}"
-                            data-stato-filter="approvata"
-                        >In Campo (Approvate)</button>
-                        <button
-                            type="button"
-                            class="filter-btn {% if stato_selezionato == 'in_attesa' %}filter-btn-active{% endif %}"
-                            data-stato-filter="in_attesa"
-                        >Vaglio Cattedra (In Attesa)</button>
-                    {% else %}
-                        <button
-                            type="button"
-                            class="filter-btn filter-btn-active"
-                            data-stato-filter="approvata"
-                        >In Campo (Approvate)</button>
+                        <a href="{{ url_for('suggerisci') }}" class="btn-primary btn-small">+ Proponi Carta</a>
                     {% endif %}
                 </div>
 
-                <!-- Filtro Ruolo Tattico -->
-                <div class="filter-toolbar" role="toolbar" aria-label="Filtra mazzo per ruolo in campo">
-                    <span class="filter-group-label">Ruolo:</span>
-                    <button type="button" class="role-filter-btn role-filter-active" data-ruolo-filter="">Tutti i Ruoli</button>
-                    {% for r in ruoli_ammessi %}
-                        <button type="button" class="role-filter-btn" data-ruolo-filter="{{ r }}">{{ r }}</button>
-                    {% endfor %}
+                <div class="filters-row-split">
+                    <!-- Filtro Stato Database -->
+                    <div class="filter-toolbar" role="group" aria-label="Filtra mazzo per stato database">
+                        <span class="filter-group-label">Stato DB:</span>
+                        {% if utente %}
+                            <button
+                                type="button"
+                                class="filter-btn {% if not stato_selezionato %}filter-btn-active{% endif %}"
+                                data-stato-filter=""
+                                aria-pressed="{{ 'true' if not stato_selezionato else 'false' }}"
+                            >Tutto il Listone</button>
+                            <button
+                                type="button"
+                                class="filter-btn {% if stato_selezionato == 'approvata' %}filter-btn-active{% endif %}"
+                                data-stato-filter="approvata"
+                                aria-pressed="{{ 'true' if stato_selezionato == 'approvata' else 'false' }}"
+                            >Approvate (In Campo)</button>
+                            <button
+                                type="button"
+                                class="filter-btn {% if stato_selezionato == 'in_attesa' %}filter-btn-active{% endif %}"
+                                data-stato-filter="in_attesa"
+                                aria-pressed="{{ 'true' if stato_selezionato == 'in_attesa' else 'false' }}"
+                            >In Revisione Cattedra</button>
+                        {% else %}
+                            <button
+                                type="button"
+                                class="filter-btn filter-btn-active"
+                                data-stato-filter="approvata"
+                                aria-pressed="true"
+                            >Approvate (In Campo)</button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Filtro Ruolo Tattico -->
+                    <div class="filter-toolbar" role="group" aria-label="Filtra mazzo per ruolo in campo">
+                        <span class="filter-group-label">Ruolo:</span>
+                        <button
+                            type="button"
+                            class="role-filter-btn {% if not ruolo_selezionato %}role-filter-active{% endif %}"
+                            data-ruolo-filter=""
+                            aria-pressed="{{ 'true' if not ruolo_selezionato else 'false' }}"
+                        >Tutti i Ruoli</button>
+                        {% for r in ruoli_ammessi %}
+                            <button
+                                type="button"
+                                class="role-filter-btn {% if ruolo_selezionato == r %}role-filter-active{% endif %}"
+                                data-ruolo-filter="{{ r }}"
+                                aria-pressed="{{ 'true' if ruolo_selezionato == r else 'false' }}"
+                            >{{ r }}</button>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- GRIGLIA CARTE COLLEZIONABILI (4 STATI ASINCRONI: loading, success, empty-state, error) -->
+        <!-- INTESTAZIONE TABELLA (Visibile in modalità Tabella su schermi >= 768px) -->
+        <div id="listone-table-head" class="listone-table-head" aria-hidden="true">
+            <span>Protagonista &amp; Ruolo</span>
+            <span>Categoria</span>
+            <span>Stato Cattedra</span>
+            <span class="listone-col-right">Riferimento Record</span>
+        </div>
+
+        <!-- CONTENITORE CARTE (4 STATI ASINCRONI: loading, success, empty-state, error) -->
         <section
             id="carte-async-container"
             class="players-grid"
@@ -154,8 +209,8 @@
             data-async-state="{% if errore_caricamento %}error{% elif carte %}success{% else %}empty-state{% endif %}"
         >
             {% if errore_caricamento %}
-                <div class="state-box state-error">
-                    <h4 class="state-title">Errore di Sincronizzazione</h4>
+                <div class="state-box state-error" role="alert">
+                    <h3 class="state-title">Errore di Sincronizzazione</h3>
                     <p class="state-desc">{{ errore_caricamento }}</p>
                     <a href="{{ url_for('mercato') }}" class="btn-retry">Riprova Connessione</a>
                 </div>
@@ -170,7 +225,7 @@
                     <div class="rpg-card-top">
                         <span class="rpg-faction-tag">
                             {% if s.stato == 'approvata' %}
-                                CAMPO // SCHIERABILE
+                                LISTONE // SCHIERABILE
                             {% else %}
                                 CATTEDRA // VERIFICA
                             {% endif %}
@@ -183,11 +238,11 @@
                     </div>
 
                     <div class="player-header">
-                        <div class="player-avatar">{{ (s.nome or '?')[0] | upper }}</div>
+                        <div class="player-avatar" aria-hidden="true">{{ (s.nome or '?')[0] | upper }}</div>
                         <div class="player-info">
-                            <div class="player-name">{{ s.nome or 'Carta senza nome' }}</div>
+                            <h3 class="player-name">{{ s.nome or 'Carta senza nome' }}</h3>
                             <div class="player-meta-row">
-                                <span class="role-badge">RUOLO: {{ s.ruolo or 'Non assegnato' }}</span>
+                                <span class="role-badge">Ruolo: {{ s.ruolo or 'Non assegnato' }}</span>
                             </div>
                         </div>
                     </div>
@@ -200,12 +255,12 @@
                 {% endfor %}
             {% else %}
                 <div class="state-box state-empty">
-                    <h4 class="state-title">Nessuna Carta Trovata nel Settore</h4>
+                    <h3 class="state-title">Nessuna Carta Trovata nel Settore</h3>
                     <p class="state-desc">Non ci sono carte corrispondenti ai filtri selezionati nel database PocketBase.</p>
                     {% if utente %}
-                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Forgia una Nuova Carta</a>
+                        <a href="{{ url_for('suggerisci') }}" class="btn-primary state-action-link">Proponi una Nuova Carta</a>
                     {% else %}
-                        <a href="{{ url_for('login') }}" class="btn-primary state-action-link">Scendi in Campo per Proporre</a>
+                        <a href="{{ url_for('login') }}" class="btn-primary state-action-link">Accedi per Proporre</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -213,32 +268,48 @@
 
     </main>
 
-    <nav class="bottom-nav" aria-label="Navigazione tattica principale">
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <span><strong>Fantaclasse</strong> &bull; Listone Ufficiale sincronizzato con PocketBase</span>
+            <nav class="footer-links" aria-label="Link rapidi">
+                <a href="{{ url_for('home') }}">Panoramica</a>
+                <a href="{{ url_for('mercato') }}">Listone Carte</a>
+                {% if utente %}
+                    <a href="{{ url_for('suggerisci') }}">Proponi Carta</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Accedi</a>
+                {% endif %}
+                <a href="/sito/">Community Feedback</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Navigazione principale mobile">
         <a href="{{ url_for('home') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>
-            <span>Lavagna</span>
+            <span>Panoramica</span>
         </a>
-        <a href="{{ url_for('mercato') }}" class="nav-item active">
+        <a href="{{ url_for('mercato') }}" class="nav-item active" aria-current="page">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-cards"></use></svg>
-            <span>Mazzo</span>
+            <span>Listone</span>
         </a>
         {% if utente %}
         <a href="{{ url_for('suggerisci') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
-            <span>Forgia</span>
+            <span>Proponi</span>
         </a>
         <a href="{{ url_for('logout') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-exit"></use></svg>
-            <span>Uscita</span>
+            <span>Esci</span>
         </a>
         {% else %}
         <a href="{{ url_for('login') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-coach"></use></svg>
-            <span>Ingresso</span>
+            <span>Accedi</span>
         </a>
         <a href="{{ url_for('registrati') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
-            <span>Tesserati</span>
+            <span>Registrati</span>
         </a>
         {% endif %}
     </nav>

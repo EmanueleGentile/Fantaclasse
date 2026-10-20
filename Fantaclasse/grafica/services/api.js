@@ -1,8 +1,8 @@
 /**
  * Fantaclasse Frontend Service Layer, AuthStore, Live Card Forge & 4-State UI Engine
- * - Zero utilizzi di innerHTML / outerHTML / document.write (100% DOM API sicure + textContent)
+ * - 100% DOM API sicure (document.createElement + textContent)
  * - Gestione deterministica dei 4 stati asincroni: loading, success, empty-state, error (con retry)
- * - Filtro combinato (Stato DB + Ruolo Tattico + Ricerca Testuale Live) e Live Preview Forgia Carta
+ * - Filtro combinato (Stato DB + Ruolo Tattico + Ricerca Testuale Live), Vista Griglia/Tabella e Live Preview
  */
 (function () {
   "use strict";
@@ -15,7 +15,7 @@
   const ALLOWED_STATI = ["approvata", "in_attesa"];
 
   /**
-   * 1. Configurazione centralizzata (Zero Hardcoding nei componenti)
+   * 1. Configurazione centralizzata
    */
   const FantaclasseConfig = {
     get pbBaseUrl() {
@@ -182,7 +182,7 @@
   };
 
   /**
-   * 4. Safe Error Handler centralizzato (Zero Information Disclosure)
+   * 4. Safe Error Handler centralizzato con supporto WCAG 2.2 AA (aria-invalid & focus)
    */
   const SafeErrorMapper = {
     mapHttpStatus(status, serverMessage) {
@@ -211,7 +211,10 @@
         el.hidden = true;
       });
       const inputs = formEl.querySelectorAll(".form-input");
-      inputs.forEach((input) => input.classList.remove("input-invalid"));
+      inputs.forEach((input) => {
+        input.classList.remove("input-invalid");
+        input.removeAttribute("aria-invalid");
+      });
       const banner = formEl.querySelector("[data-form-banner]");
       if (banner) {
         banner.textContent = "";
@@ -223,28 +226,45 @@
       if (!formEl) return;
       this.clearFormErrors(formEl);
 
-      if (bannerMessage) {
-        const banner = formEl.querySelector("[data-form-banner]");
-        if (banner) {
-          banner.textContent = bannerMessage;
-          banner.hidden = false;
-        }
+      let firstInvalidInput = null;
+      const banner = formEl.querySelector("[data-form-banner]");
+
+      if (bannerMessage && banner) {
+        banner.textContent = bannerMessage;
+        banner.hidden = false;
+        banner.setAttribute("tabindex", "-1");
       }
 
-      if (!fieldErrors || typeof fieldErrors !== "object") return;
+      if (fieldErrors && typeof fieldErrors === "object") {
+        Object.keys(fieldErrors).forEach((fieldName) => {
+          const msg = fieldErrors[fieldName];
+          const errEl = formEl.querySelector('[data-field-error="' + fieldName + '"]');
+          const inputEl = formEl.querySelector('[name="' + fieldName + '"]');
+          if (errEl && msg) {
+            errEl.textContent = String(msg);
+            errEl.hidden = false;
+            if (inputEl && inputEl.id && !errEl.id) {
+              errEl.id = inputEl.id + "-error";
+            }
+            if (inputEl && errEl.id) {
+              inputEl.setAttribute("aria-describedby", errEl.id);
+            }
+          }
+          if (inputEl) {
+            inputEl.classList.add("input-invalid");
+            inputEl.setAttribute("aria-invalid", "true");
+            if (!firstInvalidInput) {
+              firstInvalidInput = inputEl;
+            }
+          }
+        });
+      }
 
-      Object.keys(fieldErrors).forEach((fieldName) => {
-        const msg = fieldErrors[fieldName];
-        const errEl = formEl.querySelector('[data-field-error="' + fieldName + '"]');
-        const inputEl = formEl.querySelector('[name="' + fieldName + '"]');
-        if (errEl && msg) {
-          errEl.textContent = String(msg);
-          errEl.hidden = false;
-        }
-        if (inputEl) {
-          inputEl.classList.add("input-invalid");
-        }
-      });
+      if (firstInvalidInput) {
+        firstInvalidInput.focus();
+      } else if (banner && !banner.hidden) {
+        banner.focus();
+      }
     },
   };
 
@@ -289,7 +309,6 @@
 
   /**
    * 6. Gestore Deterministico dei 4 Stati Asincroni (loading, success, empty-state, error)
-   * Costruisce le Carte Collezionabili FUT/RPG esclusivamente con document.createElement e textContent.
    */
   const UIStateManager = {
     clearContainer(container) {
@@ -330,7 +349,7 @@
       const box = document.createElement("div");
       box.className = "state-box state-empty";
 
-      const title = document.createElement("h4");
+      const title = document.createElement("h3");
       title.className = "state-title";
       title.textContent = "Nessuna Carta Trovata nel Settore";
 
@@ -360,8 +379,9 @@
 
       const box = document.createElement("div");
       box.className = "state-box state-error";
+      box.setAttribute("role", "alert");
 
-      const title = document.createElement("h4");
+      const title = document.createElement("h3");
       title.className = "state-title";
       title.textContent = "Errore di Sincronizzazione";
 
@@ -408,7 +428,7 @@
         const factionTag = document.createElement("span");
         factionTag.className = "rpg-faction-tag";
         factionTag.textContent = isApproved
-          ? "CAMPO // SCHIERABILE"
+          ? "LISTONE // SCHIERABILE"
           : "CATTEDRA // VERIFICA";
 
         const statusBadge = document.createElement("span");
@@ -426,13 +446,14 @@
 
         const avatar = document.createElement("div");
         avatar.className = "player-avatar";
+        avatar.setAttribute("aria-hidden", "true");
         const initial = (carta.nome || "?").trim().charAt(0).toUpperCase() || "?";
         avatar.textContent = initial;
 
         const info = document.createElement("div");
         info.className = "player-info";
 
-        const nameEl = document.createElement("div");
+        const nameEl = document.createElement("h3");
         nameEl.className = "player-name";
         nameEl.textContent = carta.nome || "Carta senza nome";
 
@@ -441,7 +462,7 @@
 
         const roleBadge = document.createElement("span");
         roleBadge.className = "role-badge";
-        roleBadge.textContent = "RUOLO: " + (carta.ruolo || "Non assegnato");
+        roleBadge.textContent = "Ruolo: " + (carta.ruolo || "Non assegnato");
 
         roleRow.appendChild(roleBadge);
         info.appendChild(nameEl);
@@ -473,23 +494,49 @@
   };
 
   /**
-   * 7. Live Card Forge Preview (/suggerisci) & Validazione Form
+   * 7. Toggle Visibilità Password nei Form Auth
+   */
+  function initPasswordToggles() {
+    const toggleButtons = Array.from(document.querySelectorAll("[data-toggle-password]"));
+    toggleButtons.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const targetId = btn.getAttribute("data-toggle-password");
+        const inputEl = targetId ? document.getElementById(targetId) : null;
+        if (!inputEl) return;
+
+        const isHidden = inputEl.type === "password";
+        inputEl.type = isHidden ? "text" : "password";
+        btn.textContent = isHidden ? "Nascondi" : "Mostra";
+        btn.setAttribute("aria-pressed", isHidden ? "true" : "false");
+      });
+    });
+  }
+
+  /**
+   * 8. Live Card Forge Preview (/suggerisci) & Validazione Form
    */
   function initForgeLivePreview() {
     const cartaForm = document.getElementById("form-suggerisci");
     if (!cartaForm) return;
 
     const nomeInput = document.getElementById("carta-nome");
+    const nomeCounter = document.getElementById("carta-nome-counter");
     const ruoloSelect = document.getElementById("carta-ruolo");
+    const previewArticle = document.getElementById("preview-card-article");
     const previewAvatar = document.getElementById("preview-card-avatar");
     const previewName = document.getElementById("preview-card-name");
     const previewRole = document.getElementById("preview-card-role");
+    const resetBtn = document.getElementById("btn-reset-forge");
     const quickRoleBtns = Array.from(document.querySelectorAll("[data-pick-ruolo]"));
 
     function syncPreview() {
-      const currentName = ((nomeInput && nomeInput.value) || "").trim();
+      const rawName = (nomeInput && nomeInput.value) || "";
+      const currentName = rawName.trim();
       const currentRole = ((ruoloSelect && ruoloSelect.value) || "").trim();
 
+      if (nomeCounter) {
+        nomeCounter.textContent = rawName.length + " / 100";
+      }
       if (previewName) {
         previewName.textContent = currentName || "Nuovo Campione";
       }
@@ -499,15 +546,21 @@
           : "?";
       }
       if (previewRole) {
-        previewRole.textContent = "RUOLO: " + (currentRole || "Da assegnare");
+        previewRole.textContent = "Ruolo: " + (currentRole || "Da assegnare");
+      }
+      if (previewArticle) {
+        previewArticle.setAttribute("data-card-ruolo", currentRole);
       }
 
       quickRoleBtns.forEach((btn) => {
         const val = btn.getAttribute("data-pick-ruolo");
-        if (val === currentRole) {
+        const isSelected = val === currentRole && currentRole !== "";
+        if (isSelected) {
           btn.classList.add("active");
+          btn.setAttribute("aria-pressed", "true");
         } else {
           btn.classList.remove("active");
+          btn.setAttribute("aria-pressed", "false");
         }
       });
     }
@@ -528,6 +581,17 @@
         syncPreview();
       });
     });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        cartaForm.reset();
+        if (nomeInput) nomeInput.value = "";
+        if (ruoloSelect) ruoloSelect.value = "";
+        SafeErrorMapper.clearFormErrors(cartaForm);
+        syncPreview();
+        if (nomeInput) nomeInput.focus();
+      });
+    }
 
     syncPreview();
   }
@@ -619,7 +683,7 @@
   }
 
   /**
-   * 8. Catalogo Carte Asincrono con Filtro Stato + Filtro Ruolo + Ricerca Live
+   * 9. Catalogo Carte Asincrono con Filtro Stato + Filtro Ruolo + Ricerca Live + Switcher Vista
    */
   function initMercatoAsyncCatalog() {
     const container = document.getElementById("carte-async-container");
@@ -627,13 +691,33 @@
 
     const filterButtons = Array.from(document.querySelectorAll("[data-stato-filter]"));
     const roleButtons = Array.from(document.querySelectorAll("[data-ruolo-filter]"));
+    const viewButtons = Array.from(document.querySelectorAll("[data-view-mode]"));
+    const tableHead = document.getElementById("listone-table-head");
     const searchInput = document.getElementById("search-carte-input");
+    const clearSearchBtn = document.getElementById("btn-clear-search");
     const countBadge = document.getElementById("carte-count-badge");
+    const statusAnnouncer = document.getElementById("carte-status-announcer");
 
-    let activeStatoFilter = "";
-    let activeRoleFilter = "";
+    const initialActiveStatoBtn = document.querySelector(".filter-btn.filter-btn-active");
+    const initialActiveRoleBtn = document.querySelector(".role-filter-btn.role-filter-active");
+
+    let activeStatoFilter = initialActiveStatoBtn
+      ? initialActiveStatoBtn.getAttribute("data-stato-filter") || ""
+      : "";
+    let activeRoleFilter = initialActiveRoleBtn
+      ? initialActiveRoleBtn.getAttribute("data-ruolo-filter") || ""
+      : "";
     let searchQuery = "";
     let cachedItems = null;
+
+    function announceCount(count) {
+      if (countBadge) {
+        countBadge.textContent = String(count);
+      }
+      if (statusAnnouncer) {
+        statusAnnouncer.textContent = count + " carte visualizzate nel listone.";
+      }
+    }
 
     function applyLocalFiltersAndRender(itemsSource) {
       const filtered = itemsSource.filter((item) => {
@@ -649,15 +733,13 @@
         return matchesRole && matchesQuery;
       });
 
-      if (countBadge) {
-        countBadge.textContent = String(filtered.length);
-      }
+      announceCount(filtered.length);
 
       if (filtered.length === 0) {
         UIStateManager.renderEmptyState(
           container,
           "Nessuna carta corrisponde ai filtri di stato, ruolo o ricerca selezionati.",
-          "Forgia una Nuova Carta",
+          "Proponi una Nuova Carta",
           "/suggerisci"
         );
       } else {
@@ -687,8 +769,12 @@
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", function () {
         const filterVal = btn.getAttribute("data-stato-filter") || "";
-        filterButtons.forEach((b) => b.classList.remove("filter-btn-active"));
+        filterButtons.forEach((b) => {
+          b.classList.remove("filter-btn-active");
+          b.setAttribute("aria-pressed", "false");
+        });
         btn.classList.add("filter-btn-active");
+        btn.setAttribute("aria-pressed", "true");
         loadCarte(filterVal);
       });
     });
@@ -696,8 +782,12 @@
     roleButtons.forEach((btn) => {
       btn.addEventListener("click", async function () {
         activeRoleFilter = btn.getAttribute("data-ruolo-filter") || "";
-        roleButtons.forEach((b) => b.classList.remove("role-filter-active"));
+        roleButtons.forEach((b) => {
+          b.classList.remove("role-filter-active");
+          b.setAttribute("aria-pressed", "false");
+        });
         btn.classList.add("role-filter-active");
+        btn.setAttribute("aria-pressed", "true");
         if (cachedItems === null) {
           await loadCarte(activeStatoFilter);
         } else {
@@ -706,9 +796,46 @@
       });
     });
 
+    viewButtons.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const mode = btn.getAttribute("data-view-mode") || "grid";
+        viewButtons.forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+
+        if (mode === "list") {
+          container.classList.add("view-list");
+          if (tableHead) tableHead.classList.add("is-visible");
+        } else {
+          container.classList.remove("view-list");
+          if (tableHead) tableHead.classList.remove("is-visible");
+        }
+      });
+    });
+
     if (searchInput) {
       searchInput.addEventListener("input", async function () {
         searchQuery = (searchInput.value || "").trim().toLowerCase();
+        if (clearSearchBtn) {
+          clearSearchBtn.hidden = searchQuery.length === 0;
+        }
+        if (cachedItems === null) {
+          await loadCarte(activeStatoFilter);
+        } else {
+          applyLocalFiltersAndRender(cachedItems);
+        }
+      });
+    }
+
+    if (clearSearchBtn && searchInput) {
+      clearSearchBtn.addEventListener("click", async function () {
+        searchInput.value = "";
+        searchQuery = "";
+        clearSearchBtn.hidden = true;
+        searchInput.focus();
         if (cachedItems === null) {
           await loadCarte(activeStatoFilter);
         } else {
@@ -723,10 +850,16 @@
         loadCarte(activeStatoFilter);
       });
     }
+
+    // Se un filtro ruolo è pre-selezionato via URL (?ruolo=...), applica subito il filtro
+    if (activeRoleFilter) {
+      loadCarte(activeStatoFilter);
+    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     FantaclasseAuthStore.verifySessionOnStartup();
+    initPasswordToggles();
     initFormsValidation();
     initForgeLivePreview();
     initMercatoAsyncCatalog();

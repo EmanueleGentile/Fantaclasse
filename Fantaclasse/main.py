@@ -123,12 +123,18 @@ def home():
         carte_approvate = [c for c in carte_list if c.stato == "approvata"]
         carte_in_attesa = [c for c in carte_list if c.stato == "in_attesa"]
 
+    conteggio_ruoli = {r: 0 for r in RUOLI_CARTE_AMMESSI}
+    for c in carte_approvate:
+        if c.ruolo in conteggio_ruoli:
+            conteggio_ruoli[c.ruolo] += 1
+
     return render_template(
         "index.html",
         utente=user_dict,
-        carte_recenti=carte_approvate[:5],
+        carte_recenti=carte_approvate[:6],
         totale_approvate=len(carte_approvate),
         totale_in_attesa=len(carte_in_attesa),
+        conteggio_ruoli=conteggio_ruoli,
         errore_caricamento=err.message if err else None,
     )
 
@@ -225,16 +231,23 @@ def mercato():
     if stato_filter not in STATI_CARTE_AMMESSI:
         stato_filter = ""
 
+    ruolo_filter = request.args.get("ruolo", "").strip()
+    if ruolo_filter not in RUOLI_CARTE_AMMESSI:
+        ruolo_filter = ""
+
     carte_list, err = pb_service.list_carte(
         token=token,
         stato_filter=stato_filter if stato_filter else None,
     )
+    if carte_list is not None and ruolo_filter:
+        carte_list = [c for c in carte_list if c.ruolo == ruolo_filter]
 
     return render_template(
         "mercato.html",
         utente=user_dict,
         carte=carte_list if carte_list is not None else [],
         stato_selezionato=stato_filter,
+        ruolo_selezionato=ruolo_filter,
         errore_caricamento=err.message if err else None,
     )
 

@@ -3,116 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Ingresso in Campo</title>
+    <title>Fantaclasse — Accesso Fantallenatore</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="auth-body" data-require-auth="false">
+    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
 
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
-                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
+                <polygon points="32,4 57,14 51,45 32,60 13,45 7,14" fill="#172033" stroke="#C5F36A" stroke-width="3"/>
+                <polygon points="32,10 50,18 46,42 32,53 18,42 14,18" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5"/>
+                <path d="M22 25 L32 16 L42 25 L38 40 L26 40 Z" fill="#19865B" stroke="#C5F36A" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5" fill="#C5F36A"/>
+            </symbol>
+            <symbol id="svg-nav-board" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="14" rx="2"/>
+                <path d="M8 21h8M12 18v3M7 9l3 3m0-3l-3 3m7-1h4"/>
+            </symbol>
+            <symbol id="svg-nav-cards" viewBox="0 0 24 24">
+                <rect x="5" y="3" width="14" height="18" rx="2"/>
+                <polygon points="12,7 15,12 12,17 9,12"/>
+            </symbol>
+            <symbol id="svg-nav-forge" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v8M8 12h8"/>
+            </symbol>
+            <symbol id="svg-nav-coach" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M5 20c1.5-4 12.5-4 14 0"/>
             </symbol>
         </defs>
     </svg>
 
-    <main class="auth-split-container">
-        <!-- LATO SINISTRO: STADIUM SHOWCASE -->
-        <aside class="auth-showcase-side">
-            <div>
-                <div class="logo-area auth-logo">
-                    <a href="{{ url_for('home') }}" class="brand-link">
-                        <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                        <div class="brand-title-wrap">
-                            <h1>FANTACLASSE</h1>
-                            <span class="brand-subtag">Tactical School RPG</span>
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="logo-area">
+                <a href="{{ url_for('home') }}" class="brand-link">
+                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
+                    <div class="brand-title-wrap">
+                        <h1>FANTACLASSE</h1>
+                        <span class="brand-subtag">Accesso Ufficiale Lega</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="header-nav-links" aria-label="Navigazione principale">
+                <a href="{{ url_for('home') }}" class="header-nav-link">Panoramica</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link">Listone &amp; Carte</a>
+                <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
+            </nav>
+
+            <div class="user-profile-pill">
+                <a href="{{ url_for('registrati') }}" class="login-btn-header">Registrati (100 FM)</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" tabindex="-1" class="auth-main-wrapper">
+        <div class="auth-split-container">
+            <!-- LATO SINISTRO: SHOWCASE LEGA -->
+            <aside class="auth-showcase-side" aria-label="Informazioni sull'accesso">
+                <div>
+                    <span class="section-tag">STAGIONE SCOLASTICA UFFICIALE</span>
+                    <h2 class="hero-title">PRONTO A<br><span class="hero-title-accent">SCENDERE IN CAMPO?</span></h2>
+                    <p class="hero-subtitle">
+                        Accedi con il tuo account Fantallenatore per consultare i tuoi FantaMilioni, visualizzare le carte in revisione e inviare nuove proposte alla Cattedra.
+                    </p>
+                </div>
+
+                <div class="stat-tile">
+                    <span class="stat-label">Autenticazione Sicura</span>
+                    <strong class="stat-value">JWT + PocketBase Auth</strong>
+                </div>
+            </aside>
+
+            <!-- LATO DESTRO: FORM DI ACCESSO -->
+            <section class="auth-card" aria-labelledby="heading-login">
+                <h2 id="heading-login" class="auth-heading">Ingresso in Campo</h2>
+                <p class="auth-subtext">Inserisci le tue credenziali da Fantallenatore</p>
+
+                {% if registered_ok %}
+                    <div class="alert-box alert-success" role="status">
+                        Tesseramento completato con successo! Effettua l'accesso per entrare nello spogliatoio.
+                    </div>
+                {% endif %}
+
+                <form id="form-login" action="{{ url_for('login') }}" method="POST" novalidate>
+                    <div
+                        class="alert-box alert-error"
+                        data-form-banner
+                        role="alert"
+                        {% if not errore %}hidden{% endif %}
+                    >{{ errore or '' }}</div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="login-email">Email Fantallenatore</label>
+                        <input
+                            id="login-email"
+                            type="email"
+                            name="email"
+                            class="form-input {% if field_errors and field_errors.get('email') %}input-invalid{% endif %}"
+                            placeholder="studente@scuola.it"
+                            value="{{ email_val or '' }}"
+                            maxlength="255"
+                            autocomplete="email"
+                            aria-describedby="login-email-error"
+                            {% if field_errors and field_errors.get('email') %}aria-invalid="true"{% endif %}
+                            required
+                        >
+                        <span
+                            id="login-email-error"
+                            class="field-error-msg"
+                            data-field-error="email"
+                            role="alert"
+                            {% if not (field_errors and field_errors.get('email')) %}hidden{% endif %}
+                        >{{ field_errors.get('email', '') if field_errors else '' }}</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="login-password">Password</label>
+                        <div class="password-field-wrap">
+                            <input
+                                id="login-password"
+                                type="password"
+                                name="password"
+                                class="form-input {% if field_errors and field_errors.get('password') %}input-invalid{% endif %}"
+                                placeholder="Minimo 8 caratteri"
+                                minlength="8"
+                                maxlength="72"
+                                autocomplete="current-password"
+                                aria-describedby="login-password-error"
+                                {% if field_errors and field_errors.get('password') %}aria-invalid="true"{% endif %}
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="btn-toggle-pass"
+                                data-toggle-password="login-password"
+                                aria-label="Mostra o nascondi password"
+                                aria-pressed="false"
+                            >Mostra</button>
                         </div>
-                    </a>
+                        <span
+                            id="login-password-error"
+                            class="field-error-msg"
+                            data-field-error="password"
+                            role="alert"
+                            {% if not (field_errors and field_errors.get('password')) %}hidden{% endif %}
+                        >{{ field_errors.get('password', '') if field_errors else '' }}</span>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">Scendi in Campo</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Non sei ancora tesserato? <a href="{{ url_for('registrati') }}">Crea il tuo Profilo (100 FM)</a></p>
+                    <p class="auth-back-row"><a href="{{ url_for('home') }}">&larr; Torna alla Panoramica Lega</a></p>
                 </div>
-                <span class="section-tag">DOCENTI VS STUDENTI</span>
-                <h2 class="hero-title">PRONTO A<br><span class="hero-title-accent">SCENDERE IN CAMPO?</span></h2>
-                <p class="hero-subtitle">
-                    Accedi con il tuo account PocketBase per gestire i tuoi FantaMilioni, esplorare il mazzo completo e forgiare nuove carte tattiche.
-                </p>
-            </div>
-
-            <div class="stat-tile stat-tile--gold">
-                <span class="stat-label">Sicurezza Sessione</span>
-                <strong class="stat-value text-gold">JWT + PocketBase Auth</strong>
-            </div>
-        </aside>
-
-        <!-- LATO DESTRO: FORM DI ACCESSO -->
-        <section class="auth-card">
-            <h2 class="auth-heading">Ingresso in Campo</h2>
-            <p class="auth-subtext">Inserisci le tue credenziali da Fantallenatore</p>
-
-            {% if registered_ok %}
-                <div class="alert-box alert-success" role="status">
-                    Tesseramento completato con successo! Effettua l'accesso per entrare nello spogliatoio.
-                </div>
-            {% endif %}
-
-            <form id="form-login" action="{{ url_for('login') }}" method="POST" novalidate>
-                <div
-                    class="alert-box alert-error"
-                    data-form-banner
-                    role="alert"
-                    {% if not errore %}hidden{% endif %}
-                >{{ errore or '' }}</div>
-
-                <div class="input-group">
-                    <label class="input-label" for="login-email">Email Fantallenatore</label>
-                    <input
-                        id="login-email"
-                        type="email"
-                        name="email"
-                        class="form-input {% if field_errors and field_errors.get('email') %}input-invalid{% endif %}"
-                        placeholder="studente@scuola.it"
-                        value="{{ email_val or '' }}"
-                        maxlength="255"
-                        autocomplete="email"
-                        required
-                    >
-                    <span
-                        class="field-error-msg"
-                        data-field-error="email"
-                        {% if not (field_errors and field_errors.get('email')) %}hidden{% endif %}
-                    >{{ field_errors.get('email', '') if field_errors else '' }}</span>
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label" for="login-password">Parola d'Ordine (Password)</label>
-                    <input
-                        id="login-password"
-                        type="password"
-                        name="password"
-                        class="form-input {% if field_errors and field_errors.get('password') %}input-invalid{% endif %}"
-                        placeholder="Minimo 8 caratteri"
-                        minlength="8"
-                        maxlength="72"
-                        autocomplete="current-password"
-                        required
-                    >
-                    <span
-                        class="field-error-msg"
-                        data-field-error="password"
-                        {% if not (field_errors and field_errors.get('password')) %}hidden{% endif %}
-                    >{{ field_errors.get('password', '') if field_errors else '' }}</span>
-                </div>
-
-                <button type="submit" class="btn-primary btn-full">Scendi in Campo</button>
-            </form>
-
-            <div class="auth-links">
-                <p>Non sei ancora tesserato? <a href="{{ url_for('registrati') }}">Crea il tuo Profilo (100 FM)</a></p>
-                <p class="auth-back-row"><a href="{{ url_for('home') }}">&larr; Torna alla Lavagna Arena</a></p>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
+
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <span><strong>Fantaclasse</strong> &bull; Autenticazione protetta tramite PocketBase</span>
+            <nav class="footer-links" aria-label="Link rapidi">
+                <a href="{{ url_for('home') }}">Panoramica</a>
+                <a href="{{ url_for('mercato') }}">Listone Carte</a>
+                <a href="{{ url_for('registrati') }}">Registrati</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Navigazione principale mobile">
+        <a href="{{ url_for('home') }}" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>
+            <span>Panoramica</span>
+        </a>
+        <a href="{{ url_for('mercato') }}" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-cards"></use></svg>
+            <span>Listone</span>
+        </a>
+        <a href="{{ url_for('login') }}" class="nav-item active" aria-current="page">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-coach"></use></svg>
+            <span>Accedi</span>
+        </a>
+        <a href="{{ url_for('registrati') }}" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
+            <span>Registrati</span>
+        </a>
+    </nav>
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>
 </body>

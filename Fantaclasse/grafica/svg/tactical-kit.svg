@@ -1,47 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <pattern id="chalk-grid" width="80" height="80" patternUnits="userSpaceOnUse">
-      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#16A34A" stroke-width="0.6" stroke-opacity="0.10"/>
-      <path d="M 40 0 L 40 80 M 0 40 L 80 40" fill="none" stroke="#F5F5F5" stroke-width="0.4" stroke-dasharray="3 6" stroke-opacity="0.05"/>
+    <pattern id="chalk-grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#172033" stroke-width="0.5" stroke-opacity="0.035"/>
+      <path d="M 32 0 L 32 64 M 0 32 L 64 32" fill="none" stroke="#19865B" stroke-width="0.4" stroke-dasharray="2 6" stroke-opacity="0.04"/>
     </pattern>
 
-    <radialGradient id="stadium-emerald" cx="18%" cy="18%" r="55%">
-      <stop offset="0%" stop-color="#16A34A" stop-opacity="0.24"/>
-      <stop offset="55%" stop-color="#059669" stop-opacity="0.07"/>
-      <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
+    <radialGradient id="pitch-lime-glow" cx="85%" cy="12%" r="48%">
+      <stop offset="0%" stop-color="#C5F36A" stop-opacity="0.18"/>
+      <stop offset="55%" stop-color="#19865B" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#F5F7F4" stop-opacity="0"/>
     </radialGradient>
 
-    <radialGradient id="stadium-gold" cx="85%" cy="22%" r="50%">
-      <stop offset="0%" stop-color="#FBBF24" stop-opacity="0.18"/>
-      <stop offset="50%" stop-color="#D97706" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
-    </radialGradient>
-
-    <radialGradient id="stadium-blue" cx="50%" cy="88%" r="55%">
-      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#0B0F0E" stop-opacity="0"/>
+    <radialGradient id="pitch-emerald-glow" cx="12%" cy="88%" r="52%">
+      <stop offset="0%" stop-color="#19865B" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#F5F7F4" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <rect width="1440" height="900" fill="#0B0F0E"/>
+  <rect width="1440" height="900" fill="#F5F7F4"/>
   <rect width="1440" height="900" fill="url(#chalk-grid)"/>
-  <rect width="1440" height="900" fill="url(#stadium-emerald)"/>
-  <rect width="1440" height="900" fill="url(#stadium-gold)"/>
-  <rect width="1440" height="900" fill="url(#stadium-blue)"/>
+  <rect width="1440" height="900" fill="url(#pitch-lime-glow)"/>
+  <rect width="1440" height="900" fill="url(#pitch-emerald-glow)"/>
 
-  <!-- Linee Campo Lavagna Tattica Sottili in Sottofondo -->
-  <g stroke="#F5F5F5" stroke-opacity="0.05" fill="none" stroke-width="1.5">
-    <rect x="140" y="90" width="1160" height="720" rx="18"/>
-    <line x1="720" y1="90" x2="720" y2="810"/>
-    <circle cx="720" cy="450" r="110"/>
-    <circle cx="720" cy="450" r="4" fill="#F5F5F5" fill-opacity="0.08"/>
-    <rect x="140" y="270" width="170" height="360"/>
-    <rect x="1130" y="270" width="170" height="360"/>
-  </g>
-
-  <!-- Schemi Tattici in Gesso (Frecce & Posizioni) -->
-  <g stroke="#16A34A" stroke-opacity="0.14" fill="none" stroke-width="2" stroke-dasharray="8 8">
-    <path d="M 280 640 C 420 520, 520 500, 660 460"/>
-    <path d="M 1120 240 C 980 310, 880 340, 770 420" stroke="#FBBF24" stroke-opacity="0.14"/>
+  <!-- Subtle architectural pitch markings -->
+  <g stroke="#172033" stroke-opacity="0.035" fill="none" stroke-width="1.25">
+    <rect x="96" y="64" width="1248" height="772" rx="16"/>
+    <line x1="720" y1="64" x2="720" y2="836"/>
+    <circle cx="720" cy="450" r="104"/>
+    <circle cx="720" cy="450" r="3" fill="#19865B" fill-opacity="0.08"/>
+    <rect x="96" y="250" width="160" height="400"/>
+    <rect x="1184" y="250" width="160" height="400"/>
   </g>
 </svg>

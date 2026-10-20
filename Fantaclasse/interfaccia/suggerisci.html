@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>FantaClasse RPG — Laboratorio Forgia Carta</title>
+    <title>Fantaclasse — Proponi Nuova Carta Tattica</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-require-auth="true">
+    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
 
-    <!-- KIT SVG UFFICIALE INTEGRATO -->
+    <!-- KIT ICONE VETTORIALI UFFICIALI -->
     <svg class="svg-sprite-defs" aria-hidden="true">
         <defs>
             <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,3 58,13 52,45 32,61 12,45 6,13" fill="#0F1A16" stroke="#22C55E" stroke-width="3"/>
-                <polygon points="32,8 52,16 47,42 32,55 17,42 12,16" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="4 2"/>
-                <path d="M21 24 L32 15 L43 24 L39 39 L25 39 Z" fill="#16A34A" fill-opacity="0.32" stroke="#FBBF24" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5.5" fill="#FBBF24"/>
+                <polygon points="32,4 57,14 51,45 32,60 13,45 7,14" fill="#172033" stroke="#C5F36A" stroke-width="3"/>
+                <polygon points="32,10 50,18 46,42 32,53 18,42 14,18" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5"/>
+                <path d="M22 25 L32 16 L42 25 L38 40 L26 40 Z" fill="#19865B" stroke="#C5F36A" stroke-width="2"/>
+                <circle cx="32" cy="30" r="5" fill="#C5F36A"/>
             </symbol>
             <symbol id="svg-crown-gold" viewBox="0 0 24 24">
                 <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -46,42 +47,44 @@
                 <a href="{{ url_for('home') }}" class="brand-link">
                     <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
                     <div class="brand-title-wrap">
-                        <h1>FORGIA CARTA</h1>
-                        <span class="brand-subtag">Laboratorio Tattico Ufficiale</span>
+                        <h1>FANTACLASSE</h1>
+                        <span class="brand-subtag">Laboratorio Proposte Ufficiali</span>
                     </div>
                 </a>
             </div>
 
-            <nav class="header-nav-links" aria-label="Menu Desktop">
-                <a href="{{ url_for('home') }}" class="header-nav-link">Lavagna Arena</a>
-                <a href="{{ url_for('mercato') }}" class="header-nav-link">Mazzo Carte</a>
-                <a href="{{ url_for('suggerisci') }}" class="header-nav-link active">Forgia Carta</a>
+            <nav class="header-nav-links" aria-label="Navigazione principale">
+                <a href="{{ url_for('home') }}" class="header-nav-link">Panoramica</a>
+                <a href="{{ url_for('mercato') }}" class="header-nav-link">Listone &amp; Carte</a>
+                <a href="{{ url_for('suggerisci') }}" class="header-nav-link active" aria-current="page">Proponi Carta</a>
                 <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
             </nav>
 
             <div class="user-profile-pill">
                 {% if utente %}
-                    <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                    <span class="user-name">{{ utente.name }}</span>
-                    <span class="fanta-milioni-badge">{{ utente.fanta_milioni }} FM</span>
+                    <span class="user-identity-chip">
+                        <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
+                        <span class="user-name" title="{{ utente.name }}">{{ utente.name }}</span>
+                    </span>
+                    <span class="fanta-milioni-badge" title="Budget FantaMilioni disponibile">{{ utente.fanta_milioni }} FM</span>
                     <a href="{{ url_for('logout') }}" class="logout-btn">Esci</a>
                 {% endif %}
             </div>
         </div>
     </header>
 
-    <main class="dashboard-container">
+    <main id="main-content" tabindex="-1" class="dashboard-container">
 
-        <!-- STUDIO DI FORGIATURA SPLIT-SCREEN (FORM + ANTEPRIMA CARTA 3D LIVE) -->
+        <!-- STUDIO DI CREAZIONE CARTA (FORM + ANTEPRIMA LIVE) -->
         <div class="forge-studio-grid">
-            <section class="section-card section-card--gold">
+            <section class="section-card section-card--gold" aria-labelledby="heading-proponi">
                 <span class="section-tag">
                     <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
                     PROPOSTA ALLA CATTEDRA // COLLEZIONE CARTE
                 </span>
-                <h2 class="hero-title">Forgia una Nuova Carta</h2>
+                <h2 id="heading-proponi" class="hero-title">Proponi una Nuova Carta</h2>
                 <p class="hero-subtitle">
-                    Compila i dati qui sotto e osserva l'anteprima della tua carta in tempo reale. Una volta inviata, sarà salvata in PocketBase con stato <strong>in_attesa</strong> per l'approvazione della Cattedra.
+                    Inserisci il nome del protagonista e assegna il ruolo tattico in campo. La proposta verrà salvata in PocketBase con stato <strong>in_attesa</strong> per la verifica della Cattedra.
                 </p>
 
                 {% if successo %}
@@ -99,7 +102,10 @@
                     >{{ errore or '' }}</div>
 
                     <div class="input-group">
-                        <label class="input-label" for="carta-nome">Nome del Protagonista sulla Carta</label>
+                        <div class="input-label-row">
+                            <label class="input-label" for="carta-nome">Nome del Protagonista sulla Carta</label>
+                            <span id="carta-nome-counter" class="char-counter" aria-live="off">0 / 100</span>
+                        </div>
                         <input
                             id="carta-nome"
                             type="text"
@@ -109,11 +115,15 @@
                             value="{{ form_values.get('nome', '') if form_values else '' }}"
                             minlength="2"
                             maxlength="100"
+                            aria-describedby="carta-nome-error"
+                            {% if field_errors and field_errors.get('nome') %}aria-invalid="true"{% endif %}
                             required
                         >
                         <span
+                            id="carta-nome-error"
                             class="field-error-msg"
                             data-field-error="nome"
+                            role="alert"
                             {% if not (field_errors and field_errors.get('nome')) %}hidden{% endif %}
                         >{{ field_errors.get('nome', '') if field_errors else '' }}</span>
                     </div>
@@ -122,7 +132,13 @@
                         <label class="input-label" for="carta-ruolo">Seleziona il Ruolo Tattico in Campo</label>
                         <div class="role-quick-selector" role="group" aria-label="Scelta rapida ruolo">
                             {% for r in ruoli_ammessi %}
-                                <button type="button" class="role-pick-btn" data-pick-ruolo="{{ r }}">{{ r }}</button>
+                                <button
+                                    type="button"
+                                    class="role-pick-btn"
+                                    data-pick-ruolo="{{ r }}"
+                                    data-role-code="{{ r[0] | upper }}"
+                                    aria-pressed="false"
+                                >{{ r }}</button>
                             {% endfor %}
                         </div>
 
@@ -130,6 +146,8 @@
                             id="carta-ruolo"
                             name="ruolo"
                             class="form-input {% if field_errors and field_errors.get('ruolo') %}input-invalid{% endif %}"
+                            aria-describedby="carta-ruolo-error"
+                            {% if field_errors and field_errors.get('ruolo') %}aria-invalid="true"{% endif %}
                             required
                         >
                             <option value="">-- Seleziona il ruolo tattico --</option>
@@ -141,62 +159,88 @@
                             {% endfor %}
                         </select>
                         <span
+                            id="carta-ruolo-error"
                             class="field-error-msg"
                             data-field-error="ruolo"
+                            role="alert"
                             {% if not (field_errors and field_errors.get('ruolo')) %}hidden{% endif %}
                         >{{ field_errors.get('ruolo', '') if field_errors else '' }}</span>
                     </div>
 
-                    <button type="submit" class="btn-primary btn-full">Invia Carta alla Cattedra</button>
+                    <div class="cta-row">
+                        <button type="submit" class="btn-primary">Invia Carta alla Cattedra</button>
+                        <button type="button" id="btn-reset-forge" class="btn-secondary">Ripristina Campi</button>
+                    </div>
                 </form>
             </section>
 
-            <!-- ANTEPRIMA LIVE CARTA 3D FUT / RPG -->
-            <aside class="forge-preview-panel" aria-label="Anteprima Live della Carta">
-                <span class="section-tag">LIVE 3D CARD PREVIEW</span>
+            <!-- ANTEPRIMA LIVE CARTA -->
+            <aside class="forge-preview-panel" aria-label="Anteprima in tempo reale della carta">
+                <div class="forge-preview-header">
+                    <span class="forge-preview-title">Anteprima Carta</span>
+                    <span class="league-code-pill">LIVE PREVIEW</span>
+                </div>
 
-                <article class="player-card player-card--pending">
-                    <div class="rpg-card-top">
-                        <span class="rpg-faction-tag">CATTEDRA // VERIFICA</span>
-                        <span class="status-pill status-pending">In Revisione</span>
-                    </div>
+                <div class="forge-preview-stage">
+                    <article id="preview-card-article" class="player-card player-card--pending" data-card-ruolo="">
+                        <div class="rpg-card-top">
+                            <span class="rpg-faction-tag">CATTEDRA // VERIFICA</span>
+                            <span class="status-pill status-pending">In Revisione</span>
+                        </div>
 
-                    <div class="player-header">
-                        <div class="player-avatar" id="preview-card-avatar">?</div>
-                        <div class="player-info">
-                            <div class="player-name" id="preview-card-name">Nuovo Campione</div>
-                            <div class="player-meta-row">
-                                <span class="role-badge" id="preview-card-role">RUOLO: Da assegnare</span>
+                        <div class="player-header">
+                            <div class="player-avatar" id="preview-card-avatar" aria-hidden="true">?</div>
+                            <div class="player-info">
+                                <h3 class="player-name" id="preview-card-name">Nuovo Campione</h3>
+                                <div class="player-meta-row">
+                                    <span class="role-badge" id="preview-card-role">Ruolo: Da assegnare</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="player-footer">
-                        <span class="record-meta">ID: AUTO-PB-15CHAR</span>
-                        <span class="record-meta">STATO: IN_ATTESA</span>
-                    </div>
-                </article>
+                        <div class="player-footer">
+                            <span class="record-meta">ID: AUTO-PB-15CHAR</span>
+                            <span class="record-meta">STATO: IN_ATTESA</span>
+                        </div>
+                    </article>
+                </div>
+
+                <p class="forge-preview-note">
+                    <strong>Workflow di Moderazione:</strong> Dopo l'invio, la carta sarà visibile nel filtro <em>In Revisione Cattedra</em> del Listone fino all'approvazione ufficiale.
+                </p>
             </aside>
         </div>
 
     </main>
 
-    <nav class="bottom-nav" aria-label="Navigazione tattica principale">
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <span><strong>Fantaclasse</strong> &bull; Laboratorio Proposte sincronizzato con PocketBase</span>
+            <nav class="footer-links" aria-label="Link rapidi">
+                <a href="{{ url_for('home') }}">Panoramica</a>
+                <a href="{{ url_for('mercato') }}">Listone Carte</a>
+                <a href="{{ url_for('suggerisci') }}">Proponi Carta</a>
+                <a href="/sito/">Community Feedback</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Navigazione principale mobile">
         <a href="{{ url_for('home') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>
-            <span>Lavagna</span>
+            <span>Panoramica</span>
         </a>
         <a href="{{ url_for('mercato') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-cards"></use></svg>
-            <span>Mazzo</span>
+            <span>Listone</span>
         </a>
-        <a href="{{ url_for('suggerisci') }}" class="nav-item active">
+        <a href="{{ url_for('suggerisci') }}" class="nav-item active" aria-current="page">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
-            <span>Forgia</span>
+            <span>Proponi</span>
         </a>
         <a href="{{ url_for('logout') }}" class="nav-item">
             <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-exit"></use></svg>
-            <span>Uscita</span>
+            <span>Esci</span>
         </a>
     </nav>
 
