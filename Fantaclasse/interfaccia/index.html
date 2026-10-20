@@ -1,360 +1,275 @@
 <!DOCTYPE html>
-<html lang="it" data-pb-url="{{ pb_base_url }}">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Fantaclasse — Panoramica Lega &amp; Lavagna Tattica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantaclasse — Dashboard App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body data-require-auth="false">
+<body>
     <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
 
-    <!-- KIT ICONE VETTORIALI UFFICIALI -->
-    <svg class="svg-sprite-defs" aria-hidden="true">
+    <!-- Sprite SVG Ufficiale dell'App -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite-defs" aria-hidden="true">
         <defs>
-            <symbol id="svg-crest-fantaclasse" viewBox="0 0 64 64">
-                <polygon points="32,4 57,14 51,45 32,60 13,45 7,14" fill="#172033" stroke="#C5F36A" stroke-width="3"/>
-                <polygon points="32,10 50,18 46,42 32,53 18,42 14,18" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.5"/>
-                <path d="M22 25 L32 16 L42 25 L38 40 L26 40 Z" fill="#19865B" stroke="#C5F36A" stroke-width="2"/>
-                <circle cx="32" cy="30" r="5" fill="#C5F36A"/>
+            <symbol id="icon-crest" viewBox="0 0 64 64">
+                <path d="M32 4 L56 13 V31 C56 46.5 45.8 56.8 32 61 C18.2 56.8 8 46.5 8 31 V13 Z" fill="#172033" stroke="#C5F36A" stroke-width="3.5"/>
+                <circle cx="32" cy="31" r="11" fill="none" stroke="#C5F36A" stroke-width="2.2"/>
+                <polygon points="32,23 37,27 35,34 29,34 27,27" fill="#C5F36A"/>
             </symbol>
-            <symbol id="svg-crown-gold" viewBox="0 0 24 24">
-                <path d="M3 18h18l-2-11-5 4-2-6-2 6-5-4-2 11z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <symbol id="icon-jersey" viewBox="0 0 64 64">
+                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="currentColor" opacity="0.16"/>
+                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
             </symbol>
-            <symbol id="svg-nav-board" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="14" rx="2"/>
-                <path d="M8 21h8M12 18v3M7 9l3 3m0-3l-3 3m7-1h4"/>
+            <symbol id="icon-home" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
             </symbol>
-            <symbol id="svg-nav-cards" viewBox="0 0 24 24">
-                <rect x="5" y="3" width="14" height="18" rx="2"/>
-                <polygon points="12,7 15,12 12,17 9,12"/>
+            <symbol id="icon-cards" viewBox="0 0 24 24">
+                <rect x="4" y="4" width="12" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M16 7h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </symbol>
-            <symbol id="svg-nav-forge" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 8v8M8 12h8"/>
+            <symbol id="icon-forge" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </symbol>
-            <symbol id="svg-nav-coach" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M5 20c1.5-4 12.5-4 14 0"/>
-            </symbol>
-            <symbol id="svg-nav-exit" viewBox="0 0 24 24">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
+            <symbol id="icon-feedback" viewBox="0 0 24 24">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </symbol>
         </defs>
     </svg>
 
-    <!-- HEADER PRINCIPALE -->
-    <header class="app-header">
-        <div class="header-inner">
-            <div class="logo-area">
-                <a href="{{ url_for('home') }}" class="brand-link">
-                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#svg-crest-fantaclasse"></use></svg>
-                    <div class="brand-title-wrap">
-                        <h1>FANTACLASSE</h1>
-                        <span class="brand-subtag">Lega Scolastica Ufficiale</span>
-                    </div>
+    <div class="app-shell">
+        <!-- App Sidebar (PC) / Top App Bar (Tablet & Telefono) -->
+        <header class="app-sidebar">
+            <div class="sidebar-brand">
+                <a href="/" class="brand-link" aria-label="Fantaclasse Home">
+                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#icon-crest"></use></svg>
+                    <span class="brand-name">Fantaclasse</span>
                 </a>
             </div>
 
-            <nav class="header-nav-links" aria-label="Navigazione principale">
-                <a href="{{ url_for('home') }}" class="header-nav-link active" aria-current="page">Panoramica</a>
-                <a href="{{ url_for('mercato') }}" class="header-nav-link">Listone &amp; Carte</a>
-                {% if utente %}
-                    <a href="{{ url_for('suggerisci') }}" class="header-nav-link">Proponi Carta</a>
-                {% endif %}
-                <a href="/sito/" class="header-nav-link header-nav-link--feedback">Community Feedback</a>
+            <nav class="sidebar-nav" aria-label="Navigazione principale">
+                <a href="/" class="sidebar-link active" aria-current="page">
+                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-home"></use></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/mercato" class="sidebar-link">
+                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-cards"></use></svg>
+                    <span>Listone</span>
+                </a>
+                <a href="/suggerisci" class="sidebar-link">
+                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-forge"></use></svg>
+                    <span>Crea Carta</span>
+                </a>
+                <a href="/sito/" class="sidebar-link">
+                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-feedback"></use></svg>
+                    <span>Feedback</span>
+                </a>
             </nav>
 
-            <div class="user-profile-pill">
+            <div class="sidebar-user">
                 {% if utente %}
-                    <span class="user-identity-chip">
-                        <svg class="coach-badge-icon" aria-hidden="true"><use href="#svg-crown-gold"></use></svg>
-                        <span class="user-name" title="{{ utente.name }}">{{ utente.name }}</span>
-                    </span>
-                    <span class="fanta-milioni-badge" title="Budget FantaMilioni disponibile">{{ utente.fanta_milioni }} FM</span>
-                    <a href="{{ url_for('logout') }}" class="logout-btn" title="Disconnetti sessione">Esci</a>
+                <div class="user-wallet-card">
+                    <div class="user-wallet-info">
+                        <span class="user-avatar-mini" aria-hidden="true">{{ utente.name[0]|upper if utente.name else 'M' }}</span>
+                        <div class="user-wallet-text">
+                            <span class="user-name" id="header-user-name">{{ utente.name }}</span>
+                            <span class="fanta-milioni-badge" id="header-user-fm">{{ utente.fanta_milioni }} FM</span>
+                        </div>
+                    </div>
+                    <a href="/logout" class="logout-btn">Esci</a>
+                </div>
                 {% else %}
-                    <a href="{{ url_for('login') }}" class="login-btn-header">Accedi</a>
+                <div class="user-wallet-card user-wallet-card--guest">
+                    <span class="fanta-milioni-badge">100 FM Bonus</span>
+                    <a href="/login" class="login-btn-header">Accedi</a>
+                </div>
                 {% endif %}
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main id="main-content" tabindex="-1" class="dashboard-container">
-
-        <!-- HERO PANORAMICA LEGA + LAVAGNA REPARTI -->
-        <section class="hero-arena" aria-label="Riepilogo lega e schieramento">
-            <div class="hero-copy-card">
-                <div>
-                    <div class="hero-top-meta">
-                        <span class="section-tag">
-                            <span class="pulse-dot" aria-hidden="true"></span>
-                            STAGIONE UFFICIALE • MERCATO SEMPRE APERTO
-                        </span>
-                        <span class="league-code-pill">POCKETBASE SYNC</span>
-                    </div>
-
-                    {% if utente %}
-                        <h2 class="hero-title">
-                            BENTORNATO IN CAMPO,<br>
-                            <span class="hero-title-accent">MISTER {{ utente.name }}</span>
-                        </h2>
-                        <p class="hero-subtitle">
-                            Profilo allenatore attivo ({{ utente.email }}). Consulta il listone ufficiale delle carte approvate, verifica i ruoli disponibili in ogni reparto o invia una nuova proposta alla Cattedra.
-                        </p>
-                        <div class="cta-row">
-                            <a href="{{ url_for('mercato') }}" class="btn-primary">Esplora Listone Carte</a>
-                            <a href="{{ url_for('suggerisci') }}" class="btn-secondary">+ Proponi Nuova Carta</a>
-                        </div>
-                    {% else %}
-                        <h2 class="hero-title">
-                            LA LEGA FANTACALCIO<br>
-                            <span class="hero-title-accent">DELLA TUA SCUOLA</span>
-                        </h2>
-                        <p class="hero-subtitle">
-                            Gestisci la tua rosa scolastica con dati sincronizzati in tempo reale su PocketBase. Registrati come Fantallenatore, ricevi subito 100 FantaMilioni di budget iniziale e proponi i protagonisti della stagione.
-                        </p>
-                        <div class="cta-row">
-                            <a href="{{ url_for('login') }}" class="btn-primary">Scendi in Campo</a>
-                            <a href="{{ url_for('registrati') }}" class="btn-secondary">Crea Profilo (100 FM)</a>
-                        </div>
-                    {% endif %}
+        <!-- Main App Workspace -->
+        <main id="main-content" class="app-workspace" tabindex="-1">
+            <!-- Top App Context Bar -->
+            <div class="workspace-topbar">
+                <div class="workspace-title-group">
+                    <span class="workspace-eyebrow">Stagione 2025/26</span>
+                    <h1 class="workspace-title">
+                        {% if utente %}
+                        Ciao, Mister {{ utente.name }}
+                        {% else %}
+                        Centro Tattico Fantaclasse
+                        {% endif %}
+                    </h1>
                 </div>
-
-                <!-- TELEMETRIA REALE DATABASE POCKETBASE -->
-                <div class="stats-grid" aria-label="Statistiche principali della lega">
-                    <div class="stat-tile">
-                        <span class="stat-label">Carte Schierabili</span>
-                        <strong class="stat-value text-green">{{ totale_approvate }}</strong>
-                        <span class="stat-sub">Approvate nel listone</span>
-                    </div>
+                <div class="workspace-actions">
+                    <a href="/mercato" class="btn-secondary">Esplora Listone</a>
                     {% if utente %}
-                        <div class="stat-tile stat-tile--gold">
-                            <span class="stat-label">In Revisione Cattedra</span>
-                            <strong class="stat-value text-gold">{{ totale_in_attesa }}</strong>
-                            <span class="stat-sub">Proposte in verifica</span>
-                        </div>
-                        <div class="stat-tile stat-tile--lime">
-                            <span class="stat-label">Budget Disponibile</span>
-                            <strong class="stat-value">{{ utente.fanta_milioni }} FM</strong>
-                            <span class="stat-sub">Crediti Fantallenatore</span>
-                        </div>
+                    <a href="/suggerisci" class="btn-primary">+ Crea Carta</a>
                     {% else %}
-                        <div class="stat-tile stat-tile--gold">
-                            <span class="stat-label">Reparti Tattici</span>
-                            <strong class="stat-value">4 Ruoli</strong>
-                            <span class="stat-sub">P • D • C • A ufficiali</span>
-                        </div>
-                        <div class="stat-tile stat-tile--lime">
-                            <span class="stat-label">Bonus Tesseramento</span>
-                            <strong class="stat-value">100 FM</strong>
-                            <span class="stat-sub">Dotazione iniziale lega</span>
-                        </div>
+                    <a href="/registrati" class="btn-primary">Inizia con 100 FM</a>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- LAVAGNA CAMPO TATTICO (Mappata sui 4 Ruoli Reali di PocketBase) -->
-            <aside class="tactical-pitch-card" aria-label="Ripartizione ruoli in campo">
-                <div>
-                    <div class="pitch-header">
-                        <span class="pitch-title">REPARTI IN CAMPO</span>
-                        <span class="pitch-badge">4 RUOLI</span>
+            <!-- 3 KPI Metric Cards -->
+            <section class="kpi-strip" aria-label="Statistiche Lega">
+                <div class="kpi-card">
+                    <span class="kpi-label">Carte Schierabili</span>
+                    <div class="kpi-value-row">
+                        <strong class="kpi-value">{{ totale_approvate }}</strong>
+                        <span class="kpi-chip kpi-chip--success">Ufficiali</span>
                     </div>
-                    <p class="pitch-subtitle">Seleziona un reparto per filtrare il listone</p>
                 </div>
-
-                <div class="pitch-field-visual">
-                    <a href="{{ url_for('mercato', ruolo='Attaccante') }}" class="pitch-zone-row">
-                        <div class="pitch-zone-left">
-                            <span class="role-initial-pill role-initial-pill--a" aria-hidden="true">A</span>
-                            <div class="pitch-zone-text">
-                                <span class="pitch-zone-label">LINEA ATTACCO</span>
-                                <span class="pitch-zone-desc">Ruolo: Attaccante</span>
-                            </div>
-                        </div>
-                        <span class="pitch-zone-count">{{ conteggio_ruoli.get('Attaccante', 0) if conteggio_ruoli else 0 }} in rosa</span>
-                    </a>
-
-                    <a href="{{ url_for('mercato', ruolo='Centrocampista') }}" class="pitch-zone-row">
-                        <div class="pitch-zone-left">
-                            <span class="role-initial-pill role-initial-pill--c" aria-hidden="true">C</span>
-                            <div class="pitch-zone-text">
-                                <span class="pitch-zone-label">LINEA REGIA</span>
-                                <span class="pitch-zone-desc">Ruolo: Centrocampista</span>
-                            </div>
-                        </div>
-                        <span class="pitch-zone-count">{{ conteggio_ruoli.get('Centrocampista', 0) if conteggio_ruoli else 0 }} in rosa</span>
-                    </a>
-
-                    <a href="{{ url_for('mercato', ruolo='Difensore') }}" class="pitch-zone-row">
-                        <div class="pitch-zone-left">
-                            <span class="role-initial-pill role-initial-pill--d" aria-hidden="true">D</span>
-                            <div class="pitch-zone-text">
-                                <span class="pitch-zone-label">LINEA DIFENSIVA</span>
-                                <span class="pitch-zone-desc">Ruolo: Difensore</span>
-                            </div>
-                        </div>
-                        <span class="pitch-zone-count">{{ conteggio_ruoli.get('Difensore', 0) if conteggio_ruoli else 0 }} in rosa</span>
-                    </a>
-
-                    <a href="{{ url_for('mercato', ruolo='Portiere') }}" class="pitch-zone-row">
-                        <div class="pitch-zone-left">
-                            <span class="role-initial-pill role-initial-pill--p" aria-hidden="true">P</span>
-                            <div class="pitch-zone-text">
-                                <span class="pitch-zone-label">PORTA &amp; BALUARDO</span>
-                                <span class="pitch-zone-desc">Ruolo: Portiere</span>
-                            </div>
-                        </div>
-                        <span class="pitch-zone-count">{{ conteggio_ruoli.get('Portiere', 0) if conteggio_ruoli else 0 }} in rosa</span>
-                    </a>
+                <div class="kpi-card">
+                    <span class="kpi-label">In Moderazione</span>
+                    <div class="kpi-value-row">
+                        <strong class="kpi-value">{{ totale_in_attesa }}</strong>
+                        <span class="kpi-chip kpi-chip--warning">Cattedra</span>
+                    </div>
                 </div>
-            </aside>
-        </section>
-
-        <!-- VETRINA CARTE APPROVATE NEL LISTONE (Dati Reali Collezione Carte) -->
-        <section class="section-card" aria-labelledby="heading-carte-approvate">
-            <div class="section-header-inline">
-                <div>
-                    <span class="section-tag">COLLEZIONE UFFICIALE POCKETBASE</span>
-                    <h2 id="heading-carte-approvate" class="section-heading">Carte Tattiche Schierabili</h2>
-                    <p class="section-desc">Ultime carte verificate dalla Cattedra e disponibili nel listone ufficiale.</p>
+                <div class="kpi-card kpi-card--accent">
+                    <span class="kpi-label">Budget Squadra</span>
+                    <div class="kpi-value-row">
+                        <strong class="kpi-value">{{ utente.fanta_milioni if utente else 100 }} FM</strong>
+                        <span class="kpi-chip kpi-chip--dark">Crediti</span>
+                    </div>
                 </div>
-                <a href="{{ url_for('mercato') }}" class="text-link">Apri Listone Completo ({{ totale_approvate }}) &rarr;</a>
-            </div>
+            </section>
 
-            {% if errore_caricamento %}
-                <div class="state-box state-error" data-async-state="error" role="alert">
-                    <h3 class="state-title">Connessione al Database Interrotta</h3>
-                    <p class="state-desc">{{ errore_caricamento }}</p>
-                    <a href="{{ url_for('home') }}" class="btn-retry">Riprova Connessione</a>
-                </div>
-            {% elif carte_recenti %}
-                <div class="players-grid" data-async-state="success">
-                    {% for c in carte_recenti %}
-                    <article
-                        class="player-card"
-                        data-record-id="{{ c.id }}"
-                        data-card-ruolo="{{ c.ruolo or '' }}"
-                    >
-                        <div class="rpg-card-top">
-                            <span class="rpg-faction-tag">LISTONE UFFICIALE</span>
-                            <span class="status-pill status-approved">Approvata</span>
+            <!-- Main App Grid: Tactical Pitch + Featured Trading Cards -->
+            <div class="dashboard-bento">
+                <!-- Left Column: Interactive Tactical Pitch -->
+                <section class="pitch-panel" aria-label="Reparti in Campo">
+                    <div class="panel-header-clean">
+                        <div>
+                            <h2 class="panel-title">Campo &amp; Reparti</h2>
+                            <p class="panel-subtitle">Tocca un reparto per filtrare il listone</p>
                         </div>
-                        <div class="player-header">
-                            <div class="player-avatar" aria-hidden="true">{{ (c.nome or '?')[0] | upper }}</div>
-                            <div class="player-info">
-                                <h3 class="player-name">{{ c.nome }}</h3>
-                                <div class="player-meta-row">
-                                    <span class="role-badge">Ruolo: {{ c.ruolo or 'Non assegnato' }}</span>
+                        <span class="panel-badge">4 Ruoli</span>
+                    </div>
+
+                    <div class="tactical-pitch-board">
+                        <a href="/mercato?ruolo=Attaccante" class="pitch-line-card">
+                            <div class="pitch-line-left">
+                                <span class="role-shield role-shield--a">A</span>
+                                <div>
+                                    <strong class="pitch-line-name">Attaccanti</strong>
+                                    <span class="pitch-line-sub">Bonus voti alti</span>
                                 </div>
                             </div>
+                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Attaccante', 0) if conteggio_ruoli else 0 }} carte</span>
+                        </a>
+
+                        <a href="/mercato?ruolo=Centrocampista" class="pitch-line-card">
+                            <div class="pitch-line-left">
+                                <span class="role-shield role-shield--c">C</span>
+                                <div>
+                                    <strong class="pitch-line-name">Centrocampisti</strong>
+                                    <span class="pitch-line-sub">Regia e costanza</span>
+                                </div>
+                            </div>
+                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Centrocampista', 0) if conteggio_ruoli else 0 }} carte</span>
+                        </a>
+
+                        <a href="/mercato?ruolo=Difensore" class="pitch-line-card">
+                            <div class="pitch-line-left">
+                                <span class="role-shield role-shield--d">D</span>
+                                <div>
+                                    <strong class="pitch-line-name">Difensori</strong>
+                                    <span class="pitch-line-sub">Zero assenze e disciplina</span>
+                                </div>
+                            </div>
+                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Difensore', 0) if conteggio_ruoli else 0 }} carte</span>
+                        </a>
+
+                        <a href="/mercato?ruolo=Portiere" class="pitch-line-card">
+                            <div class="pitch-line-left">
+                                <span class="role-shield role-shield--p">P</span>
+                                <div>
+                                    <strong class="pitch-line-name">Portieri</strong>
+                                    <span class="pitch-line-sub">Imbattibilità registro</span>
+                                </div>
+                            </div>
+                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Portiere', 0) if conteggio_ruoli else 0 }} carte</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Right Column: Collectible Trading Cards -->
+                <section class="cards-showcase-panel" aria-labelledby="heading-carte-campo">
+                    <div class="panel-header-clean">
+                        <div>
+                            <h2 id="heading-carte-campo" class="panel-title">Carte Ufficiali</h2>
+                            <p class="panel-subtitle">Protagonisti approvati e schierabili in formazione</p>
                         </div>
-                        <div class="player-footer">
-                            <span class="record-meta">ID: {{ c.id }}</span>
-                            <span class="record-meta">{{ ('REG: ' ~ c.created[:10]) if c.created else '' }}</span>
-                        </div>
-                    </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="state-box state-empty" data-async-state="empty-state">
-                    <h3 class="state-title">Listone Carte Vuoto</h3>
-                    <p class="state-desc">Nessuna carta approvata è ancora presente nel database PocketBase.</p>
-                    {% if utente %}
-                        <a href="{{ url_for('suggerisci') }}" class="btn-primary">Proponi la Prima Carta</a>
+                        <a href="/mercato" class="btn-link-pill">Vedi tutte ({{ totale_approvate }}) &rarr;</a>
+                    </div>
+
+                    {% if carte_recenti %}
+                    <div class="trading-cards-grid">
+                        {% for carta in carte_recenti %}
+                        {% set r_code = carta.ruolo[0]|upper if carta.ruolo else '?' %}
+                        <article class="player-card" data-card-ruolo="{{ carta.ruolo or 'Non assegnato' }}">
+                            <div class="tc-banner">
+                                <span class="tc-role-emblem">{{ r_code }}</span>
+                                <span class="status-pill status-approved">Schierabile</span>
+                            </div>
+                            <div class="tc-medallion-wrap">
+                                <div class="tc-medallion" aria-hidden="true">
+                                    <svg class="tc-jersey-svg"><use href="#icon-jersey"></use></svg>
+                                    <span class="tc-initial">{{ carta.nome[0]|upper if carta.nome else '?' }}</span>
+                                </div>
+                            </div>
+                            <div class="tc-body">
+                                <h3 class="player-name">{{ carta.nome }}</h3>
+                                <span class="role-badge">{{ carta.ruolo if carta.ruolo else 'Non assegnato' }}</span>
+                            </div>
+                            <div class="tc-footer">
+                                <div class="tc-stat">
+                                    <span class="tc-stat-label">Reparto</span>
+                                    <strong class="tc-stat-val">{{ carta.ruolo[:3]|upper if carta.ruolo else 'N/D' }}</strong>
+                                </div>
+                                <div class="tc-stat">
+                                    <span class="tc-stat-label">Stagione</span>
+                                    <strong class="tc-stat-val">{{ carta.created[:4] if carta.created else '2026' }}</strong>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
                     {% else %}
-                        <a href="{{ url_for('login') }}" class="btn-primary">Accedi per Proporre una Carta</a>
+                    <div class="state-box">
+                        <p class="state-title">Nessuna carta ancora in campo</p>
+                        <p class="state-desc">Crea la prima carta della tua classe e inviala in approvazione.</p>
+                        <a href="/suggerisci" class="btn-primary">Crea la Prima Carta</a>
+                    </div>
                     {% endif %}
-                </div>
-            {% endif %}
-        </section>
+                </section>
+            </div>
+        </main>
+    </div>
 
-        <!-- AZIONI RAPIDE OPERATIVE -->
-        <section class="actions-grid" aria-label="Scorciatoie operative">
-            <a href="{{ url_for('mercato') }}" class="action-card">
-                <span class="action-icon" aria-hidden="true">
-                    <svg><use href="#svg-nav-cards"></use></svg>
-                </span>
-                <div class="action-text">
-                    <strong>Consultazione Listone &amp; Filtri</strong>
-                    <span>Filtra per ruolo, stato di approvazione o confronta le carte in vista tabella</span>
-                </div>
-            </a>
-
-            {% if utente %}
-            <a href="{{ url_for('suggerisci') }}" class="action-card action-card--gold">
-                <span class="action-icon" aria-hidden="true">
-                    <svg><use href="#svg-nav-forge"></use></svg>
-                </span>
-                <div class="action-text">
-                    <strong>Laboratorio Proposta Carta</strong>
-                    <span>Compila i dati anagrafici e verifica l'anteprima in tempo reale prima dell'invio</span>
-                </div>
-            </a>
-            {% else %}
-            <a href="{{ url_for('login') }}" class="action-card action-card--gold">
-                <span class="action-icon" aria-hidden="true">
-                    <svg><use href="#svg-nav-coach"></use></svg>
-                </span>
-                <div class="action-text">
-                    <strong>Accedi al Laboratorio Proposte</strong>
-                    <span>Effettua l'accesso con il tuo profilo per inviare nuove carte alla Cattedra</span>
-                </div>
-            </a>
-            {% endif %}
-        </section>
-
-    </main>
-
-    <!-- FOOTER SEMANTICO -->
-    <footer class="app-footer">
-        <div class="footer-inner">
-            <span><strong>Fantaclasse</strong> &bull; Lega Scolastica Ufficiale sincronizzata con PocketBase</span>
-            <nav class="footer-links" aria-label="Link rapidi">
-                <a href="{{ url_for('home') }}">Panoramica</a>
-                <a href="{{ url_for('mercato') }}">Listone Carte</a>
-                {% if utente %}
-                    <a href="{{ url_for('suggerisci') }}">Proponi Carta</a>
-                {% else %}
-                    <a href="{{ url_for('login') }}">Accedi</a>
-                {% endif %}
-                <a href="/sito/">Community Feedback</a>
-            </nav>
-        </div>
-    </footer>
-
-    <!-- NAVIGAZIONE COMPATTA MOBILE -->
-    <nav class="bottom-nav" aria-label="Navigazione principale mobile">
-        <a href="{{ url_for('home') }}" class="nav-item active" aria-current="page">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-board"></use></svg>
-            <span>Panoramica</span>
+    <!-- Bottom App Tab Bar (Solo Telefono) -->
+    <nav class="bottom-nav" aria-label="Menu principale mobile">
+        <a href="/" class="nav-item active" aria-current="page">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-home"></use></svg>
+            <span>Home</span>
         </a>
-        <a href="{{ url_for('mercato') }}" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-cards"></use></svg>
+        <a href="/mercato" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-cards"></use></svg>
             <span>Listone</span>
         </a>
-        {% if utente %}
-        <a href="{{ url_for('suggerisci') }}" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
-            <span>Proponi</span>
+        <a href="/suggerisci" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-forge"></use></svg>
+            <span>Crea</span>
         </a>
-        <a href="{{ url_for('logout') }}" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-exit"></use></svg>
-            <span>Esci</span>
+        <a href="/sito/" class="nav-item">
+            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-feedback"></use></svg>
+            <span>Feedback</span>
         </a>
-        {% else %}
-        <a href="{{ url_for('login') }}" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-coach"></use></svg>
-            <span>Accedi</span>
-        </a>
-        <a href="{{ url_for('registrati') }}" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#svg-nav-forge"></use></svg>
-            <span>Registrati</span>
-        </a>
-        {% endif %}
     </nav>
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>

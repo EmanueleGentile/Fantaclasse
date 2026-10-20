@@ -410,8 +410,16 @@
       this.clearContainer(container);
       container.setAttribute("data-async-state", "success");
 
+      const svgNS = "http://www.w3.org/2000/svg";
+
       items.forEach((carta) => {
         const isApproved = carta.stato === "approvata";
+        const roleStr = (carta.ruolo || "").trim();
+        const roleCode = roleStr ? roleStr.charAt(0).toUpperCase() : "?";
+        const roleShort = roleStr ? roleStr.slice(0, 3).toUpperCase() : "N/D";
+        const initial = (carta.nome || "?").trim().charAt(0).toUpperCase() || "?";
+        const yearStr = String(carta.created || "").slice(0, 4) || "2026";
+
         const card = document.createElement("article");
         card.className = isApproved
           ? "player-card"
@@ -419,73 +427,91 @@
         if (SchemaValidator.isValidPocketBaseId(carta.id)) {
           card.setAttribute("data-record-id", carta.id);
         }
-        card.setAttribute("data-card-ruolo", carta.ruolo || "");
+        card.setAttribute("data-card-ruolo", roleStr || "Non assegnato");
         card.setAttribute("data-card-nome", (carta.nome || "").toLowerCase());
+        card.setAttribute("data-card-stato", carta.stato || "");
 
-        const topBar = document.createElement("div");
-        topBar.className = "rpg-card-top";
+        const banner = document.createElement("div");
+        banner.className = "tc-banner";
 
-        const factionTag = document.createElement("span");
-        factionTag.className = "rpg-faction-tag";
-        factionTag.textContent = isApproved
-          ? "LISTONE // SCHIERABILE"
-          : "CATTEDRA // VERIFICA";
+        const emblem = document.createElement("span");
+        emblem.className = "tc-role-emblem";
+        emblem.textContent = roleCode;
 
         const statusBadge = document.createElement("span");
         statusBadge.className = isApproved
           ? "status-pill status-approved"
           : "status-pill status-pending";
-        statusBadge.textContent = isApproved ? "Approvata" : "In Revisione";
+        statusBadge.textContent = isApproved ? "Schierabile" : "In Verifica";
 
-        topBar.appendChild(factionTag);
-        topBar.appendChild(statusBadge);
-        card.appendChild(topBar);
+        banner.appendChild(emblem);
+        banner.appendChild(statusBadge);
+        card.appendChild(banner);
 
-        const header = document.createElement("div");
-        header.className = "player-header";
+        const medallionWrap = document.createElement("div");
+        medallionWrap.className = "tc-medallion-wrap";
 
-        const avatar = document.createElement("div");
-        avatar.className = "player-avatar";
-        avatar.setAttribute("aria-hidden", "true");
-        const initial = (carta.nome || "?").trim().charAt(0).toUpperCase() || "?";
-        avatar.textContent = initial;
+        const medallion = document.createElement("div");
+        medallion.className = "tc-medallion";
+        medallion.setAttribute("aria-hidden", "true");
 
-        const info = document.createElement("div");
-        info.className = "player-info";
+        const jerseySvg = document.createElementNS(svgNS, "svg");
+        jerseySvg.setAttribute("class", "tc-jersey-svg");
+        const useEl = document.createElementNS(svgNS, "use");
+        useEl.setAttribute("href", "#icon-jersey");
+        jerseySvg.appendChild(useEl);
+
+        const initSpan = document.createElement("span");
+        initSpan.className = "tc-initial";
+        initSpan.textContent = initial;
+
+        medallion.appendChild(jerseySvg);
+        medallion.appendChild(initSpan);
+        medallionWrap.appendChild(medallion);
+        card.appendChild(medallionWrap);
+
+        const body = document.createElement("div");
+        body.className = "tc-body";
 
         const nameEl = document.createElement("h3");
         nameEl.className = "player-name";
-        nameEl.textContent = carta.nome || "Carta senza nome";
-
-        const roleRow = document.createElement("div");
-        roleRow.className = "player-meta-row";
+        nameEl.textContent = carta.nome || "Giocatore";
 
         const roleBadge = document.createElement("span");
         roleBadge.className = "role-badge";
-        roleBadge.textContent = "Ruolo: " + (carta.ruolo || "Non assegnato");
+        roleBadge.textContent = roleStr || "Non assegnato";
 
-        roleRow.appendChild(roleBadge);
-        info.appendChild(nameEl);
-        info.appendChild(roleRow);
-
-        header.appendChild(avatar);
-        header.appendChild(info);
-        card.appendChild(header);
+        body.appendChild(nameEl);
+        body.appendChild(roleBadge);
+        card.appendChild(body);
 
         const footer = document.createElement("div");
-        footer.className = "player-footer";
+        footer.className = "tc-footer";
 
-        const idTag = document.createElement("span");
-        idTag.className = "record-meta";
-        idTag.textContent = "ID: " + (carta.id || "n/d");
+        const statReparto = document.createElement("div");
+        statReparto.className = "tc-stat";
+        const lblReparto = document.createElement("span");
+        lblReparto.className = "tc-stat-label";
+        lblReparto.textContent = "Reparto";
+        const valReparto = document.createElement("strong");
+        valReparto.className = "tc-stat-val";
+        valReparto.textContent = roleShort;
+        statReparto.appendChild(lblReparto);
+        statReparto.appendChild(valReparto);
 
-        const dateTag = document.createElement("span");
-        dateTag.className = "record-meta";
-        const rawDate = String(carta.created || "").slice(0, 10);
-        dateTag.textContent = rawDate ? "REG: " + rawDate : "";
+        const statSeason = document.createElement("div");
+        statSeason.className = "tc-stat";
+        const lblSeason = document.createElement("span");
+        lblSeason.className = "tc-stat-label";
+        lblSeason.textContent = "Stagione";
+        const valSeason = document.createElement("strong");
+        valSeason.className = "tc-stat-val";
+        valSeason.textContent = yearStr;
+        statSeason.appendChild(lblSeason);
+        statSeason.appendChild(valSeason);
 
-        footer.appendChild(idTag);
-        footer.appendChild(dateTag);
+        footer.appendChild(statReparto);
+        footer.appendChild(statSeason);
         card.appendChild(footer);
 
         container.appendChild(card);
@@ -516,16 +542,24 @@
    * 8. Live Card Forge Preview (/suggerisci) & Validazione Form
    */
   function initForgeLivePreview() {
-    const cartaForm = document.getElementById("form-suggerisci");
+    const cartaForm =
+      document.getElementById("form-suggerisci-carta") ||
+      document.getElementById("form-suggerisci");
     if (!cartaForm) return;
 
     const nomeInput = document.getElementById("carta-nome");
     const nomeCounter = document.getElementById("carta-nome-counter");
     const ruoloSelect = document.getElementById("carta-ruolo");
     const previewArticle = document.getElementById("preview-card-article");
+    const previewEmblem = document.getElementById("preview-card-emblem");
+    const previewReparto = document.getElementById("preview-card-reparto");
     const previewAvatar = document.getElementById("preview-card-avatar");
-    const previewName = document.getElementById("preview-card-name");
-    const previewRole = document.getElementById("preview-card-role");
+    const previewName =
+      document.getElementById("preview-card-nome") ||
+      document.getElementById("preview-card-name");
+    const previewRole =
+      document.getElementById("preview-card-ruolo") ||
+      document.getElementById("preview-card-role");
     const resetBtn = document.getElementById("btn-reset-forge");
     const quickRoleBtns = Array.from(document.querySelectorAll("[data-pick-ruolo]"));
 
@@ -533,23 +567,30 @@
       const rawName = (nomeInput && nomeInput.value) || "";
       const currentName = rawName.trim();
       const currentRole = ((ruoloSelect && ruoloSelect.value) || "").trim();
+      const displayRole = currentRole || "Portiere";
 
       if (nomeCounter) {
         nomeCounter.textContent = rawName.length + " / 100";
       }
       if (previewName) {
-        previewName.textContent = currentName || "Nuovo Campione";
+        previewName.textContent = currentName || "Nome Giocatore";
       }
       if (previewAvatar) {
         previewAvatar.textContent = currentName
           ? currentName.charAt(0).toUpperCase()
-          : "?";
+          : "★";
       }
       if (previewRole) {
-        previewRole.textContent = "Ruolo: " + (currentRole || "Da assegnare");
+        previewRole.textContent = displayRole;
+      }
+      if (previewEmblem) {
+        previewEmblem.textContent = displayRole.charAt(0).toUpperCase();
+      }
+      if (previewReparto) {
+        previewReparto.textContent = displayRole.slice(0, 3).toUpperCase();
       }
       if (previewArticle) {
-        previewArticle.setAttribute("data-card-ruolo", currentRole);
+        previewArticle.setAttribute("data-card-ruolo", displayRole);
       }
 
       quickRoleBtns.forEach((btn) => {
@@ -657,7 +698,9 @@
       });
     }
 
-    const cartaForm = document.getElementById("form-suggerisci");
+    const cartaForm =
+      document.getElementById("form-suggerisci-carta") ||
+      document.getElementById("form-suggerisci");
     if (cartaForm) {
       cartaForm.addEventListener("submit", function (e) {
         const nome = (cartaForm.elements.nome && cartaForm.elements.nome.value) || "";
@@ -676,7 +719,7 @@
         const submitBtn = cartaForm.querySelector('button[type="submit"]');
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = "Invio alla Cattedra...";
+          submitBtn.textContent = "Invio in corso...";
         }
       });
     }
@@ -686,11 +729,17 @@
    * 9. Catalogo Carte Asincrono con Filtro Stato + Filtro Ruolo + Ricerca Live + Switcher Vista
    */
   function initMercatoAsyncCatalog() {
-    const container = document.getElementById("carte-async-container");
+    const container =
+      document.getElementById("carte-grid-container") ||
+      document.getElementById("carte-async-container");
     if (!container) return;
 
-    const filterButtons = Array.from(document.querySelectorAll("[data-stato-filter]"));
-    const roleButtons = Array.from(document.querySelectorAll("[data-ruolo-filter]"));
+    const filterButtons = Array.from(
+      document.querySelectorAll("[data-stato], [data-stato-filter]")
+    );
+    const roleButtons = Array.from(
+      document.querySelectorAll("[data-ruolo], [data-ruolo-filter]")
+    );
     const viewButtons = Array.from(document.querySelectorAll("[data-view-mode]"));
     const tableHead = document.getElementById("listone-table-head");
     const searchInput = document.getElementById("search-carte-input");
@@ -698,15 +747,21 @@
     const countBadge = document.getElementById("carte-count-badge");
     const statusAnnouncer = document.getElementById("carte-status-announcer");
 
+    function getStatoAttr(btn) {
+      if (!btn) return "";
+      return btn.getAttribute("data-stato") || btn.getAttribute("data-stato-filter") || "";
+    }
+
+    function getRuoloAttr(btn) {
+      if (!btn) return "";
+      return btn.getAttribute("data-ruolo") || btn.getAttribute("data-ruolo-filter") || "";
+    }
+
     const initialActiveStatoBtn = document.querySelector(".filter-btn.filter-btn-active");
     const initialActiveRoleBtn = document.querySelector(".role-filter-btn.role-filter-active");
 
-    let activeStatoFilter = initialActiveStatoBtn
-      ? initialActiveStatoBtn.getAttribute("data-stato-filter") || ""
-      : "";
-    let activeRoleFilter = initialActiveRoleBtn
-      ? initialActiveRoleBtn.getAttribute("data-ruolo-filter") || ""
-      : "";
+    let activeStatoFilter = getStatoAttr(initialActiveStatoBtn);
+    let activeRoleFilter = getRuoloAttr(initialActiveRoleBtn);
     let searchQuery = "";
     let cachedItems = null;
 
@@ -738,8 +793,8 @@
       if (filtered.length === 0) {
         UIStateManager.renderEmptyState(
           container,
-          "Nessuna carta corrisponde ai filtri di stato, ruolo o ricerca selezionati.",
-          "Proponi una Nuova Carta",
+          "Nessun giocatore corrisponde ai filtri selezionati.",
+          "+ Crea Carta",
           "/suggerisci"
         );
       } else {
@@ -768,7 +823,7 @@
 
     filterButtons.forEach((btn) => {
       btn.addEventListener("click", function () {
-        const filterVal = btn.getAttribute("data-stato-filter") || "";
+        const filterVal = getStatoAttr(btn);
         filterButtons.forEach((b) => {
           b.classList.remove("filter-btn-active");
           b.setAttribute("aria-pressed", "false");
@@ -781,7 +836,7 @@
 
     roleButtons.forEach((btn) => {
       btn.addEventListener("click", async function () {
-        activeRoleFilter = btn.getAttribute("data-ruolo-filter") || "";
+        activeRoleFilter = getRuoloAttr(btn);
         roleButtons.forEach((b) => {
           b.classList.remove("role-filter-active");
           b.setAttribute("aria-pressed", "false");
@@ -851,7 +906,6 @@
       });
     }
 
-    // Se un filtro ruolo è pre-selezionato via URL (?ruolo=...), applica subito il filtro
     if (activeRoleFilter) {
       loadCarte(activeStatoFilter);
     }

@@ -161,14 +161,11 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if _is_port_open("127.0.0.1", 8090):
-            main_module.pb_service = PocketBaseService(base_url="http://127.0.0.1:8090")
-        else:
-            cls.local_server = HTTPServer(("127.0.0.1", 0), _LocalSQLitePocketBaseHandler)
-            port = cls.local_server.server_port
-            cls.server_thread = threading.Thread(target=cls.local_server.serve_forever, daemon=True)
-            cls.server_thread.start()
-            main_module.pb_service = PocketBaseService(base_url=f"http://127.0.0.1:{port}")
+        cls.local_server = HTTPServer(("127.0.0.1", 0), _LocalSQLitePocketBaseHandler)
+        port = cls.local_server.server_port
+        cls.server_thread = threading.Thread(target=cls.local_server.serve_forever, daemon=True)
+        cls.server_thread.start()
+        main_module.pb_service = PocketBaseService(base_url=f"http://127.0.0.1:{port}")
 
     @classmethod
     def tearDownClass(cls):

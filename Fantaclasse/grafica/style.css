@@ -1,136 +1,100 @@
 /* ==========================================================================
-   FANTACLASSE — DESIGN SYSTEM & PRODUCT UI (v4.0 SPORTY EDITION)
-   Architettura Design Token: Light Neutral Canvas (#F5F7F4), Deep Navy Ink
-   (#172033), Crisp White Surfaces (#FFFFFF), Athletic Lime Accent (#C5F36A)
-   e codifica semantica ufficiale dei ruoli Fantacalcio (P, D, C, A).
+   FANTACLASSE — TRUE MULTI-DEVICE APP DESIGN SYSTEM (PC / TABLET / TELEFONO)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* ========================================================================
-     1. TOKEN DI COMPATIBILITÀ CONTRATTUALE (Richiesti da test_carte.py)
-     ======================================================================== */
+  /* Token contrattuali richiesti da test_carte.py */
   --bg-chalkboard: #0B0F0E;
   --green-primary: #16A34A;
   --yellow-accent: #FBBF24;
 
-  /* ========================================================================
-     2. PALETTE PRINCIPALE — SPORTY LIGHT & DEEP NAVY
-     ======================================================================== */
-  --fc-bg: #F5F7F4;
+  /* Palette Principale App */
+  --fc-bg: #F4F6F3;
   --fc-surface: #FFFFFF;
   --fc-surface-subtle: #F8FAF7;
-  --fc-surface-muted: #EEF2EC;
-  --fc-surface-hover: #E6ECE3;
+  --fc-surface-muted: #EDF1EB;
 
-  --fc-navy: #172033;
-  --fc-navy-soft: #243049;
-  --fc-navy-subtle: rgba(23, 32, 51, 0.06);
+  --fc-navy: #141C2E;
+  --fc-navy-elevated: #1E2942;
+  --fc-navy-border: #2B3958;
 
-  --fc-text-primary: #172033;
+  --fc-text-primary: #141C2E;
   --fc-text-secondary: #525E71;
   --fc-text-muted: #687386;
   --fc-text-inverse: #FFFFFF;
 
-  /* Brand Accent (Lime-Green — usato SEMPRE con testo --fc-navy #172033) */
   --fc-lime: #C5F36A;
   --fc-lime-hover: #B6E853;
-  --fc-lime-active: #A6DC3E;
   --fc-lime-soft: #EFFAD2;
-  --fc-lime-border: #B5E555;
+  --fc-lime-border: #A9DD44;
 
-  /* Bordi & Divisori */
-  --fc-border: #E4E8E2;
+  --fc-border: #E2E7E0;
   --fc-border-strong: #CBD2C8;
-  --fc-border-focus: #172033;
 
-  /* Stati Semantici (WCAG 2.2 AA Compliant) */
-  --fc-success: #19865B;
-  --fc-success-text: #126B47;
-  --fc-success-bg: #EBF7F2;
-  --fc-success-border: #B6E3CF;
+  /* Stati Semantici */
+  --fc-success: #168055;
+  --fc-success-bg: #E8F7F0;
+  --fc-success-border: #AEE0C9;
 
-  --fc-warning: #D58B26;
-  --fc-warning-text: #945B0A;
-  --fc-warning-bg: #FEF7EC;
-  --fc-warning-border: #F5D7A1;
+  --fc-warning: #C87D16;
+  --fc-warning-bg: #FEF6E7;
+  --fc-warning-border: #F5D496;
 
-  --fc-error: #D84A4A;
-  --fc-error-text: #B42323;
+  --fc-error: #D13B3B;
   --fc-error-bg: #FDF2F2;
   --fc-error-border: #F5C2C2;
 
-  /* Codifica Colori Ruoli Fantacalcio (P / D / C / A) */
-  --role-p-solid: #D58B26;
-  --role-p-text: #945B0A;
-  --role-p-bg: #FEF6E6;
-  --role-p-border: #F5D491;
+  /* Colori Ufficiali Ruoli Fantacalcio (P / D / C / A) */
+  --role-p-main: #D98A1C;
+  --role-p-dark: #9A5D0A;
+  --role-p-soft: #FEF5E6;
+  --role-p-grad: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
 
-  --role-d-solid: #19865B;
-  --role-d-text: #126B47;
-  --role-d-bg: #EBF7F2;
-  --role-d-border: #B2E2CC;
+  --role-d-main: #168055;
+  --role-d-dark: #0F5C3D;
+  --role-d-soft: #E8F7F0;
+  --role-d-grad: linear-gradient(135deg, #10B981 0%, #047857 100%);
 
-  --role-c-solid: #2563EB;
-  --role-c-text: #1D4ED8;
-  --role-c-bg: #EFF6FF;
-  --role-c-border: #BFDBFE;
+  --role-c-main: #2563EB;
+  --role-c-dark: #1E40AF;
+  --role-c-soft: #EFF6FF;
+  --role-c-grad: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
 
-  --role-a-solid: #D84A4A;
-  --role-a-text: #B91C1C;
-  --role-a-bg: #FEF2F2;
-  --role-a-border: #FECACA;
+  --role-a-main: #DC2626;
+  --role-a-dark: #991B1B;
+  --role-a-soft: #FEF2F2;
+  --role-a-grad: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
 
-  /* ========================================================================
-     3. TIPOGRAFIA
-     ======================================================================== */
+  /* Tipografia */
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Barlow Condensed', 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* ========================================================================
-     4. SCALA SPAZIATURE (Multipli di 4 / 8 px) & GEOMETRIA
-     ======================================================================== */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-
+  /* Geometria & Ombre App */
   --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
   --radius-pill: 999px;
 
-  /* Elevazione contenuta e pulita */
-  --shadow-xs: 0 1px 2px rgba(23, 32, 51, 0.04);
-  --shadow-sm: 0 2px 6px rgba(23, 32, 51, 0.05), 0 1px 2px rgba(23, 32, 51, 0.03);
-  --shadow-md: 0 8px 20px rgba(23, 32, 51, 0.06), 0 2px 6px rgba(23, 32, 51, 0.04);
-  --shadow-lg: 0 16px 36px rgba(23, 32, 51, 0.09), 0 4px 10px rgba(23, 32, 51, 0.04);
-
-  --container-max: 1280px;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-xs: 0 1px 3px rgba(20, 28, 46, 0.05);
+  --shadow-sm: 0 4px 12px rgba(20, 28, 46, 0.05);
+  --shadow-md: 0 10px 24px rgba(20, 28, 46, 0.08);
+  --shadow-lg: 0 20px 44px rgba(20, 28, 46, 0.14);
 }
 
 /* ==========================================================================
-   RESET, ACCESSIBILITÀ & BASE
+   1. RESET & BASE
    ========================================================================== */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
 }
@@ -138,14 +102,10 @@ html {
 body {
   background-color: var(--fc-bg);
   background-image: url('/grafica/svg/tactical-kit.svg');
-  background-size: cover;
-  background-position: center top;
-  background-attachment: fixed;
+  background-size: 640px;
   color: var(--fc-text-primary);
   font-family: var(--font-body);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   line-height: 1.5;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -171,30 +131,25 @@ body {
   border: 0;
 }
 
-/* Skip link per navigazione da tastiera (WCAG 2.4.1) */
 .skip-link {
   position: fixed;
   top: -100px;
-  left: var(--space-4);
+  left: 16px;
   z-index: 9999;
   background: var(--fc-navy);
   color: var(--fc-lime);
-  font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.9rem;
-  padding: 10px 18px;
+  font-size: 0.875rem;
+  padding: 10px 16px;
   border-radius: var(--radius-sm);
-  border: 2px solid var(--fc-lime);
   text-decoration: none;
   box-shadow: var(--shadow-md);
-  transition: top 0.15s ease;
 }
 
 .skip-link:focus {
-  top: var(--space-4);
+  top: 16px;
 }
 
-/* Focus ring universale ad alto contrasto (WCAG 2.4.7 & 2.4.11) */
 :focus-visible {
   outline: 2px solid var(--fc-navy);
   outline-offset: 2px;
@@ -206,177 +161,161 @@ main:focus {
 }
 
 /* ==========================================================================
-   1. HEADER PRINCIPALE & NAVIGAZIONE DESKTOP
+   2. APP SHELL — 3 ADATTAMENTI (PC >= 1024px, TABLET 768-1023px, TELEFONO <= 767px)
    ========================================================================== */
-.app-header {
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+}
+
+/* SIDEBAR APP (PC Default: Barra Verticale Sinistra) */
+.app-sidebar {
+  background: var(--fc-navy);
+  color: var(--fc-text-inverse);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
   position: sticky;
   top: 0;
-  z-index: 200;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--fc-border);
-  box-shadow: var(--shadow-xs);
+  height: 100vh;
+  border-right: 1px solid var(--fc-navy-border);
+  z-index: 150;
 }
 
-.header-inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 12px var(--space-6);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.logo-area {
+.sidebar-brand {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  padding: 0 6px;
 }
 
 .brand-link {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 12px;
   text-decoration: none;
-  color: var(--fc-navy);
-  border-radius: var(--radius-sm);
+  color: inherit;
 }
 
 .brand-crest-svg {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   flex-shrink: 0;
 }
 
-.brand-title-wrap {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-
-.logo-area h1,
 .brand-name {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   font-weight: 800;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: var(--fc-navy);
+  line-height: 1;
 }
 
-.brand-subtag {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  color: var(--fc-success-text);
-  text-transform: uppercase;
-  margin-top: 2px;
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
 }
 
-/* Navigazione Centrale Desktop */
-.header-nav-links {
+.sidebar-link {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: var(--fc-surface-muted);
-  padding: 4px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--fc-border);
-}
-
-.header-nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 38px;
-  padding: 6px 14px;
+  gap: 12px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: 0.875rem;
+  color: #CBD5E1;
   font-weight: 600;
+  font-size: 0.94rem;
   text-decoration: none;
-  color: var(--fc-text-secondary);
-  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.header-nav-link:hover {
-  color: var(--fc-navy);
-  background: rgba(255, 255, 255, 0.65);
+.sidebar-link:hover {
+  background: var(--fc-navy-elevated);
+  color: #FFFFFF;
 }
 
-.header-nav-link.active,
-.header-nav-link[aria-current="page"] {
-  color: var(--fc-navy);
-  font-weight: 700;
+.sidebar-link.active,
+.sidebar-link[aria-current="page"] {
   background: var(--fc-lime);
+  color: var(--fc-navy);
+  font-weight: 800;
   box-shadow: var(--shadow-xs);
 }
 
-.header-nav-link--feedback {
-  color: var(--fc-text-secondary);
-  border-left: 1px solid var(--fc-border-strong);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  padding-left: 14px;
-  margin-left: 2px;
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
-.header-nav-link--feedback:hover {
-  color: var(--fc-navy);
-  background: var(--fc-surface);
+/* USER WALLET CARD NELLA SIDEBAR */
+.sidebar-user {
+  padding-top: 16px;
+  border-top: 1px solid var(--fc-navy-border);
 }
 
-/* Area Utente / Crediti FantaMilioni */
-.user-profile-pill {
+.user-wallet-card {
+  background: var(--fc-navy-elevated);
+  border: 1px solid var(--fc-navy-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  background: var(--fc-surface-subtle);
-  padding: 4px 6px 4px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--fc-border);
-  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.user-identity-chip {
+.user-wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.user-avatar-mini {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--fc-lime);
+  color: var(--fc-navy);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.coach-badge-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--fc-success);
-  flex-shrink: 0;
+.user-wallet-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .user-name {
+  font-size: 0.84rem;
   font-weight: 700;
-  font-size: 0.85rem;
-  max-width: 140px;
+  color: #FFFFFF;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--fc-navy);
 }
 
 .fanta-milioni-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: var(--fc-lime);
-  color: var(--fc-navy);
-  border: 1px solid var(--fc-lime-border);
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
   font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-weight: 700;
-  font-size: 0.82rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.2px;
+  color: var(--fc-lime);
+  white-space: nowrap;
 }
 
 .logout-btn,
@@ -384,705 +323,518 @@ main:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
-  font-family: var(--font-body);
+  padding: 7px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.78rem;
   font-weight: 700;
-  font-size: 0.84rem;
   text-decoration: none;
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
-.login-btn-header {
-  background: var(--fc-navy);
-  color: var(--fc-text-inverse);
-}
-
-.login-btn-header:hover {
-  background: var(--fc-navy-soft);
-}
-
 .logout-btn {
-  color: var(--fc-error-text);
-  background: var(--fc-error-bg);
-  border: 1px solid var(--fc-error-border);
+  background: rgba(209, 59, 59, 0.18);
+  color: #FCA5A5;
+  border: 1px solid rgba(209, 59, 59, 0.4);
 }
 
 .logout-btn:hover {
   background: var(--fc-error);
-  color: var(--fc-text-inverse);
-  border-color: var(--fc-error);
+  color: #FFFFFF;
 }
 
-/* ==========================================================================
-   2. CONTENITORE PRINCIPALE & HERO DASHBOARD
-   ========================================================================== */
-.dashboard-container {
-  max-width: var(--container-max);
-  width: 100%;
-  margin: var(--space-6) auto var(--space-10);
-  padding: 0 var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  flex: 1;
-}
-
-.hero-arena {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
-  gap: var(--space-6);
-  align-items: stretch;
-}
-
-.hero-copy-card {
-  position: relative;
-  min-width: 0;
-  background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-8);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-6);
-}
-
-.hero-top-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  margin-bottom: var(--space-3);
-}
-
-.section-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-start;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--fc-navy);
-  background: var(--fc-lime-soft);
-  border: 1px solid var(--fc-lime-border);
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  margin-bottom: var(--space-3);
-}
-
-.hero-top-meta .section-tag {
-  margin-bottom: 0;
-}
-
-.league-code-pill {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--fc-text-muted);
-  background: var(--fc-surface-muted);
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--fc-border);
-}
-
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--fc-success);
-  box-shadow: 0 0 0 3px rgba(25, 134, 91, 0.2);
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.4vw, 2.85rem);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  line-height: 1.04;
-  color: var(--fc-navy);
-  margin-bottom: var(--space-3);
-}
-
-.hero-title-accent {
-  color: var(--fc-success);
-  background: linear-gradient(180deg, transparent 62%, var(--fc-lime) 62%);
-  padding: 0 4px;
-}
-
-.hero-subtitle {
-  color: var(--fc-text-secondary);
-  font-size: 0.98rem;
-  line-height: 1.6;
-  max-width: 60ch;
-  margin-bottom: var(--space-5);
-}
-
-/* KPI / Telemetria Lega */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--fc-border);
-}
-
-.stat-tile {
-  background: var(--fc-surface-subtle);
-  border: 1px solid var(--fc-border);
-  border-left: 4px solid var(--fc-success);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.stat-tile--gold {
-  border-left-color: var(--fc-warning);
-}
-
-.stat-tile--lime {
-  background: var(--fc-lime-soft);
-  border-color: var(--fc-lime-border);
-  border-left: 4px solid var(--fc-navy);
-}
-
-.stat-label {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--fc-text-secondary);
-}
-
-.stat-value {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  line-height: 1.05;
-  color: var(--fc-navy);
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-sub {
-  font-size: 0.75rem;
-  color: var(--fc-text-muted);
-  font-weight: 500;
-}
-
-.text-gold {
-  color: var(--fc-warning-text);
-}
-
-.text-green {
-  color: var(--fc-success-text);
-}
-
-/* ==========================================================================
-   3. PANNELLO REPARTI & LAVAGNA TATTICA (4 RUOLI UFFICIALI)
-   ========================================================================== */
-.tactical-pitch-card {
-  position: relative;
-  min-width: 0;
-  background: var(--fc-navy);
-  color: var(--fc-text-inverse);
-  border: 1px solid var(--fc-navy-soft);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.pitch-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.pitch-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--fc-text-inverse);
-}
-
-.pitch-badge {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
+.login-btn-header {
   background: var(--fc-lime);
   color: var(--fc-navy);
 }
 
-.pitch-subtitle {
-  font-size: 0.82rem;
-  color: #CBD5E1;
-  margin-top: -6px;
-}
-
-.pitch-field-visual {
-  position: relative;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
+/* WORKSPACE PRINCIPALE DELL'APP */
+.app-workspace {
+  padding: 28px 36px 48px;
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  background:
-    linear-gradient(180deg, rgba(25, 134, 91, 0.28) 0%, rgba(18, 92, 62, 0.36) 100%),
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.03) 0px,
-      rgba(255, 255, 255, 0.03) 26px,
-      transparent 26px,
-      transparent 52px
-    );
-  flex: 1;
+  gap: 24px;
+  min-width: 0;
 }
 
-/* Cerchio di centrocampo stilizzato */
-.pitch-field-visual::before {
+.workspace-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--fc-surface);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-xs);
+}
+
+.workspace-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workspace-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--fc-success);
+}
+
+.workspace-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--fc-navy);
+  line-height: 1.05;
+}
+
+.workspace-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   3. STRISCIA KPI & BENTO GRID DASHBOARD
+   ========================================================================== */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  background: var(--fc-surface);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--shadow-xs);
+}
+
+.kpi-card--accent {
+  background: var(--fc-lime);
+  border-color: var(--fc-lime-border);
+}
+
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fc-text-secondary);
+}
+
+.kpi-card--accent .kpi-label {
+  color: var(--fc-navy);
+}
+
+.kpi-value-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: var(--fc-navy);
+  line-height: 1;
+}
+
+.kpi-chip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+}
+
+.kpi-chip--success {
+  background: var(--fc-success-bg);
+  color: var(--fc-success);
+}
+
+.kpi-chip--warning {
+  background: var(--fc-warning-bg);
+  color: var(--fc-warning);
+}
+
+.kpi-chip--dark {
+  background: var(--fc-navy);
+  color: var(--fc-lime);
+}
+
+/* DASHBOARD BENTO (Campo a sinistra + Campioncini a destra) */
+.dashboard-bento {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.pitch-panel,
+.cards-showcase-panel,
+.forge-form-panel,
+.app-filter-panel {
+  background: var(--fc-surface);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-xs);
+  min-width: 0;
+}
+
+.panel-header-clean {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--fc-navy);
+  line-height: 1.1;
+}
+
+.panel-subtitle {
+  font-size: 0.85rem;
+  color: var(--fc-text-secondary);
+  margin-top: 2px;
+}
+
+.panel-badge {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: var(--fc-lime-soft);
+  color: var(--fc-navy);
+  border: 1px solid var(--fc-lime-border);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* CAMPO TATTICO INTERATTIVO */
+.tactical-pitch-board {
+  position: relative;
+  background: linear-gradient(180deg, #15734D 0%, #0F583A 100%);
+  border: 2px solid #0C462E;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.tactical-pitch-board::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 84px;
-  height: 84px;
+  width: 96px;
+  height: 96px;
   transform: translate(-50%, -50%);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
   border-radius: 50%;
   pointer-events: none;
 }
 
-.pitch-field-visual::after {
+.tactical-pitch-board::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 1.5px;
   background: rgba(255, 255, 255, 0.16);
   pointer-events: none;
 }
 
-.pitch-zone-row {
+.pitch-line-card {
   position: relative;
   z-index: 2;
+  background: rgba(20, 28, 46, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  background: rgba(23, 32, 51, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  gap: 12px;
   text-decoration: none;
-  color: var(--fc-text-inverse);
-  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  color: #FFFFFF;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-a.pitch-zone-row:hover {
-  transform: translateX(3px);
+.pitch-line-card:hover {
+  transform: translateX(4px);
   border-color: var(--fc-lime);
-  background: rgba(23, 32, 51, 0.98);
 }
 
-.pitch-zone-left {
+.pitch-line-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.role-initial-pill {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-xs);
+.role-shield {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  color: #FFFFFF;
   flex-shrink: 0;
 }
 
-.role-initial-pill--a {
-  background: var(--role-a-solid);
+.role-shield--p { background: var(--role-p-grad); }
+.role-shield--d { background: var(--role-d-grad); }
+.role-shield--c { background: var(--role-c-grad); }
+.role-shield--a { background: var(--role-a-grad); }
+
+.pitch-line-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #FFFFFF;
-}
-
-.role-initial-pill--c {
-  background: var(--role-c-solid);
-  color: #FFFFFF;
-}
-
-.role-initial-pill--d {
-  background: var(--role-d-solid);
-  color: #FFFFFF;
-}
-
-.role-initial-pill--p {
-  background: var(--role-p-solid);
-  color: #172033;
-}
-
-.pitch-zone-text {
-  display: flex;
-  flex-direction: column;
   line-height: 1.2;
 }
 
-.pitch-zone-label {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.pitch-zone-desc {
+.pitch-line-sub {
+  display: block;
   font-size: 0.74rem;
   color: #CBD5E1;
-  font-weight: 500;
 }
 
-.pitch-zone-count {
+.pitch-line-pill {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--fc-lime);
   background: rgba(197, 243, 106, 0.14);
   border: 1px solid rgba(197, 243, 106, 0.35);
-  padding: 3px 8px;
-  border-radius: var(--radius-xs);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
   white-space: nowrap;
 }
 
 /* ==========================================================================
-   4. SEZIONI, LISTONE & CARTE GIOCATORI (VISTA GRIGLIA + VISTA TABELLA)
+   4. CAMPIONCINI / TRADING CARDS (.player-card)
    ========================================================================== */
-.section-card {
-  position: relative;
-  min-width: 0;
-  background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+.trading-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
 }
 
-.section-card--gold {
-  border-top: 4px solid var(--fc-navy);
-}
-
-.card-top-row,
-.section-header-inline {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
-  padding-bottom: var(--space-4);
-  border-bottom: 1px solid var(--fc-border);
-  flex-wrap: wrap;
-}
-
-.section-heading {
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--fc-navy);
-  line-height: 1.1;
-}
-
-.section-desc {
-  font-size: 0.9rem;
-  color: var(--fc-text-secondary);
-  margin-top: 4px;
-}
-
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 40px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: var(--fc-navy);
-  text-decoration: none;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  background: var(--fc-surface-muted);
-  border: 1px solid var(--fc-border-strong);
-  transition: all 0.15s ease;
-}
-
-.text-link:hover {
-  background: var(--fc-lime);
-  border-color: var(--fc-lime-border);
-  color: var(--fc-navy);
-}
-
-/* Griglia Carte Giocatori */
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
 }
 
-/* Singola Player Card (Stile Sportivo Editoriale) */
 .player-card {
-  position: relative;
   background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-top: 4px solid var(--fc-success);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
+  border: 1.5px solid var(--fc-border);
+  border-radius: 18px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-4);
-  box-shadow: var(--shadow-xs);
-  transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out), border-color 0.18s ease;
-}
-
-.player-card[data-card-ruolo="Portiere"] {
-  border-top-color: var(--role-p-solid);
-}
-
-.player-card[data-card-ruolo="Difensore"] {
-  border-top-color: var(--role-d-solid);
-}
-
-.player-card[data-card-ruolo="Centrocampista"] {
-  border-top-color: var(--role-c-solid);
-}
-
-.player-card[data-card-ruolo="Attaccante"] {
-  border-top-color: var(--role-a-solid);
-}
-
-.player-card--pending {
-  background: #FCFDFB;
-  border-style: solid;
-  border-top-color: var(--fc-warning);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 @media (hover: hover) {
   .player-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
     border-color: var(--fc-border-strong);
   }
 }
 
-.rpg-card-top {
+.tc-banner {
+  height: 68px;
+  padding: 12px 14px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2);
+  align-items: flex-start;
+  background: linear-gradient(135deg, #1E2942 0%, #141C2E 100%);
+  color: #FFFFFF;
 }
 
-.rpg-faction-tag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: var(--fc-text-muted);
-  background: var(--fc-surface-muted);
-  padding: 3px 8px;
-  border-radius: var(--radius-xs);
-}
+.player-card[data-card-ruolo="Portiere"] .tc-banner { background: var(--role-p-grad); }
+.player-card[data-card-ruolo="Difensore"] .tc-banner { background: var(--role-d-grad); }
+.player-card[data-card-ruolo="Centrocampista"] .tc-banner { background: var(--role-c-grad); }
+.player-card[data-card-ruolo="Attaccante"] .tc-banner { background: var(--role-a-grad); }
 
-.player-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-1) 0;
-}
-
-.player-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-md);
-  background: var(--fc-navy);
-  color: var(--fc-lime);
-  border: 2px solid var(--fc-lime-border);
-  display: flex;
+.tc-role-emblem {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.65rem;
-  flex-shrink: 0;
+  font-size: 1rem;
+  color: #FFFFFF;
 }
 
-.player-card[data-card-ruolo="Portiere"] .player-avatar {
-  background: var(--role-p-bg);
-  color: var(--role-p-text);
-  border-color: var(--role-p-border);
+.status-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
 }
 
-.player-card[data-card-ruolo="Difensore"] .player-avatar {
-  background: var(--role-d-bg);
-  color: var(--role-d-text);
-  border-color: var(--role-d-border);
+.status-approved {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--fc-success);
 }
 
-.player-card[data-card-ruolo="Centrocampista"] .player-avatar {
-  background: var(--role-c-bg);
-  color: var(--role-c-text);
-  border-color: var(--role-c-border);
+.status-pending {
+  background: rgba(254, 246, 231, 0.95);
+  color: var(--fc-warning);
 }
 
-.player-card[data-card-ruolo="Attaccante"] .player-avatar {
-  background: var(--role-a-bg);
-  color: var(--role-a-text);
-  border-color: var(--role-a-border);
+.tc-medallion-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: -32px;
+  position: relative;
+  z-index: 2;
 }
 
-.player-info {
-  flex: 1;
-  min-width: 0;
+.tc-medallion {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: var(--fc-surface);
+  border: 3px solid var(--fc-surface);
+  box-shadow: 0 4px 12px rgba(20, 28, 46, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--fc-navy);
+}
+
+.player-card[data-card-ruolo="Portiere"] .tc-medallion { color: var(--role-p-main); background: var(--role-p-soft); }
+.player-card[data-card-ruolo="Difensore"] .tc-medallion { color: var(--role-d-main); background: var(--role-d-soft); }
+.player-card[data-card-ruolo="Centrocampista"] .tc-medallion { color: var(--role-c-main); background: var(--role-c-soft); }
+.player-card[data-card-ruolo="Attaccante"] .tc-medallion { color: var(--role-a-main); background: var(--role-a-soft); }
+
+.tc-jersey-svg {
+  width: 48px;
+  height: 48px;
+}
+
+.tc-initial {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--fc-navy);
+  margin-top: 4px;
+}
+
+.tc-body {
+  padding: 12px 16px 16px;
+  text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 6px;
+  flex: 1;
 }
 
 .player-name {
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: 1.08rem;
   font-weight: 800;
   color: var(--fc-navy);
   line-height: 1.25;
   word-break: break-word;
 }
 
-.player-meta-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
 .role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-body);
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  background: var(--fc-surface-muted);
-  border: 1px solid var(--fc-border-strong);
-  color: var(--fc-navy);
-  padding: 3px 10px;
-  border-radius: var(--radius-xs);
-  white-space: nowrap;
-}
-
-.player-card[data-card-ruolo="Portiere"] .role-badge {
-  background: var(--role-p-bg);
-  border-color: var(--role-p-border);
-  color: var(--role-p-text);
-}
-
-.player-card[data-card-ruolo="Difensore"] .role-badge {
-  background: var(--role-d-bg);
-  border-color: var(--role-d-border);
-  color: var(--role-d-text);
-}
-
-.player-card[data-card-ruolo="Centrocampista"] .role-badge {
-  background: var(--role-c-bg);
-  border-color: var(--role-c-border);
-  color: var(--role-c-text);
-}
-
-.player-card[data-card-ruolo="Attaccante"] .role-badge {
-  background: var(--role-a-bg);
-  border-color: var(--role-a-border);
-  color: var(--role-a-text);
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-body);
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: var(--radius-pill);
-  white-space: nowrap;
-  flex-shrink: 0;
+  background: var(--fc-surface-muted);
+  color: var(--fc-text-secondary);
 }
 
-.status-pill::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-}
+.player-card[data-card-ruolo="Portiere"] .role-badge { background: var(--role-p-soft); color: var(--role-p-dark); }
+.player-card[data-card-ruolo="Difensore"] .role-badge { background: var(--role-d-soft); color: var(--role-d-dark); }
+.player-card[data-card-ruolo="Centrocampista"] .role-badge { background: var(--role-c-soft); color: var(--role-c-dark); }
+.player-card[data-card-ruolo="Attaccante"] .role-badge { background: var(--role-a-soft); color: var(--role-a-dark); }
 
-.status-approved {
-  background: var(--fc-success-bg);
-  border: 1px solid var(--fc-success-border);
-  color: var(--fc-success-text);
-}
-
-.status-pending {
-  background: var(--fc-warning-bg);
-  border: 1px solid var(--fc-warning-border);
-  color: var(--fc-warning-text);
-}
-
-.player-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-2);
-  padding-top: var(--space-3);
+.tc-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   border-top: 1px solid var(--fc-border);
-  font-size: 0.72rem;
+  background: var(--fc-surface-subtle);
+}
+
+.tc-stat {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.tc-stat:first-child {
+  border-right: 1px solid var(--fc-border);
+}
+
+.tc-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   color: var(--fc-text-muted);
-  flex-wrap: wrap;
 }
 
-.record-meta {
+.tc-stat-val {
   font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--fc-navy);
 }
 
-/* ==========================================================================
-   VISTA TABELLA / LISTONE COMPARATIVO (.players-grid.view-list)
-   ========================================================================== */
+/* VISTA TABELLA COMPARATIVA (.players-grid.view-list) */
 .listone-table-head {
   display: none;
 }
@@ -1100,88 +852,69 @@ a.pitch-zone-row:hover {
 @media (min-width: 768px) {
   .listone-table-head.is-visible {
     display: grid;
-    grid-template-columns: 2.2fr 1.2fr 1fr 1.2fr;
-    gap: var(--space-4);
-    padding: 10px var(--space-5);
+    grid-template-columns: 2fr 1.2fr 1fr 1fr;
+    gap: 16px;
+    padding: 10px 20px;
     background: var(--fc-surface-muted);
     border: 1px solid var(--fc-border);
     border-radius: var(--radius-sm);
-    font-family: var(--font-body);
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: var(--fc-text-secondary);
     margin-bottom: 8px;
   }
 
   .players-grid.view-list .player-card {
     display: grid;
-    grid-template-columns: 2.2fr 1.2fr 1fr 1.2fr;
+    grid-template-columns: 2fr 1.2fr 1fr 1fr;
     align-items: center;
-    gap: var(--space-4);
-    padding: 12px var(--space-5);
-    border-top-width: 1px;
-    border-left-width: 4px;
-    border-left-style: solid;
-    border-left-color: var(--fc-success);
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
   }
 
-  .players-grid.view-list .player-card[data-card-ruolo="Portiere"] {
-    border-left-color: var(--role-p-solid);
-  }
-  .players-grid.view-list .player-card[data-card-ruolo="Difensore"] {
-    border-left-color: var(--role-d-solid);
-  }
-  .players-grid.view-list .player-card[data-card-ruolo="Centrocampista"] {
-    border-left-color: var(--role-c-solid);
-  }
-  .players-grid.view-list .player-card[data-card-ruolo="Attaccante"] {
-    border-left-color: var(--role-a-solid);
-  }
-
-  .players-grid.view-list .player-header {
-    grid-column: 1;
-    grid-row: 1;
-    padding: 0;
-  }
-
-  .players-grid.view-list .player-avatar {
-    width: 42px;
-    height: 42px;
-    font-size: 1.2rem;
-  }
-
-  .players-grid.view-list .rpg-card-top {
-    grid-column: 3;
-    grid-row: 1;
-    justify-content: flex-start;
-  }
-
-  .players-grid.view-list .rpg-faction-tag {
+  .players-grid.view-list .tc-medallion-wrap {
     display: none;
   }
 
-  .players-grid.view-list .player-footer {
+  .players-grid.view-list .tc-banner {
+    height: auto;
+    padding: 0;
+    background: none !important;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .players-grid.view-list .tc-role-emblem {
+    display: none;
+  }
+
+  .players-grid.view-list .tc-body {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .players-grid.view-list .tc-footer {
     grid-column: 4;
     grid-row: 1;
-    border-top: none;
-    padding-top: 0;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
+    border: none;
+    background: none;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .players-grid.view-list .tc-stat:first-child {
+    display: none;
   }
 }
 
 /* ==========================================================================
-   5. BOTTONI, FILTRI INTERATTIVI & BARRA DI RICERCA
+   5. BOTTONI, RICERCA & FILTRI LISTONE
    ========================================================================== */
-.cta-row {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
 .btn-primary,
 .btn-secondary,
 .btn-retry {
@@ -1189,148 +922,82 @@ a.pitch-zone-row:hover {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 10px 20px;
+  min-height: 42px;
+  padding: 9px 18px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-primary {
   background: var(--fc-lime);
   color: var(--fc-navy);
   border-color: var(--fc-lime-border);
-  box-shadow: var(--shadow-xs);
 }
 
 .btn-primary:hover:not(:disabled) {
   background: var(--fc-lime-hover);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary {
   background: var(--fc-surface);
   color: var(--fc-navy);
-  border: 1px solid var(--fc-border-strong);
+  border-color: var(--fc-border-strong);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: var(--fc-surface-muted);
-  border-color: var(--fc-navy);
 }
 
-.btn-small {
-  min-height: 42px;
-  padding: 8px 14px;
-  font-size: 0.85rem;
+.btn-link-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--fc-navy);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--fc-surface-muted);
+}
+
+.btn-link-pill:hover {
+  background: var(--fc-lime);
 }
 
 .btn-full {
   width: 100%;
-  margin-top: var(--space-2);
 }
 
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* Scorciatoie Operative / Azioni Rapide */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-4);
-}
-
-.action-card {
+.cta-row {
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  text-decoration: none;
-  color: var(--fc-navy);
-  transition: all 0.18s var(--ease-out);
-  box-shadow: var(--shadow-xs);
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
 }
 
-.action-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--fc-navy);
-  box-shadow: var(--shadow-md);
-}
-
-.action-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
-  background: var(--fc-lime-soft);
-  border: 1px solid var(--fc-lime-border);
-  color: var(--fc-navy);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.action-card--gold .action-icon {
-  background: var(--fc-navy);
-  border-color: var(--fc-navy);
-  color: var(--fc-lime);
-}
-
-.action-icon svg {
-  width: 22px;
-  height: 22px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-.action-text {
+/* Filtri Listone */
+.app-filter-panel {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.action-text strong {
-  font-family: var(--font-body);
-  font-size: 1.02rem;
-  font-weight: 800;
-  color: var(--fc-navy);
-}
-
-.action-text span {
-  font-size: 0.85rem;
-  color: var(--fc-text-secondary);
-}
-
-/* Controlli Catalogo & Filtri (/mercato) */
-.catalog-controls-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  gap: 14px;
+  padding: 18px 20px;
 }
 
 .search-bar-wrap {
   display: flex;
-  align-items: stretch;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .search-input-container {
   position: relative;
   flex: 1;
-  min-width: 240px;
+  min-width: 0;
   display: flex;
   align-items: center;
 }
@@ -1347,14 +1014,13 @@ button:disabled {
 .search-input-tactical {
   width: 100%;
   min-height: 44px;
-  padding: 10px 38px 10px 40px;
+  padding: 10px 36px 10px 42px;
   border-radius: var(--radius-sm);
+  border: 1.5px solid var(--fc-border-strong);
   background: var(--fc-surface-subtle);
-  border: 1px solid var(--fc-border-strong);
-  color: var(--fc-navy);
   font-family: var(--font-body);
   font-size: 0.92rem;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  color: var(--fc-navy);
 }
 
 .search-input-tactical:focus {
@@ -1371,17 +1037,7 @@ button:disabled {
   border: none;
   background: var(--fc-surface-muted);
   color: var(--fc-text-secondary);
-  font-size: 1rem;
-  font-weight: 700;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-clear-btn:hover {
-  background: var(--fc-border-strong);
-  color: var(--fc-navy);
 }
 
 .search-clear-btn[hidden] {
@@ -1392,68 +1048,38 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-4);
+  gap: 12px;
   flex-wrap: wrap;
-  padding-top: var(--space-2);
 }
 
 .filter-toolbar {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  align-items: center;
-}
-
-.filter-group-label {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--fc-text-secondary);
-  margin-right: 4px;
 }
 
 .filter-btn,
 .role-filter-btn,
 .view-mode-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 40px;
+  min-height: 36px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--fc-border);
   background: var(--fc-surface-subtle);
   color: var(--fc-text-secondary);
-  border: 1px solid var(--fc-border);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 0.84rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
-}
-
-.filter-btn:hover,
-.role-filter-btn:hover,
-.view-mode-btn:hover {
-  color: var(--fc-navy);
-  background: var(--fc-surface-muted);
-  border-color: var(--fc-border-strong);
+  white-space: nowrap;
 }
 
 .filter-btn-active,
 .filter-btn[aria-pressed="true"] {
   background: var(--fc-navy);
-  color: var(--fc-text-inverse);
+  color: #FFFFFF;
   border-color: var(--fc-navy);
-  font-weight: 700;
-}
-
-.filter-btn-active:hover,
-.filter-btn[aria-pressed="true"]:hover {
-  background: var(--fc-navy-soft);
-  color: var(--fc-text-inverse);
 }
 
 .role-filter-active,
@@ -1461,7 +1087,6 @@ button:disabled {
   background: var(--fc-lime);
   color: var(--fc-navy);
   border-color: var(--fc-lime-border);
-  font-weight: 700;
 }
 
 .view-switcher-group {
@@ -1469,379 +1094,477 @@ button:disabled {
   background: var(--fc-surface-muted);
   padding: 3px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--fc-border);
 }
 
 .view-mode-btn {
-  min-height: 34px;
   border: none;
   background: transparent;
-  padding: 4px 12px;
-  font-size: 0.8rem;
+  border-radius: 7px;
+  min-height: 32px;
 }
 
 .view-mode-btn.active,
 .view-mode-btn[aria-pressed="true"] {
   background: var(--fc-surface);
   color: var(--fc-navy);
-  font-weight: 700;
   box-shadow: var(--shadow-xs);
 }
 
 .count-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.84rem;
+  font-weight: 700;
   color: var(--fc-text-secondary);
   background: var(--fc-surface-muted);
   padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--fc-border);
+  border-radius: var(--radius-pill);
 }
 
 .count-pill strong {
-  font-family: var(--font-mono);
-  font-weight: 700;
   color: var(--fc-navy);
-  background: var(--fc-lime);
-  padding: 1px 7px;
-  border-radius: var(--radius-xs);
 }
 
 /* ==========================================================================
-   6. LABORATORIO FORGIA CARTA (/suggerisci)
+   6. CREA CARTA (/suggerisci) — STUDIO & CAMPIONCINO COLLEZIONABILE 3D
    ========================================================================== */
 .forge-studio-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: var(--space-6);
-  align-items: start;
-}
-
-.forge-preview-panel {
-  position: sticky;
-  top: 88px;
-  min-width: 0;
-  background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  box-shadow: var(--shadow-sm);
-}
-
-.forge-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--fc-border);
-}
-
-.forge-preview-title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--fc-navy);
-}
-
-.forge-preview-stage {
-  background: var(--fc-surface-subtle);
-  border: 1px dashed var(--fc-border-strong);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  width: 100%;
-}
-
-.forge-preview-note {
-  font-size: 0.8rem;
-  color: var(--fc-text-secondary);
-  line-height: 1.5;
-  background: var(--fc-surface-muted);
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 24px;
+  align-items: stretch;
 }
 
 .role-quick-selector {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .role-pick-btn {
-  min-height: 44px;
-  padding: 10px 12px;
+  min-height: 48px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
+  border: 1.5px solid var(--fc-border);
   background: var(--fc-surface-subtle);
-  border: 1px solid var(--fc-border-strong);
   color: var(--fc-navy);
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
+  gap: 10px;
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.role-pick-btn::before {
-  content: attr(data-role-code);
-  width: 24px;
-  height: 24px;
-  border-radius: 5px;
-  background: var(--fc-surface-muted);
-  border: 1px solid var(--fc-border-strong);
+.role-pick-code {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 0.85rem;
-}
-
-.role-pick-btn:hover {
-  background: var(--fc-surface-muted);
-  border-color: var(--fc-navy);
+  flex-shrink: 0;
 }
 
 .role-pick-btn.active,
 .role-pick-btn[aria-pressed="true"] {
-  background: var(--fc-lime);
+  background: var(--fc-lime-soft);
   border-color: var(--fc-navy);
-  color: var(--fc-navy);
   box-shadow: var(--shadow-xs);
 }
 
-.role-pick-btn.active::before,
-.role-pick-btn[aria-pressed="true"]::before {
-  background: var(--fc-navy);
-  color: var(--fc-lime);
-  border-color: var(--fc-navy);
-}
-
-/* ==========================================================================
-   7. STATI ASINCRONI (LOADING, EMPTY, ERROR)
-   ========================================================================== */
-.skeleton-card {
-  background: var(--fc-surface);
-  border: 1px solid var(--fc-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  min-height: 170px;
+/* PALCOSCENICO ANTEPRIMA CAMPIONCINO */
+.forge-preview-panel {
+  background: radial-gradient(circle at 50% 25%, #243454 0%, #141C2E 85%);
+  border-radius: var(--radius-lg);
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: var(--shadow-md);
+  min-width: 0;
+}
+
+.forge-stage-top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forge-stage-tag {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--fc-lime);
+}
+
+.forge-stage-season {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94A3B8;
+}
+
+.collectible-card-pedestal {
+  width: 100%;
+  display: flex;
   justify-content: center;
-  gap: 14px;
+  align-items: center;
+  padding: 8px 0 12px;
 }
 
-.skeleton-line {
-  height: 14px;
-  border-radius: var(--radius-xs);
-  background: linear-gradient(90deg, #EEF2EC 25%, #E2E8DF 50%, #EEF2EC 75%);
-  background-size: 200% 100%;
-  animation: pulse-skeleton 1.2s infinite linear;
+/* VERO CAMPIONCINO SPORTIVO VERTICALE (3:4 Aspect Ratio) */
+.collectible-card {
+  width: 100%;
+  max-width: 276px;
+  background: #FFFFFF;
+  border-radius: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.38);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
 }
 
-.skeleton-title {
-  width: 65%;
-  height: 20px;
+.cc-top-bar {
+  height: 92px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: var(--role-p-grad);
+  color: #FFFFFF;
 }
 
-.skeleton-subtitle {
-  width: 40%;
+.collectible-card[data-card-ruolo="Portiere"] .cc-top-bar { background: var(--role-p-grad); }
+.collectible-card[data-card-ruolo="Difensore"] .cc-top-bar { background: var(--role-d-grad); }
+.collectible-card[data-card-ruolo="Centrocampista"] .cc-top-bar { background: var(--role-c-grad); }
+.collectible-card[data-card-ruolo="Attaccante"] .cc-top-bar { background: var(--role-a-grad); }
+
+.cc-role-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(20, 28, 46, 0.28);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  padding: 4px 10px;
+  line-height: 1;
 }
 
-@keyframes pulse-skeleton {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.cc-role-letter {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
 }
 
-.state-box {
-  grid-column: 1 / -1;
-  background: var(--fc-surface-subtle);
-  border: 1.5px dashed var(--fc-border-strong);
-  border-radius: var(--radius-md);
-  padding: var(--space-8) var(--space-6);
+.cc-role-short {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.cc-league-crest {
+  width: 34px;
+  height: 34px;
+}
+
+.cc-kit-stage {
+  position: relative;
+  margin-top: -38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cc-kit-halo {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 6px 18px rgba(20, 28, 46, 0.14);
+}
+
+.cc-kit-svg {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  color: var(--role-p-main);
+}
+
+.collectible-card[data-card-ruolo="Portiere"] .cc-kit-svg { color: var(--role-p-main); }
+.collectible-card[data-card-ruolo="Difensore"] .cc-kit-svg { color: var(--role-d-main); }
+.collectible-card[data-card-ruolo="Centrocampista"] .cc-kit-svg { color: var(--role-c-main); }
+.collectible-card[data-card-ruolo="Attaccante"] .cc-kit-svg { color: var(--role-a-main); }
+
+.cc-kit-number {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--fc-navy);
+  margin-top: 4px;
+}
+
+.cc-identity-plate {
+  padding: 14px 18px 18px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
+  gap: 6px;
 }
 
-.state-error {
-  border-style: solid;
-  border-color: var(--fc-error-border);
-  background: var(--fc-error-bg);
-}
-
-.state-title {
+.cc-player-name {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--fc-navy);
+  line-height: 1.1;
+  word-break: break-word;
 }
 
-.state-error .state-title {
-  color: var(--fc-error-text);
+.cc-role-pill {
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--fc-surface-muted);
+  color: var(--fc-navy);
 }
 
-.state-desc {
-  font-size: 0.92rem;
-  color: var(--fc-text-secondary);
-  max-width: 460px;
+.cc-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--fc-border);
+  background: var(--fc-surface-subtle);
 }
 
-.btn-retry {
-  background: var(--fc-error);
-  color: var(--fc-text-inverse);
-  margin-top: var(--space-1);
+.cc-stat-box {
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid var(--fc-border);
 }
 
-.btn-retry:hover {
-  background: var(--fc-error-text);
+.cc-stat-box:last-child {
+  border-right: none;
+}
+
+.cc-stat-lbl {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--fc-text-muted);
+}
+
+.cc-stat-num {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--fc-navy);
 }
 
 /* ==========================================================================
-   8. AUTENTICAZIONE & MODULI (/login, /registrati)
+   7. FORM & SCREEN DI ACCESSO APP (/login, /registrati)
    ========================================================================== */
 .auth-body {
+  background-color: var(--fc-bg);
+}
+
+.auth-screen {
   min-height: 100vh;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.auth-main-wrapper {
-  flex: 1;
-  display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-6);
+  gap: 16px;
 }
 
-.auth-split-container {
-  max-width: 960px;
+.auth-topbar {
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  max-width: 880px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.auth-back-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--fc-navy);
+  text-decoration: none;
   background: var(--fc-surface);
   border: 1px solid var(--fc-border);
-  border-radius: var(--radius-lg);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-xs);
+}
+
+.auth-back-pill:hover {
+  background: var(--fc-lime);
+}
+
+.auth-app-shell {
+  width: 100%;
+  max-width: 880px;
+  background: var(--fc-surface);
+  border: 1px solid var(--fc-border);
+  border-radius: 24px;
   overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   box-shadow: var(--shadow-lg);
 }
 
-.auth-showcase-side {
-  min-width: 0;
-  background: var(--fc-navy);
-  color: var(--fc-text-inverse);
-  padding: var(--space-8);
+.auth-form-panel {
+  padding: 36px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-6);
+  gap: 20px;
 }
 
-.auth-showcase-side .brand-link,
-.auth-showcase-side .logo-area h1 {
-  color: var(--fc-text-inverse);
+.auth-brand-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.auth-showcase-side .brand-subtag {
-  color: var(--fc-lime);
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--fc-surface-muted);
+  padding: 4px;
+  border-radius: var(--radius-sm);
 }
 
-.auth-showcase-side .hero-title {
-  color: var(--fc-text-inverse);
-  font-size: 2.2rem;
-  line-height: 1.15;
+.auth-tab {
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--fc-text-secondary);
 }
 
-.auth-showcase-side .hero-title-accent {
-  display: inline-block;
-  margin-top: 6px;
-  color: var(--fc-navy);
-  background: var(--fc-lime);
-  padding: 2px 10px;
-  border-radius: 6px;
-  line-height: 1.1;
-}
-
-.auth-showcase-side .hero-subtitle {
-  color: #CBD5E1;
-  margin-bottom: 0;
-}
-
-.auth-showcase-side .stat-tile {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
-  border-left-color: var(--fc-lime);
-}
-
-.auth-showcase-side .stat-label {
-  color: #CBD5E1;
-}
-
-.auth-showcase-side .stat-value {
-  color: var(--fc-lime);
-  font-size: 1.5rem;
-}
-
-.auth-card {
-  min-width: 0;
-  width: 100%;
-  padding: var(--space-8);
+.auth-tab.active,
+.auth-tab[aria-current="page"] {
   background: var(--fc-surface);
-}
-
-.auth-logo {
-  margin-bottom: var(--space-5);
+  color: var(--fc-navy);
+  box-shadow: var(--shadow-xs);
 }
 
 .auth-heading {
   font-family: var(--font-display);
-  font-size: 1.9rem;
+  font-size: 1.85rem;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--fc-navy);
-  margin-bottom: 4px;
+  line-height: 1.05;
 }
 
 .auth-subtext {
+  font-size: 0.88rem;
   color: var(--fc-text-secondary);
+  margin-top: 4px;
+}
+
+.auth-visual-panel {
+  background: radial-gradient(circle at 30% 20%, #243454 0%, #141C2E 90%);
+  color: #FFFFFF;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.auth-visual-pill {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  background: var(--fc-lime);
+  color: var(--fc-navy);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+}
+
+.auth-visual-title {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.08;
+  margin-bottom: 12px;
+}
+
+.auth-visual-desc {
   font-size: 0.9rem;
-  margin-bottom: var(--space-5);
+  color: #CBD5E1;
+  line-height: 1.55;
+}
+
+.auth-roles-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.auth-role-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.input-form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .input-group {
-  margin-bottom: var(--space-4);
-  text-align: left;
+  margin-bottom: 14px;
 }
 
 .input-label-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--space-2);
   margin-bottom: 6px;
 }
 
 .input-label {
   display: block;
-  font-family: var(--font-body);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--fc-navy);
   margin-bottom: 6px;
@@ -1853,7 +1576,7 @@ button:disabled {
 
 .char-counter {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--fc-text-muted);
 }
 
@@ -1868,20 +1591,15 @@ button:disabled {
   min-height: 44px;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  background: var(--fc-surface-subtle);
   border: 1.5px solid var(--fc-border-strong);
-  color: var(--fc-navy);
+  background: var(--fc-surface-subtle);
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  font-size: 0.92rem;
+  color: var(--fc-navy);
 }
 
 .password-field-wrap .form-input {
-  padding-right: 84px;
-}
-
-.form-input::placeholder {
-  color: #8893A4;
+  padding-right: 76px;
 }
 
 .form-input:focus {
@@ -1892,21 +1610,14 @@ button:disabled {
 .btn-toggle-pass {
   position: absolute;
   right: 6px;
-  min-height: 32px;
-  padding: 4px 10px;
+  padding: 5px 10px;
   border-radius: var(--radius-xs);
   border: 1px solid var(--fc-border);
   background: var(--fc-surface);
-  color: var(--fc-text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 700;
+  color: var(--fc-text-secondary);
   cursor: pointer;
-}
-
-.btn-toggle-pass:hover {
-  background: var(--fc-surface-muted);
-  color: var(--fc-navy);
 }
 
 .input-invalid {
@@ -1916,309 +1627,357 @@ button:disabled {
 
 .field-error-msg {
   display: block;
-  color: var(--fc-error-text);
-  font-size: 0.8rem;
-  margin-top: 5px;
+  color: var(--fc-error);
+  font-size: 0.78rem;
   font-weight: 600;
+  margin-top: 4px;
 }
 
-.field-error-msg[hidden] {
+.field-error-msg[hidden],
+.alert-box[hidden] {
   display: none;
 }
 
 .alert-box {
-  padding: 12px 16px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
-  font-size: 0.88rem;
-  margin-bottom: var(--space-4);
+  font-size: 0.86rem;
   font-weight: 600;
-}
-
-.alert-box[hidden] {
-  display: none;
 }
 
 .alert-error {
   background: var(--fc-error-bg);
   border: 1px solid var(--fc-error-border);
-  color: var(--fc-error-text);
+  color: var(--fc-error);
 }
 
 .alert-success {
   background: var(--fc-success-bg);
   border: 1px solid var(--fc-success-border);
-  color: var(--fc-success-text);
+  color: var(--fc-success);
 }
 
-.auth-links {
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--fc-border);
+.auth-footer-note {
   text-align: center;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--fc-text-secondary);
+  padding-top: 12px;
+  border-top: 1px solid var(--fc-border);
 }
 
-.auth-links a {
+.auth-footer-note a {
   color: var(--fc-navy);
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  font-weight: 700;
-}
-
-.auth-links a:hover {
-  background: var(--fc-lime);
-}
-
-.auth-back-row {
-  margin-top: var(--space-2);
+  font-weight: 800;
 }
 
 /* ==========================================================================
-   9. FOOTER SEMANTICO & NAVIGAZIONE MOBILE (BOTTOM DOCK)
+   8. STATI VUOTI & SKELETON
    ========================================================================== */
-.app-footer {
-  background: var(--fc-surface);
-  border-top: 1px solid var(--fc-border);
-  padding: var(--space-5) var(--space-6);
-  margin-top: auto;
-}
-
-.footer-inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  font-size: 0.82rem;
-  color: var(--fc-text-secondary);
-}
-
-.footer-links {
-  display: flex;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.footer-links a {
-  color: var(--fc-text-secondary);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.footer-links a:hover {
-  color: var(--fc-navy);
-  text-decoration: underline;
-}
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(12px);
-  display: flex;
-  justify-content: space-around;
-  padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid var(--fc-border);
-  box-shadow: 0 -4px 16px rgba(23, 32, 51, 0.06);
-  z-index: 200;
-}
-
-.nav-item {
+.state-box {
+  grid-column: 1 / -1;
+  background: var(--fc-surface-subtle);
+  border: 1.5px dashed var(--fc-border-strong);
+  border-radius: var(--radius-md);
+  padding: 36px 24px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-height: 48px;
-  min-width: 64px;
-  color: var(--fc-text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.74rem;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s ease;
+  gap: 10px;
 }
 
-.nav-icon-svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.nav-item.active,
-.nav-item[aria-current="page"] {
-  color: var(--fc-navy);
+.state-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
   font-weight: 800;
-  background: var(--fc-lime);
+  text-transform: uppercase;
+  color: var(--fc-navy);
+}
+
+.state-desc {
+  font-size: 0.88rem;
+  color: var(--fc-text-secondary);
+  max-width: 420px;
+}
+
+.skeleton-card {
+  background: var(--fc-surface);
+  border: 1px solid var(--fc-border);
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #EDF1EB 25%, #DDE4DA 50%, #EDF1EB 75%);
+  background-size: 200% 100%;
+  animation: pulse-skeleton 1.2s infinite linear;
+}
+
+@keyframes pulse-skeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ==========================================================================
-   10. RESPONSIVE DESIGN (DESKTOP >= 961PX, TABLET <= 960PX, MOBILE <= 600PX)
+   9. BOTTOM TAB BAR (SOLO TELEFONO <= 767px)
    ========================================================================== */
-@media (min-width: 961px) {
-  .bottom-nav {
-    display: none !important;
-  }
+.bottom-nav {
+  display: none;
 }
 
-@media (max-width: 960px) {
-  body {
-    padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
-  }
+/* ==========================================================================
+   10. TRE VERSIONI DI ADATTAMENTO (PC >= 1024px, TABLET 768-1023px, TELEFONO <= 767px)
+   ========================================================================== */
 
-  .hero-arena,
-  .forge-studio-grid,
-  .auth-split-container {
+/* --- VERSIONE 2: TABLET (768px - 1023px) --- */
+@media (max-width: 1023px) {
+  .app-shell {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .header-nav-links {
-    display: none;
+  .app-sidebar {
+    position: sticky;
+    top: 0;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    gap: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--fc-navy-border);
   }
 
-  .auth-showcase-side {
-    padding: var(--space-6);
+  .sidebar-brand {
+    padding: 0;
+    flex-shrink: 0;
   }
 
-  .forge-preview-panel {
-    position: static;
-  }
-}
-
-@media (max-width: 600px) {
-  .header-inner {
-    padding: 10px var(--space-4);
-    gap: var(--space-2);
-  }
-
-  .brand-subtag {
-    display: none;
-  }
-
-  .logo-area h1,
   .brand-name {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
   }
 
-  .brand-crest-svg {
-    width: 30px;
-    height: 30px;
+  .sidebar-nav {
+    flex-direction: row;
+    justify-content: center;
+    gap: 4px;
+    flex: 0 1 auto;
   }
 
-  .user-profile-pill {
-    padding: 3px 4px;
-    gap: 6px;
+  .sidebar-link {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    white-space: nowrap;
   }
 
-  .user-identity-chip {
+  .sidebar-user {
+    padding-top: 0;
+    border-top: none;
+    flex-shrink: 0;
+  }
+
+  .user-wallet-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 8px;
+  }
+
+  .user-avatar-mini,
+  .user-name {
     display: none;
   }
 
   .fanta-milioni-badge {
-    font-size: 0.76rem;
-    padding: 4px 8px;
-  }
-
-  .logout-btn,
-  .login-btn-header {
+    background: var(--fc-lime);
+    color: var(--fc-navy);
     padding: 5px 10px;
-    font-size: 0.78rem;
-    min-height: 32px;
+    border-radius: var(--radius-pill);
   }
 
-  .dashboard-container {
-    padding: 0 var(--space-4);
-    margin: var(--space-4) auto var(--space-6);
-    gap: var(--space-4);
+  .app-workspace {
+    padding: 22px 24px 40px;
   }
 
-  .hero-copy-card,
-  .section-card,
-  .tactical-pitch-card,
-  .forge-preview-panel,
-  .auth-card {
-    padding: var(--space-5);
-  }
-
-  .auth-showcase-side {
-    padding: var(--space-4) var(--space-5);
-    gap: var(--space-2);
-  }
-
-  .auth-showcase-side .hero-title {
-    font-size: 1.55rem;
-    margin-bottom: 0;
-  }
-
-  .auth-showcase-side .hero-subtitle,
-  .auth-showcase-side .stat-tile {
-    display: none;
-  }
-
-  .stats-grid,
-  .players-grid,
-  .actions-grid {
+  .dashboard-bento,
+  .forge-studio-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .cta-row .btn-primary,
-  .cta-row .btn-secondary {
+  .trading-cards-grid,
+  .players-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --- VERSIONE 3: TELEFONO / MOBILE (<= 767px) --- */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 74px;
+  }
+
+  .app-sidebar {
+    padding: 10px 16px;
+  }
+
+  /* Sul telefono la navigazione è nella Bottom Tab Bar, l'header è pulitissimo */
+  .sidebar-nav,
+  .user-name {
+    display: none;
+  }
+
+  .brand-crest-svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-name {
+    font-size: 1.35rem;
+  }
+
+  .user-wallet-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 8px;
+  }
+
+  .fanta-milioni-badge {
+    background: var(--fc-lime);
+    color: var(--fc-navy);
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+  }
+
+  .app-workspace {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .workspace-topbar {
+    padding: 16px;
+  }
+
+  .workspace-title {
+    font-size: 1.55rem;
+  }
+
+  .workspace-actions {
     width: 100%;
   }
 
-  .search-input-container {
-    min-width: 0;
-    width: 100%;
-    flex: 1 1 100%;
+  .workspace-actions .btn-primary,
+  .workspace-actions .btn-secondary {
+    flex: 1;
   }
 
-  .search-bar-wrap .btn-secondary {
-    width: 100%;
+  .kpi-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 14px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kpi-value {
+    font-size: 1.65rem;
+  }
+
+  .pitch-panel,
+  .cards-showcase-panel,
+  .forge-form-panel,
+  .app-filter-panel {
+    padding: 16px;
+  }
+
+  .trading-cards-grid,
+  .players-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .filter-toolbar {
     width: 100%;
-    max-width: 100%;
     overflow-x: auto;
     flex-wrap: nowrap;
     padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
   }
 
-  .filter-btn,
-  .role-filter-btn {
-    flex: 0 0 auto;
+  .auth-screen {
+    padding: 16px;
   }
 
-  .role-quick-selector {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .auth-app-shell {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .auth-main-wrapper {
-    padding: var(--space-4);
+  .auth-visual-panel {
+    display: none;
+  }
+
+  .auth-form-panel {
+    padding: 24px 20px;
+  }
+
+  .input-form-row-2col {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  /* Bottom App Tab Bar attiva su Telefono */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--fc-border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 4px 8px;
+    z-index: 200;
+    box-shadow: 0 -4px 16px rgba(20, 28, 46, 0.06);
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: var(--radius-sm);
+    color: var(--fc-text-secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .nav-icon-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-item.active,
+  .nav-item[aria-current="page"] {
+    background: var(--fc-lime);
+    color: var(--fc-navy);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto !important;
-  }
-
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
