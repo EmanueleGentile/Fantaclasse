@@ -3,58 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Iscrizione Squadra Liceo Scientifico</title>
+    <title>Fantaclasse — Iscrizione Nuova Squadra (100 FM)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-page="registrati">
     <a href="#main-content" class="skip-link">Salta al modulo di registrazione</a>
 
-    <!-- Fase 1: Caricamento Iniziale App (Splash Loader) -->
+    <!-- Splash Loader -->
     <div id="app-splash-loader" class="app-splash" role="status" aria-live="polite">
         <div class="app-splash__card">
             <div class="app-splash__crest" aria-hidden="true">
-                <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.2">
+                <svg viewBox="0 0 32 32" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4">
                     <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                     <path d="M10 16l4 4 8-8"/>
                 </svg>
             </div>
             <p class="app-splash__brand">FANTACLASSE</p>
-            <p class="app-splash__subtitle">Liceo Scientifico • Apertura Iscrizioni</p>
+            <p class="app-splash__subtitle">Serie Aula • Apertura Iscrizioni</p>
             <div class="app-splash__bar" aria-hidden="true">
                 <span class="app-splash__bar-fill"></span>
             </div>
         </div>
     </div>
 
-    <!-- Fase 2: Registrazione Nuova Squadra -->
     <div class="auth-viewport">
         <main id="main-content" class="auth-stage" tabindex="-1">
+            <!-- Left Showcase -->
             <section class="auth-showcase" aria-label="Vantaggi iscrizione Fantaclasse">
                 <div class="auth-showcase__top">
                     <div class="auth-showcase__brand">
                         <span class="brand-badge__crest" aria-hidden="true">
-                            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
                                 <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                                 <path d="M11 16h10M16 11v10"/>
                             </svg>
                         </span>
-                        <div>
+                        <div class="brand-badge__text">
                             <span class="brand-badge__title">FANTACLASSE</span>
-                            <span class="brand-badge__sub">Liceo Scientifico Edition</span>
+                            <span class="brand-badge__sub">Serie Aula • Liceo Scientifico</span>
                         </div>
                     </div>
 
-                    <span class="auth-showcase__tag">Dotazione Ufficiale: 100 FM</span>
-                    <h1 class="auth-showcase__headline">Fonda la tua Classe e proponi i protagonisti dell'Istituto.</h1>
+                    <span class="auth-showcase__tag">Dotazione Iniziale: 100 FantaMilioni</span>
+                    <h1 class="auth-showcase__headline">Fonda il tuo Club e guida lo schieramento della classe.</h1>
                     <p class="auth-showcase__lead">
-                        Ogni account riceve subito 100 FantaMilioni per comporre lo schieramento scolastico sulle 9 materie curricolari del Liceo Scientifico.
+                        Ogni nuovo allenatore riceve subito 100 FantaMilioni (FM) per schierare il modulo 3-3-3 sulle 9 materie curricolari del Liceo Scientifico.
                     </p>
                 </div>
 
-                <div class="auth-departments" aria-label="Materie del Liceo Scientifico">
+                <div class="auth-departments" aria-label="Le 9 Materie del Modulo 3-3-3">
                     <div class="auth-dept-row">
                         <span class="auth-dept-row__code">INF • MAT • SCI</span>
                         <span class="auth-dept-row__name">Informatica, Matematica, Scienze</span>
@@ -70,24 +70,16 @@
                 </div>
             </section>
 
+            <!-- Right Form Card -->
             <section class="auth-card" aria-labelledby="register-heading">
-                <div class="auth-card__mobile-brand">
-                    <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
-                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        </svg>
-                    </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                </div>
-
                 <div class="auth-card__tabs" role="navigation" aria-label="Metodo di autenticazione">
-                    <a href="{{ url_for('login') }}" class="auth-card__tab">Accedi</a>
-                    <a href="{{ url_for('registrati') }}" class="auth-card__tab is-active" aria-current="page">Nuova Squadra</a>
+                    <a href="{{ url_for('login') }}" class="auth-card__tab">Accedi al Club</a>
+                    <a href="{{ url_for('registrati') }}" class="auth-card__tab is-active" aria-current="page">Fonda Squadra (+100 FM)</a>
                 </div>
 
                 <header class="auth-card__header">
-                    <h2 id="register-heading" class="auth-card__title">Crea la tua Squadra</h2>
-                    <p class="auth-card__subtitle">Dotazione iniziale automatica: <strong>100 FantaMilioni (FM)</strong>.</p>
+                    <h2 id="register-heading" class="auth-card__title">Iscrivi la tua Squadra</h2>
+                    <p class="auth-card__subtitle">Bonus iscrizione immediato: <strong>100 FantaMilioni (FM)</strong> accreditati in cassa.</p>
                 </header>
 
                 {% if errore %}
@@ -101,14 +93,14 @@
 
                 <form id="form-register" method="POST" action="{{ url_for('registrati') }}" novalidate>
                     <div class="form-group {% if field_errors and field_errors.get('name') %}has-error{% endif %}">
-                        <label class="form-label" for="name">Nome Rappresentante / Squadra</label>
+                        <label class="form-label" for="name">Nome Allenatore / Nome Squadra</label>
                         <input
                             class="form-input"
                             type="text"
                             id="name"
                             name="name"
                             value="{{ form_values.get('name', '') if form_values else '' }}"
-                            placeholder="Es. Quinta B Scientifico"
+                            placeholder="Es. Atletico Quinta B"
                             autocomplete="name"
                             aria-invalid="{{ 'true' if (field_errors and field_errors.get('name')) else 'false' }}"
                             aria-describedby="error-name"
@@ -179,14 +171,14 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" id="btn-submit-register" class="btn btn--primary btn--full">
+                        <button type="submit" id="btn-submit-register" class="btn btn--lime btn--full">
                             Iscrivi Squadra (+100 FM)
                         </button>
                     </div>
                 </form>
 
                 <footer class="auth-card__footer">
-                    Hai già un account? <a href="{{ url_for('login') }}">Accedi alla tua Aula</a>
+                    Hai già una squadra? <a href="{{ url_for('login') }}">Accedi al tuo Spogliatoio</a>
                 </footer>
             </section>
         </main>

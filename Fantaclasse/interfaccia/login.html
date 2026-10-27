@@ -3,101 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Accesso App Liceo Scientifico</title>
+    <title>Fantaclasse — Accesso Club Liceo Scientifico</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-page="login">
     <a href="#main-content" class="skip-link">Salta al modulo di accesso</a>
 
-    <!-- Fase 1: Caricamento Iniziale App (Splash Loader) -->
+    <!-- Splash Loader -->
     <div id="app-splash-loader" class="app-splash" role="status" aria-live="polite">
         <div class="app-splash__card">
             <div class="app-splash__crest" aria-hidden="true">
-                <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.2">
+                <svg viewBox="0 0 32 32" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4">
                     <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                     <path d="M10 16l4 4 8-8"/>
                 </svg>
             </div>
             <p class="app-splash__brand">FANTACLASSE</p>
-            <p class="app-splash__subtitle">Liceo Scientifico • Caricamento App</p>
+            <p class="app-splash__subtitle">Serie Aula • Ingresso Spogliatoio</p>
             <div class="app-splash__bar" aria-hidden="true">
                 <span class="app-splash__bar-fill"></span>
             </div>
         </div>
     </div>
 
-    <!-- Fase 2: Schermata di Accesso App -->
     <div class="auth-viewport">
         <main id="main-content" class="auth-stage" tabindex="-1">
-            <!-- Colonna Sinistra (PC): Identità Liceo Scientifico -->
-            <section class="auth-showcase" aria-label="Presentazione Fantaclasse Liceo Scientifico">
+            <!-- Left Showcase: Tactical Lineup Overview -->
+            <section class="auth-showcase" aria-label="Presentazione Fantaclasse Serie Aula">
                 <div class="auth-showcase__top">
                     <div class="auth-showcase__brand">
                         <span class="brand-badge__crest" aria-hidden="true">
-                            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
                                 <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                                 <path d="M11 16h10M16 11v10"/>
                             </svg>
                         </span>
-                        <div>
+                        <div class="brand-badge__text">
                             <span class="brand-badge__title">FANTACLASSE</span>
-                            <span class="brand-badge__sub">Liceo Scientifico Edition</span>
+                            <span class="brand-badge__sub">Serie Aula • Liceo Scientifico</span>
                         </div>
                     </div>
 
-                    <span class="auth-showcase__tag">Anno Scolastico Ufficiale</span>
+                    <span class="auth-showcase__tag">Stagione Ufficiale • Modulo 3-3-3</span>
                     <h1 class="auth-showcase__headline">Schiera i migliori Studenti e Professori nelle 9 Materie.</h1>
                     <p class="auth-showcase__lead">
-                        Componi la tua aula titolare scegliendo una carta per ciascuna delle 9 materie del Liceo Scientifico con 100 FantaMilioni di budget iniziale.
+                        Componi il tuo undici scolastico scegliendo un titolare per ciascuna delle 9 materie del Liceo Scientifico con 100 FantaMilioni di budget iniziale.
                     </p>
                 </div>
 
-                <!-- Anteprima Dipartimenti Scolastici -->
-                <div class="auth-departments" aria-label="Dipartimenti del Liceo Scientifico">
+                <!-- 3 Tactical Lines Preview -->
+                <div class="auth-departments" aria-label="I 3 Reparti del Modulo 3-3-3">
                     <div class="auth-dept-row">
                         <span class="auth-dept-row__code">INF • MAT • SCI</span>
-                        <span class="auth-dept-row__name">Dipartimento Scientifico</span>
+                        <span class="auth-dept-row__name">Linea Scientifica</span>
                     </div>
                     <div class="auth-dept-row">
                         <span class="auth-dept-row__code">ITA • FIL • STO</span>
-                        <span class="auth-dept-row__name">Dipartimento Umanistico</span>
+                        <span class="auth-dept-row__name">Linea Umanistica</span>
                     </div>
                     <div class="auth-dept-row">
                         <span class="auth-dept-row__code">ING • ART • MOT</span>
-                        <span class="auth-dept-row__name">Dipartimento Linguistico &amp; Arte</span>
+                        <span class="auth-dept-row__name">Linea Linguistica &amp; Arte</span>
                     </div>
                 </div>
             </section>
 
-            <!-- Colonna Destra: Modulo Accesso -->
+            <!-- Right Form Card -->
             <section class="auth-card" aria-labelledby="login-heading">
-                <div class="auth-card__mobile-brand">
-                    <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
-                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        </svg>
-                    </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                </div>
-
                 <div class="auth-card__tabs" role="navigation" aria-label="Metodo di autenticazione">
-                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi</a>
-                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Nuova Squadra</a>
+                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi al Club</a>
+                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Fonda Squadra (+100 FM)</a>
                 </div>
 
                 <header class="auth-card__header">
-                    <h2 id="login-heading" class="auth-card__title">Entra nella tua Aula</h2>
-                    <p class="auth-card__subtitle">Inserisci le tue credenziali per gestire la formazione scolastica.</p>
+                    <h2 id="login-heading" class="auth-card__title">Entra nel tuo Spogliatoio</h2>
+                    <p class="auth-card__subtitle">Inserisci le tue credenziali per gestire il campo 3-3-3 e proporre nuove carte.</p>
                 </header>
 
                 {% if registered_ok %}
                 <div class="status-banner status-banner--success" role="status" aria-live="polite">
                     <div>
-                        <p class="status-banner__title">Squadra registrata con successo</p>
-                        <p class="status-banner__text">Il tuo budget iniziale di <strong>100 FM</strong> è pronto. Accedi per schierare la classe.</p>
+                        <p class="status-banner__title">Squadra iscritta con successo</p>
+                        <p class="status-banner__text">Il tuo budget iniziale di <strong>100 FM</strong> è pronto. Accedi per schierare la formazione.</p>
                     </div>
                 </div>
                 {% endif %}
@@ -113,7 +103,7 @@
 
                 <form id="form-login" method="POST" action="{{ url_for('login') }}" novalidate>
                     <div class="form-group {% if field_errors and field_errors.get('email') %}has-error{% endif %}">
-                        <label class="form-label" for="email">Email Studente o Docente</label>
+                        <label class="form-label" for="email">Email Allenatore (Studente o Docente)</label>
                         <input
                             class="form-input"
                             type="email"
@@ -151,13 +141,14 @@
 
                     <div class="form-actions">
                         <button type="submit" id="btn-submit-login" class="btn btn--primary btn--full">
-                            Entra in Fantaclasse
+                            Scendi in Campo
                         </button>
                     </div>
                 </form>
 
                 <footer class="auth-card__footer">
-                    Non hai ancora una squadra? <a href="{{ url_for('registrati') }}">Registrati e ricevi 100 FM</a>
+                    Non hai ancora una squadra? <a href="{{ url_for('registrati') }}">Fonda il tuo Club e ricevi 100 FM</a>
+                    • <a href="{{ url_for('mercato') }}">Esplora Listone</a>
                 </footer>
             </section>
         </main>

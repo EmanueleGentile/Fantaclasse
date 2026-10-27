@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — La Mia Formazione (Liceo Scientifico)</title>
+    <title>Fantaclasse — Campo &amp; Formazione 3-3-3 (Liceo Scientifico)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-page="home">
-    <a href="#main-content" class="skip-link">Salta alla formazione</a>
+    <a href="#main-content" class="skip-link">Salta al campo tattico</a>
 
-    <!-- Fase 1: Caricamento Iniziale App (Splash Loader) -->
+    <!-- Splash Loader -->
     <div id="app-splash-loader" class="app-splash" role="status" aria-live="polite">
         <div class="app-splash__card">
             <div class="app-splash__crest" aria-hidden="true">
-                <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.2">
+                <svg viewBox="0 0 32 32" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4">
                     <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                     <path d="M10 16l4 4 8-8"/>
                 </svg>
             </div>
             <p class="app-splash__brand">FANTACLASSE</p>
-            <p class="app-splash__subtitle">Liceo Scientifico • Sincronizzazione Aula</p>
+            <p class="app-splash__subtitle">Serie Aula • Preparazione Campo 3-3-3</p>
             <div class="app-splash__bar" aria-hidden="true">
                 <span class="app-splash__bar-fill"></span>
             </div>
@@ -30,39 +30,39 @@
     </div>
 
     {% if not utente %}
-    <!-- Fase 2 (Ospite non autenticato): Gate di Accesso App -->
+    <!-- Guest Matchday Entry Tunnel -->
     <div class="auth-viewport">
         <main id="main-content" class="auth-stage" tabindex="-1">
-            <section class="auth-showcase" aria-label="Anteprima Aula 3-3-3 Liceo Scientifico">
+            <section class="auth-showcase" aria-label="Anteprima Campo Tattico 3-3-3 Liceo Scientifico">
                 <div class="auth-showcase__top">
                     <div class="auth-showcase__brand">
                         <span class="brand-badge__crest" aria-hidden="true">
-                            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
                                 <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
                                 <path d="M11 16h10M16 11v10"/>
                             </svg>
                         </span>
-                        <div>
+                        <div class="brand-badge__text">
                             <span class="brand-badge__title">FANTACLASSE</span>
-                            <span class="brand-badge__sub">Liceo Scientifico App</span>
+                            <span class="brand-badge__sub">Serie Aula • Liceo Scientifico</span>
                         </div>
                     </div>
 
-                    <span class="auth-showcase__tag">Modulo Scolastico 3-3-3</span>
-                    <h1 class="auth-showcase__headline">La tua Aula del Liceo Scientifico ti aspetta.</h1>
+                    <span class="auth-showcase__tag">Modulo Tattico 3-3-3 • 100 FM Budget</span>
+                    <h1 class="auth-showcase__headline">Scendi in campo con i protagonisti della tua classe.</h1>
                     <p class="auth-showcase__lead">
-                        Accedi per schierare Studenti e Professori titolari nelle 9 materie curricolari e gestire il tuo budget da 100 FantaMilioni.
+                        Costruisci il tuo 3-3-3 schierando Studenti e Professori titolari nelle 9 materie curricolari del Liceo Scientifico.
                     </p>
                 </div>
 
-                <!-- Anteprima Compatta delle 9 Cattedre -->
-                <div class="gate-formation-preview" aria-label="Cattedre ufficiali del Liceo Scientifico">
+                <!-- Live 3-3-3 Tactical Pitch Preview -->
+                <div class="gate-formation-preview" aria-label="Stato attuale delle 9 cattedre in campo">
                     {% for slot in formazione_materie %}
                     <div class="gate-slot {% if slot.titolare %}is-filled{% endif %}">
                         <span class="gate-slot__code">{{ slot.codice }}</span>
                         <span class="gate-slot__subject">{{ slot.materia }}</span>
                         <strong class="gate-slot__holder">
-                            {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Cattedra Libera{% endif %}
+                            {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Slot Libero{% endif %}
                         </strong>
                     </div>
                     {% endfor %}
@@ -70,23 +70,14 @@
             </section>
 
             <section class="auth-card" aria-labelledby="gate-login-heading">
-                <div class="auth-card__mobile-brand">
-                    <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
-                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        </svg>
-                    </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                </div>
-
                 <div class="auth-card__tabs" role="navigation" aria-label="Accesso o Registrazione">
-                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi</a>
-                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Nuova Squadra</a>
+                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi al Club</a>
+                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Fonda Squadra (+100 FM)</a>
                 </div>
 
                 <header class="auth-card__header">
-                    <h2 id="gate-login-heading" class="auth-card__title">Accesso Rapido Squadra</h2>
-                    <p class="auth-card__subtitle">Autenticati per sbloccare la tua formazione e proporre nuove carte.</p>
+                    <h2 id="gate-login-heading" class="auth-card__title">Ingresso Spogliatoio</h2>
+                    <p class="auth-card__subtitle">Entra per gestire i 9 titolari, esplorare lo scouting e proporre nuove carte.</p>
                 </header>
 
                 {% if errore_caricamento %}
@@ -100,7 +91,7 @@
 
                 <form method="POST" action="{{ url_for('login') }}" novalidate>
                     <div class="form-group">
-                        <label class="form-label" for="gate-email">Email Studente o Docente</label>
+                        <label class="form-label" for="gate-email">Email Allenatore (Studente o Docente)</label>
                         <input
                             class="form-input"
                             type="email"
@@ -127,17 +118,17 @@
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn--primary btn--full">
-                            Entra nella Formazione
+                            Scendi in Campo
                         </button>
                     </div>
                 </form>
 
                 <div class="gate-secondary-actions">
-                    <a href="{{ url_for('registrati') }}" class="btn btn--secondary btn--full">
-                        Crea Squadra (+100 FM)
+                    <a href="{{ url_for('registrati') }}" class="btn btn--lime btn--full">
+                        Crea Nuova Squadra (+100 FM)
                     </a>
                     <a href="{{ url_for('mercato') }}" class="gate-catalog-link">
-                        Consulta il Listone Studenti &amp; Professori ({{ totale_approvate }})
+                        Esplora il Listone Ufficiale ({{ totale_approvate }} carte approvate)
                     </a>
                 </div>
             </section>
@@ -145,200 +136,428 @@
     </div>
 
     {% else %}
-    <!-- Fase 3 (Utente Autenticato): App Shell + Formazione Scolastica 3-3-3 -->
+    <!-- Authenticated Fantasy Sports App Shell -->
     <div class="app-frame">
-        <!-- Barra Laterale App (PC >= 1024px) -->
-        <aside class="app-sidebar" aria-label="Menu principale">
-            <a href="{{ url_for('home') }}" class="brand-badge">
-                <span class="brand-badge__crest" aria-hidden="true">
-                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
-                        <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        <path d="M11 16h10M16 11v10"/>
-                    </svg>
-                </span>
-                <span class="brand-badge__text">
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                    <span class="brand-badge__sub">Liceo Scientifico</span>
-                </span>
-            </a>
-
-            <nav class="sidebar-nav" aria-label="Navigazione app">
-                <a href="{{ url_for('home') }}" class="sidebar-nav__link is-active" aria-current="page">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-                    </svg>
-                    <span>La Mia Formazione</span>
-                </a>
-                <a href="{{ url_for('mercato') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M4 6h16M4 12h16M4 18h10"/>
-                    </svg>
-                    <span>Listone Classe</span>
-                </a>
-                <a href="{{ url_for('suggerisci') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 8v8M8 12h8"/>
-                    </svg>
-                    <span>Crea Carta</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="wallet-widget" aria-label="Profilo squadra e budget">
-                    <div class="wallet-widget__row">
-                        <span class="wallet-widget__label">Squadra</span>
-                        <span class="wallet-widget__status">{{ utente.name }}</span>
-                    </div>
-                    <p class="wallet-widget__amount" data-user-fm>{{ utente.fanta_milioni }} <small>FM</small></p>
-                    <div class="wallet-widget__actions">
-                        <a href="{{ url_for('logout') }}" class="btn btn--ghost btn--sm btn--full">Esci dalla Sessione</a>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Area Principale App -->
-        <div class="app-Workspace">
-            <header class="app-topbar">
-                <a href="{{ url_for('home') }}" class="app-topbar__brand">
+        <!-- Top Stadium Arena Bar -->
+        <header class="arena-header">
+            <div class="arena-header__inner">
+                <a href="{{ url_for('home') }}" class="brand-badge">
                     <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                            <path d="M11 16h10M16 11v10"/>
                         </svg>
                     </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
+                    <span class="brand-badge__text">
+                        <span class="brand-badge__title">FANTACLASSE</span>
+                        <span class="brand-badge__sub">Serie Aula 3-3-3</span>
+                    </span>
                 </a>
 
-                <nav class="app-topbar__nav" aria-label="Navigazione tablet">
-                    <a href="{{ url_for('home') }}" class="topbar-pill is-active" aria-current="page">Formazione</a>
-                    <a href="{{ url_for('mercato') }}" class="topbar-pill">Listone</a>
-                    <a href="{{ url_for('suggerisci') }}" class="topbar-pill">Crea Carta</a>
+                <nav class="arena-nav" aria-label="Navigazione principale">
+                    <a href="{{ url_for('home') }}" class="arena-nav__link is-active" aria-current="page">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>Campo 3-3-3</span>
+                    </a>
+                    <a href="{{ url_for('mercato') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Listone ({{ totale_approvate }})</span>
+                    </a>
+                    <a href="{{ url_for('suggerisci') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+                        </svg>
+                        <span>Scouting &amp; Crea</span>
+                    </a>
                 </nav>
 
-                <div class="app-topbar__right">
-                    <span class="fm-chip">{{ utente.fanta_milioni }} FM</span>
-                    <span class="user-chip">{{ utente.name }}</span>
+                <div class="arena-hud">
+                    <span class="hud-budget" data-user-fm title="Budget FantaMilioni disponibile">
+                        <span class="hud-budget__dot" aria-hidden="true"></span>
+                        <span>{{ utente.fanta_milioni }} FM</span>
+                    </span>
+                    <span class="hud-manager" title="Allenatore autenticato">{{ utente.name }}</span>
+                    <a href="{{ url_for('logout') }}" class="hud-logout" title="Esci dalla sessione">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                        <span class="hud-logout__text">Esci</span>
+                    </a>
                 </div>
-            </header>
+            </div>
+        </header>
 
+        <div class="app-Workspace">
             <main id="main-content" class="app-content" tabindex="-1">
                 {% if errore_caricamento %}
                 <div class="status-banner status-banner--error" role="alert">
                     <div>
-                        <p class="status-banner__title">Errore caricamento formazione</p>
+                        <p class="status-banner__title">Errore sincronizzazione formazione</p>
                         <p class="status-banner__text">{{ errore_caricamento }}</p>
                     </div>
                 </div>
                 {% endif %}
 
-                <!-- Intestazione Formazione Scolastica -->
-                <section class="formation-summary-bar" aria-label="Riepilogo Squadra">
-                    <div class="formation-summary-bar__main">
-                        <span class="section-kicker">Modulo Scolastico 3-3-3 • Liceo Scientifico</span>
-                        <h1 class="formation-summary-bar__title">Aula Titolare di {{ utente.name }}</h1>
+                <!-- 1. Club Scoreboard & Matchday Telemetry HUD -->
+                <section class="club-scoreboard" aria-label="Scoreboard Squadra e Stato Formazione">
+                    <div class="club-scoreboard__top">
+                        <div class="club-identity">
+                            <div class="club-identity__shield" aria-hidden="true">
+                                {{ utente.name[:2] | upper }}
+                            </div>
+                            <div class="club-identity__meta">
+                                <span class="club-identity__kicker">Club Ufficiale • Liceo Scientifico</span>
+                                <h1 class="club-identity__title">Squadra di {{ utente.name }}</h1>
+                                <p class="club-identity__sub">Modulo Tattico 3-3-3 • 9 Materie Curricolari</p>
+                            </div>
+                        </div>
+
+                        <div class="club-telemetry">
+                            <div class="telemetry-box telemetry-box--highlight">
+                                <span class="telemetry-box__label">Titolari in Campo</span>
+                                <strong class="telemetry-box__val" id="scoreboard-covered-count">{{ totale_schierate }} / 9</strong>
+                            </div>
+                            <div class="telemetry-box">
+                                <span class="telemetry-box__label">Budget Cassa</span>
+                                <strong class="telemetry-box__val">{{ utente.fanta_milioni }} FM</strong>
+                            </div>
+                            <div class="telemetry-box">
+                                <span class="telemetry-box__label">Carte Approvate</span>
+                                <strong class="telemetry-box__val">{{ totale_approvate }}</strong>
+                            </div>
+                            <div class="telemetry-box">
+                                <span class="telemetry-box__label">In Verifica</span>
+                                <strong class="telemetry-box__val">{{ totale_in_attesa }}</strong>
+                            </div>
+                        </div>
                     </div>
-                    <div class="formation-summary-bar__stats">
-                        <div class="mini-stat">
-                            <span class="mini-stat__label">Cattedre Coperte</span>
-                            <strong class="mini-stat__value">{{ totale_schierate }} / 9</strong>
+
+                    <div class="club-scoreboard__bottom">
+                        <div class="readiness-meter">
+                            <div class="readiness-meter__head">
+                                <span class="readiness-meter__label">Copertura Schieramento 9 Materie</span>
+                                <span class="readiness-meter__status" id="readiness-status-text">
+                                    {{ totale_schierate }} di 9 cattedre schierate
+                                </span>
+                            </div>
+                            <div class="readiness-segments" aria-hidden="true">
+                                {% for slot in formazione_materie %}
+                                <span
+                                    class="readiness-seg {% if slot.titolare %}is-filled{% endif %}"
+                                    data-readiness-seg="{{ slot.codice }}"
+                                    title="{{ slot.codice }} — {{ slot.materia }}"
+                                ></span>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <div class="mini-stat">
-                            <span class="mini-stat__label">Budget Squadra</span>
-                            <strong class="mini-stat__value mini-stat__value--accent">{{ utente.fanta_milioni }} FM</strong>
+
+                        <div class="club-scoreboard__actions">
+                            <a href="{{ url_for('mercato') }}" class="btn btn--ghost btn--sm">
+                                Esplora Listone ({{ totale_approvate }})
+                            </a>
+                            <a href="{{ url_for('suggerisci') }}" class="btn btn--lime btn--sm">
+                                + Proponi Studente / Prof
+                            </a>
                         </div>
-                        {% if totale_in_attesa > 0 %}
-                        <div class="mini-stat">
-                            <span class="mini-stat__label">Proposte in Verifica</span>
-                            <strong class="mini-stat__value">{{ totale_in_attesa }}</strong>
-                        </div>
-                        {% endif %}
                     </div>
                 </section>
 
-                <!-- Lavagna Tattica 3-3-3 delle 9 Materie del Liceo Scientifico -->
-                <section class="classroom-board" aria-labelledby="board-heading">
-                    <div class="classroom-board__header">
-                        <div>
-                            <h2 id="board-heading" class="classroom-board__title">Schieramento 9 Materie Curricolari</h2>
-                            <p class="classroom-board__sub">Seleziona una cattedra per filtrare Studenti e Professori di quella materia nel Listone.</p>
-                        </div>
-                        <div class="classroom-board__actions">
-                            <a href="{{ url_for('suggerisci') }}" class="btn btn--lime btn--sm">+ Proponi Studente / Prof</a>
-                        </div>
-                    </div>
-
-                    <div class="formation-9-grid">
-                        {% for slot in formazione_materie %}
-                        <article
-                            class="subject-desk {% if slot.titolare %}is-occupied{% else %}is-vacant{% endif %}"
-                            data-codice="{{ slot.codice }}"
-                        >
-                            <div class="subject-desk__top">
-                                <span class="subject-desk__code" data-codice="{{ slot.codice }}">{{ slot.codice }}</span>
-                                <span class="subject-desk__area">{{ slot.area }}</span>
-                            </div>
-
-                            <h3 class="subject-desk__subject">{{ slot.materia }}</h3>
-
-                            {% if slot.titolare %}
-                            <div class="subject-desk__card">
-                                <div class="subject-desk__avatar" data-codice="{{ slot.codice }}" aria-hidden="true">
-                                    {{ slot.titolare.nome[:1] | upper }}
-                                </div>
-                                <div class="subject-desk__info">
-                                    <strong class="subject-desk__holder">{{ slot.titolare.nome }}</strong>
-                                    <span class="subject-desk__status">Titolare in Cattedra</span>
+                <!-- 2. Two-Column Squad Arena: 3-3-3 Tactical Pitch + Position Inspector Dock -->
+                <div class="squad-arena">
+                    <!-- Left Stage: Football-Inspired 3-3-3 Tactical Pitch -->
+                    <section class="tactical-pitch-stage" aria-labelledby="pitch-heading">
+                        <div class="pitch-topbar">
+                            <div class="pitch-topbar__left">
+                                <span class="pitch-formation-pill">3 - 3 - 3</span>
+                                <div>
+                                    <h2 id="pitch-heading" class="pitch-topbar__title">Campo Tattico delle 9 Materie</h2>
+                                    <p class="pitch-topbar__hint">Tocca una posizione sul campo per scegliere o cambiare il titolare</p>
                                 </div>
                             </div>
-                            <div class="subject-desk__footer">
-                                <span class="subject-desk__count">{{ slot.totale_materia }} disponibili</span>
-                                <a href="{{ url_for('mercato', ruolo=slot.materia) }}" class="subject-desk__link">Cambia &rarr;</a>
+                            <button type="button" id="btn-reset-lineup" class="btn btn--ghost btn--xs">
+                                Ripristina Predefiniti
+                            </button>
+                        </div>
+
+                        <div class="tactical-pitch" id="tactical-pitch-board">
+                            <!-- Pitch Chalk Markings -->
+                            <div class="tactical-pitch__markings" aria-hidden="true">
+                                <div class="pitch-box-top"></div>
+                                <div class="pitch-center-line"></div>
+                                <div class="pitch-center-circle"></div>
+                                <div class="pitch-box-bottom"></div>
                             </div>
-                            {% else %}
-                            <div class="subject-desk__empty">
-                                <p class="subject-desk__empty-text">Nessun titolare assegnato</p>
-                                <a href="{{ url_for('mercato', ruolo=slot.materia) }}" class="btn btn--secondary btn--sm">
-                                    Esplora {{ slot.codice }}
+
+                            <!-- LINEA 1: Reparto Scientifico (INF, MAT, SCI) -->
+                            <div class="pitch-line" role="group" aria-label="Linea Scientifica: Informatica, Matematica, Scienze">
+                                <div class="pitch-line__header">
+                                    <span class="pitch-line__tag">Reparto Scientifico • INF · MAT · SCI</span>
+                                    <span class="pitch-line__count" id="line-count-scientifica">0/3</span>
+                                </div>
+                                <div class="pitch-line__slots">
+                                    {% for slot in formazione_materie[0:3] %}
+                                    <button
+                                        type="button"
+                                        class="pitch-node {% if slot.titolare %}is-occupied{% else %}is-vacant{% endif %} {% if loop.first %}is-selected{% endif %}"
+                                        data-materia="{{ slot.materia }}"
+                                        data-codice="{{ slot.codice }}"
+                                        data-area="{{ slot.area }}"
+                                        data-default-holder="{{ slot.titolare.nome if slot.titolare else '' }}"
+                                        aria-pressed="{{ 'true' if loop.first else 'false' }}"
+                                    >
+                                        <div class="pitch-node__top">
+                                            <span class="pitch-node__code">{{ slot.codice }}</span>
+                                            <span class="pitch-node__pool" data-node-pool>{{ slot.totale_materia }} disp.</span>
+                                        </div>
+
+                                        <div class="pitch-kit" aria-hidden="true">
+                                            <span class="pitch-kit__monogram" data-node-monogram>
+                                                {% if slot.titolare %}{{ slot.titolare.nome[:2] | upper }}{% else %}+{% endif %}
+                                            </span>
+                                        </div>
+
+                                        <div class="pitch-node__plate">
+                                            <strong class="pitch-node__holder" data-node-holder>
+                                                {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Schiera Titolare{% endif %}
+                                            </strong>
+                                            <span class="pitch-node__subj">{{ slot.materia }}</span>
+                                        </div>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- LINEA 2: Reparto Umanistico (ITA, FIL, STO) -->
+                            <div class="pitch-line" role="group" aria-label="Linea Umanistica: Italiano, Filosofia, Storia">
+                                <div class="pitch-line__header">
+                                    <span class="pitch-line__tag">Reparto Umanistico • ITA · FIL · STO</span>
+                                    <span class="pitch-line__count" id="line-count-umanistica">0/3</span>
+                                </div>
+                                <div class="pitch-line__slots">
+                                    {% for slot in formazione_materie[3:6] %}
+                                    <button
+                                        type="button"
+                                        class="pitch-node {% if slot.titolare %}is-occupied{% else %}is-vacant{% endif %}"
+                                        data-materia="{{ slot.materia }}"
+                                        data-codice="{{ slot.codice }}"
+                                        data-area="{{ slot.area }}"
+                                        data-default-holder="{{ slot.titolare.nome if slot.titolare else '' }}"
+                                        aria-pressed="false"
+                                    >
+                                        <div class="pitch-node__top">
+                                            <span class="pitch-node__code">{{ slot.codice }}</span>
+                                            <span class="pitch-node__pool" data-node-pool>{{ slot.totale_materia }} disp.</span>
+                                        </div>
+
+                                        <div class="pitch-kit" aria-hidden="true">
+                                            <span class="pitch-kit__monogram" data-node-monogram>
+                                                {% if slot.titolare %}{{ slot.titolare.nome[:2] | upper }}{% else %}+{% endif %}
+                                            </span>
+                                        </div>
+
+                                        <div class="pitch-node__plate">
+                                            <strong class="pitch-node__holder" data-node-holder>
+                                                {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Schiera Titolare{% endif %}
+                                            </strong>
+                                            <span class="pitch-node__subj">{{ slot.materia }}</span>
+                                        </div>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- LINEA 3: Reparto Linguistico, Arte & Motorie (ING, ART, MOT) -->
+                            <div class="pitch-line" role="group" aria-label="Linea Linguistica, Arte e Motorie: Inglese, Arte, Scienze Motorie">
+                                <div class="pitch-line__header">
+                                    <span class="pitch-line__tag">Reparto Linguistico &amp; Arte • ING · ART · MOT</span>
+                                    <span class="pitch-line__count" id="line-count-linguistica">0/3</span>
+                                </div>
+                                <div class="pitch-line__slots">
+                                    {% for slot in formazione_materie[6:9] %}
+                                    <button
+                                        type="button"
+                                        class="pitch-node {% if slot.titolare %}is-occupied{% else %}is-vacant{% endif %}"
+                                        data-materia="{{ slot.materia }}"
+                                        data-codice="{{ slot.codice }}"
+                                        data-area="{{ slot.area }}"
+                                        data-default-holder="{{ slot.titolare.nome if slot.titolare else '' }}"
+                                        aria-pressed="false"
+                                    >
+                                        <div class="pitch-node__top">
+                                            <span class="pitch-node__code">{{ slot.codice }}</span>
+                                            <span class="pitch-node__pool" data-node-pool>{{ slot.totale_materia }} disp.</span>
+                                        </div>
+
+                                        <div class="pitch-kit" aria-hidden="true">
+                                            <span class="pitch-kit__monogram" data-node-monogram>
+                                                {% if slot.titolare %}{{ slot.titolare.nome[:2] | upper }}{% else %}+{% endif %}
+                                            </span>
+                                        </div>
+
+                                        <div class="pitch-node__plate">
+                                            <strong class="pitch-node__holder" data-node-holder>
+                                                {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Schiera Titolare{% endif %}
+                                            </strong>
+                                            <span class="pitch-node__subj">{{ slot.materia }}</span>
+                                        </div>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Right Stage: Interactive Position Inspector & Subject Matrix Dock -->
+                    <aside class="tactical-dock" id="tactical-slot-dock" aria-label="Ispettore Posizione e Gestione Titolare">
+                        {% set first_slot = formazione_materie[0] %}
+                        <section class="dock-card" aria-live="polite">
+                            <div class="dock-card__header">
+                                <div class="dock-card__title-wrap">
+                                    <span class="dock-card__kicker" id="dock-slot-area">{{ first_slot.area }}</span>
+                                    <div class="player-card__badges">
+                                        <span class="role-code" id="dock-slot-code" data-codice="{{ first_slot.codice }}">{{ first_slot.codice }}</span>
+                                        <h2 class="dock-card__title" id="dock-slot-title">{{ first_slot.materia }}</h2>
+                                    </div>
+                                </div>
+                                <span
+                                    class="status-tag {% if first_slot.titolare %}status-tag--ok{% else %}status-tag--wait{% endif %}"
+                                    id="dock-slot-status"
+                                >
+                                    {% if first_slot.titolare %}Titolare in Campo{% else %}Cattedra Scoperta{% endif %}
+                                </span>
+                            </div>
+
+                            <!-- Active Starter Box -->
+                            <div class="dock-starter-box {% if not first_slot.titolare %}is-empty{% endif %}" id="dock-starter-box">
+                                <div class="dock-starter-box__person">
+                                    <div class="dock-starter-box__emblem" id="dock-starter-monogram" aria-hidden="true">
+                                        {% if first_slot.titolare %}{{ first_slot.titolare.nome[:2] | upper }}{% else %}{{ first_slot.codice }}{% endif %}
+                                    </div>
+                                    <div class="dock-starter-box__info">
+                                        <span class="dock-starter-box__label" id="dock-starter-label">
+                                            {% if first_slot.titolare %}Titolare • {{ first_slot.codice }}{% else %}Posizione Vacante • {{ first_slot.codice }}{% endif %}
+                                        </span>
+                                        <strong class="dock-starter-box__name" id="dock-starter-name">
+                                            {% if first_slot.titolare %}{{ first_slot.titolare.nome }}{% else %}Nessun titolare assegnato{% endif %}
+                                        </strong>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    id="dock-btn-bench"
+                                    class="btn btn--ghost btn--xs"
+                                    {% if not first_slot.titolare %}hidden{% endif %}
+                                >
+                                    In Panchina
+                                </button>
+                            </div>
+
+                            <!-- Candidate Picker for Selected Subject -->
+                            <div class="dock-candidates">
+                                <div class="dock-section-label">
+                                    <span>Candidati della Materia</span>
+                                    <span>Scelta Rapida</span>
+                                </div>
+                                <div class="dock-candidate-list" id="dock-candidate-list">
+                                    {% if first_slot.candidati %}
+                                        {% for cand in first_slot.candidati %}
+                                        <div class="dock-candidate-row {% if first_slot.titolare and first_slot.titolare.nome == cand.nome %}is-active-starter{% endif %}">
+                                            <div class="dock-candidate-row__left">
+                                                <div class="dock-candidate-row__badge">{{ cand.nome[:2] | upper }}</div>
+                                                <div>
+                                                    <p class="dock-candidate-row__name">{{ cand.nome }}</p>
+                                                    <p class="dock-candidate-row__sub">Disponibile nel Listone</p>
+                                                </div>
+                                            </div>
+                                            <span class="status-tag status-tag--ok">Approvata</span>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="dock-empty-notice">
+                                            <p>Nessun candidato approvato per {{ first_slot.materia }}.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Contextual Slot Actions -->
+                            <div class="dock-actions-row">
+                                <a
+                                    href="{{ url_for('mercato', ruolo=first_slot.materia) }}"
+                                    id="dock-link-mercato"
+                                    class="btn btn--secondary btn--sm"
+                                >
+                                    Apri nel Listone
+                                </a>
+                                <a
+                                    href="{{ url_for('suggerisci', ruolo=first_slot.materia) }}"
+                                    id="dock-link-propose"
+                                    class="btn btn--lime btn--sm"
+                                >
+                                    + Proponi {{ first_slot.codice }}
                                 </a>
                             </div>
-                            {% endif %}
-                        </article>
-                        {% endfor %}
-                    </div>
-                </section>
+                        </section>
+
+                        <!-- Quick 9-Subject Tactical Switcher Matrix -->
+                        <section class="dock-card" aria-label="Selettore rapido 9 materie">
+                            <div class="dock-section-label">
+                                <span>Mappa Rapida 9 Cattedre</span>
+                                <span>Stato Copertura</span>
+                            </div>
+                            <div class="subject-matrix-grid">
+                                {% for slot in formazione_materie %}
+                                <button
+                                    type="button"
+                                    class="matrix-pill {% if slot.titolare %}is-covered{% endif %} {% if loop.first %}is-selected{% endif %}"
+                                    data-materia="{{ slot.materia }}"
+                                    title="{{ slot.materia }}"
+                                >
+                                    <span>{{ slot.codice }}</span>
+                                    <span class="matrix-pill__dot" aria-hidden="true"></span>
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    </aside>
+                </div>
             </main>
         </div>
 
-        <!-- Barra di Navigazione Inferiore (Telefono <= 767px) -->
+        <!-- Mobile Persistent Sports Dock (<= 767px) -->
         <nav class="mobile-tabbar" aria-label="Navigazione mobile">
             <a href="{{ url_for('home') }}" class="mobile-tabbar__item is-active" aria-current="page">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <circle cx="12" cy="12" r="3"/>
                 </svg>
-                <span>Formazione</span>
+                <span>Campo 3-3-3</span>
             </a>
             <a href="{{ url_for('mercato') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <path d="M4 6h16M4 12h16M4 18h10"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
                 </svg>
                 <span>Listone</span>
             </a>
             <a href="{{ url_for('suggerisci') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/>
                     <path d="M12 8v8M8 12h8"/>
                 </svg>
-                <span>Crea Carta</span>
+                <span>Scouting</span>
             </a>
             <a href="{{ url_for('logout') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
                 </svg>
                 <span>Esci</span>

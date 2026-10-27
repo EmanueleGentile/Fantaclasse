@@ -124,12 +124,20 @@ def home():
         carte_in_attesa = [c for c in carte_list if c.stato == "in_attesa"]
 
     conteggio_ruoli = {r: 0 for r in RUOLI_CARTE_AMMESSI}
+    candidati_per_materia = {r: [] for r in RUOLI_CARTE_AMMESSI}
+    attesa_per_materia = {r: [] for r in RUOLI_CARTE_AMMESSI}
     titolari_per_materia = {}
+
     for c in carte_approvate:
         if c.ruolo in conteggio_ruoli:
             conteggio_ruoli[c.ruolo] += 1
+            candidati_per_materia[c.ruolo].append(c)
             if c.ruolo not in titolari_per_materia:
                 titolari_per_materia[c.ruolo] = c
+
+    for c in carte_in_attesa:
+        if c.ruolo in attesa_per_materia:
+            attesa_per_materia[c.ruolo].append(c)
 
     formazione_materie = []
     for materia in RUOLI_CARTE_AMMESSI:
@@ -141,6 +149,9 @@ def home():
             "area": meta["area"],
             "titolare": titolare,
             "totale_materia": conteggio_ruoli.get(materia, 0),
+            "candidati": candidati_per_materia.get(materia, []),
+            "in_attesa_list": attesa_per_materia.get(materia, []),
+            "totale_in_attesa": len(attesa_per_materia.get(materia, [])),
         })
 
     totale_schierate = sum(1 for slot in formazione_materie if slot["titolare"] is not None)
@@ -149,6 +160,8 @@ def home():
         "index.html",
         utente=user_dict,
         formazione_materie=formazione_materie,
+        carte_approvate=carte_approvate,
+        carte_in_attesa=carte_in_attesa,
         totale_schierate=totale_schierate,
         totale_approvate=len(carte_approvate),
         totale_in_attesa=len(carte_in_attesa),
@@ -257,6 +270,19 @@ def mercato():
         token=token,
         stato_filter=stato_filter if stato_filter else None,
     )
+    all_carte = carte_list if carte_list is not None else []
+
+    conteggio_ruoli = {r: 0 for r in RUOLI_CARTE_AMMESSI}
+    titolari_default = {}
+    for c in all_carte:
+        if c.ruolo in conteggio_ruoli:
+            conteggio_ruoli[c.ruolo] += 1
+        if c.stato == "approvata" and c.ruolo not in titolari_default:
+            titolari_default[c.ruolo] = c.nome
+
+    totale_approvate = sum(1 for c in all_carte if c.stato == "approvata")
+    totale_in_attesa = sum(1 for c in all_carte if c.stato == "in_attesa")
+
     if carte_list is not None and ruolo_filter:
         carte_list = [c for c in carte_list if c.ruolo == ruolo_filter]
 
@@ -264,6 +290,11 @@ def mercato():
         "mercato.html",
         utente=user_dict,
         carte=carte_list if carte_list is not None else [],
+        totale_catalogo=len(all_carte),
+        totale_approvate=totale_approvate,
+        totale_in_attesa=totale_in_attesa,
+        conteggio_ruoli=conteggio_ruoli,
+        titolari_default=titolari_default,
         stato_selezionato=stato_filter,
         ruolo_selezionato=ruolo_filter,
         errore_caricamento=err.message if err else None,
@@ -281,25 +312,48 @@ def suggerisci():
     token = auth_session.token if auth_session else None
     user_dict = auth_session.user.to_public_dict() if (auth_session and auth_session.user) else None
 
+    def _load_coda_carte():
+        c_list, _ = pb_service.list_carte(token=token)
+        if not c_list:
+            return [], [], {r: 0 for r in RUOLI_CARTE_AMMESSI}
+        approvate = [c for c in c_list if c.stato == "approvata"]
+        in_attesa = [c for c in c_list if c.stato == "in_attesa"]
+        counts = {r: 0 for r in RUOLI_CARTE_AMMESSI}
+        for c in approvate:
+            if c.ruolo in counts:
+                counts[c.ruolo] += 1
+        return approvate, in_attesa, counts
+
     if request.method == "GET":
+        preselected_ruolo = request.args.get("ruolo", "").strip()
+        if preselected_ruolo not in RUOLI_CARTE_AMMESSI:
+            preselected_ruolo = ""
+        carte_approvate, carte_in_attesa, conteggio_ruoli = _load_coda_carte()
         return render_template(
             "suggerisci.html",
             utente=user_dict,
+            carte_approvate=carte_approvate,
+            carte_in_attesa=carte_in_attesa,
+            conteggio_ruoli=conteggio_ruoli,
             successo=None,
             errore=None,
             field_errors={},
-            form_values={"nome": "", "ruolo": ""},
+            form_values={"nome": "", "ruolo": preselected_ruolo},
         )
 
     nome = request.form.get("nome", "")
     ruolo = request.form.get("ruolo", "")
 
     creata, err = pb_service.create_carta(token=token, nome=nome, ruolo=ruolo)
+    carte_approvate, carte_in_attesa, conteggio_ruoli = _load_coda_carte()
     if err or not creata:
         return (
             render_template(
                 "suggerisci.html",
                 utente=user_dict,
+                carte_approvate=carte_approvate,
+                carte_in_attesa=carte_in_attesa,
+                conteggio_ruoli=conteggio_ruoli,
                 successo=None,
                 errore=err.message if err else "Impossibile salvare la carta.",
                 field_errors=err.field_errors if err else {},
@@ -311,6 +365,9 @@ def suggerisci():
     return render_template(
         "suggerisci.html",
         utente=user_dict,
+        carte_approvate=carte_approvate,
+        carte_in_attesa=carte_in_attesa,
+        conteggio_ruoli=conteggio_ruoli,
         successo=f"La carta '{creata.nome}' ({creata.ruolo}) è stata inviata ed è in attesa di approvazione.",
         errore=None,
         field_errors={},

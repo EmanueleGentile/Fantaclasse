@@ -1,16 +1,17 @@
 /**
- * Service Layer Frontend per Fantaclasse — Liceo Scientifico Edition (grafica/services/api.js)
+ * Service Layer & Tactical UI Controller per Fantaclasse — Liceo Scientifico Edition
  * - Validazione per le 9 Materie Curricolari del Liceo Scientifico.
  * - Zero esposizione di ID database, email o metadati interni (GDPR & Security by Design).
- * - Gestione esplicita dei 4 stati asincroni per componente:
- *   1. `loading` (Skeleton UI)
- *   2. `success` (Rendering sicuro con createElement / textContent)
- *   3. `empty-state` (Illustrazione + CTA contestuale)
- *   4. `error` (Banner accessibile con pulsante Riprova)
+ * - Gestione interattiva di:
+ *   1. Campo Tattico 3-3-3 e Ispettore Posizione (assegnazione/rimozione titolare in tempo reale)
+ *   2. Listone & Scouting (filtri per materia, stato, ricerca istantanea e schieramento rapido)
+ *   3. Laboratorio Carte (anteprima live campioncino e coda di verifica in tempo reale)
  */
 
 (function () {
     "use strict";
+
+    var LINEUP_STORAGE_KEY = "fc_lineup_v2";
 
     var SchemaValidator = {
         allowedStati: ["in_attesa", "approvata"],
@@ -26,15 +27,15 @@
             "Scienze Motorie"
         ],
         materieMeta: {
-            "Informatica": { codice: "INF", area: "Area Scientifica" },
-            "Matematica": { codice: "MAT", area: "Area Scientifica" },
-            "Scienze": { codice: "SCI", area: "Area Scientifica" },
-            "Italiano": { codice: "ITA", area: "Area Umanistica" },
-            "Filosofia": { codice: "FIL", area: "Area Umanistica" },
-            "Storia": { codice: "STO", area: "Area Umanistica" },
-            "Inglese": { codice: "ING", area: "Area Linguistica & Arte" },
-            "Disegno e Storia dell'Arte": { codice: "ART", area: "Area Linguistica & Arte" },
-            "Scienze Motorie": { codice: "MOT", area: "Area Linguistica & Arte" }
+            "Informatica": { codice: "INF", area: "Area Scientifica", reparto: "scientifica" },
+            "Matematica": { codice: "MAT", area: "Area Scientifica", reparto: "scientifica" },
+            "Scienze": { codice: "SCI", area: "Area Scientifica", reparto: "scientifica" },
+            "Italiano": { codice: "ITA", area: "Area Umanistica", reparto: "umanistica" },
+            "Filosofia": { codice: "FIL", area: "Area Umanistica", reparto: "umanistica" },
+            "Storia": { codice: "STO", area: "Area Umanistica", reparto: "umanistica" },
+            "Inglese": { codice: "ING", area: "Area Linguistica & Arte", reparto: "linguistica" },
+            "Disegno e Storia dell'Arte": { codice: "ART", area: "Area Linguistica & Arte", reparto: "linguistica" },
+            "Scienze Motorie": { codice: "MOT", area: "Area Linguistica & Arte", reparto: "linguistica" }
         },
 
         isNonEmptyString: function (val) {
@@ -45,7 +46,24 @@
             if (ruolo && SchemaValidator.materieMeta[ruolo]) {
                 return SchemaValidator.materieMeta[ruolo];
             }
-            return { codice: "MAT", area: "Liceo Scientifico" };
+            return { codice: "MAT", area: "Liceo Scientifico", reparto: "scientifica" };
+        },
+
+        getMonogram: function (nome) {
+            if (!nome || typeof nome !== "string") {
+                return "FC";
+            }
+            var cleaned = nome
+                .replace(/^(prof\.ssa|prof\.|dott\.ssa|dott\.)\s*/i, "")
+                .trim();
+            if (!cleaned) {
+                cleaned = nome.trim();
+            }
+            var parts = cleaned.split(/\s+/);
+            if (parts.length >= 2 && parts[0].length > 0 && parts[1].length > 0) {
+                return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+            }
+            return cleaned.slice(0, 2).toUpperCase();
         },
 
         validateCartaRecord: function (record) {
@@ -91,6 +109,61 @@
                     ruolo: cleanRuolo
                 }
             };
+        }
+    };
+
+    var LineupStore = {
+        readMap: function () {
+            try {
+                if (!window.localStorage) {
+                    return {};
+                }
+                var raw = window.localStorage.getItem(LINEUP_STORAGE_KEY);
+                if (!raw) {
+                    return {};
+                }
+                var parsed = JSON.parse(raw);
+                return (parsed && typeof parsed === "object") ? parsed : {};
+            } catch (e) {
+                return {};
+            }
+        },
+
+        writeMap: function (map) {
+            try {
+                if (window.localStorage) {
+                    window.localStorage.setItem(LINEUP_STORAGE_KEY, JSON.stringify(map || {}));
+                }
+            } catch (e) {
+                // localStorage non disponibile
+            }
+        },
+
+        getStarterForSubject: function (materia, defaultName) {
+            var map = this.readMap();
+            if (Object.prototype.hasOwnProperty.call(map, materia)) {
+                if (map[materia] === "__VACANT__") {
+                    return "";
+                }
+                return map[materia] || "";
+            }
+            return defaultName || "";
+        },
+
+        setStarterForSubject: function (materia, nome) {
+            var map = this.readMap();
+            map[materia] = nome ? String(nome).trim() : "__VACANT__";
+            this.writeMap(map);
+        },
+
+        resetAll: function () {
+            try {
+                if (window.localStorage) {
+                    window.localStorage.removeItem(LINEUP_STORAGE_KEY);
+                }
+            } catch (e) {
+                // ignore
+            }
         }
     };
 
@@ -166,24 +239,39 @@
         }
     }
 
-    function buildCartaNode(carta) {
+    function buildCartaNode(carta, options) {
+        var opts = options || {};
         var meta = SchemaValidator.getMateriaMeta(carta.ruolo);
         var codice = carta.codice_materia || meta.codice;
         var area = carta.area_materia || meta.area;
+        var currentStarter = LineupStore.getStarterForSubject(carta.ruolo, opts.defaultStarter || "");
+        var isStarter = carta.stato === "approvata" && currentStarter === carta.nome;
 
         var article = document.createElement("article");
-        article.className = "player-card";
+        article.className = "player-card" + (isStarter ? " is-starter-card" : "");
         article.setAttribute("data-ruolo", carta.ruolo);
         article.setAttribute("data-stato", carta.stato);
         article.setAttribute("data-codice", codice);
+        article.setAttribute("data-nome", carta.nome);
 
         var top = document.createElement("div");
         top.className = "player-card__top";
+
+        var badgesWrap = document.createElement("div");
+        badgesWrap.className = "player-card__badges";
 
         var roleCode = document.createElement("span");
         roleCode.className = "role-code";
         roleCode.setAttribute("data-codice", codice);
         roleCode.textContent = codice;
+        badgesWrap.appendChild(roleCode);
+
+        if (isStarter) {
+            var starterTag = document.createElement("span");
+            starterTag.className = "status-tag status-tag--starter";
+            starterTag.textContent = "TITOLARE";
+            badgesWrap.appendChild(starterTag);
+        }
 
         var statusTag = document.createElement("span");
         statusTag.className = "status-tag " + (
@@ -191,8 +279,11 @@
         );
         statusTag.textContent = carta.stato === "approvata" ? "Approvata" : "In Verifica";
 
-        top.appendChild(roleCode);
+        top.appendChild(badgesWrap);
         top.appendChild(statusTag);
+
+        var mainRow = document.createElement("div");
+        mainRow.className = "player-card__main";
 
         var visual = document.createElement("div");
         visual.className = "player-card__visual";
@@ -203,7 +294,7 @@
         emblem.setAttribute("data-codice", codice);
 
         var initial = document.createElement("span");
-        initial.textContent = carta.nome.charAt(0).toUpperCase();
+        initial.textContent = SchemaValidator.getMonogram(carta.nome);
         emblem.appendChild(initial);
         visual.appendChild(emblem);
 
@@ -227,9 +318,43 @@
         body.appendChild(rolePill);
         body.appendChild(dept);
 
+        mainRow.appendChild(visual);
+        mainRow.appendChild(body);
+
+        var actionsBar = document.createElement("div");
+        actionsBar.className = "player-card__actions";
+
+        var slotHint = document.createElement("span");
+        slotHint.className = "player-card__slot-hint";
+        slotHint.textContent = "Cattedra " + codice;
+        actionsBar.appendChild(slotHint);
+
+        if (carta.stato === "approvata") {
+            var toggleBtn = document.createElement("button");
+            toggleBtn.type = "button";
+            toggleBtn.className = isStarter ? "btn btn--danger-soft btn--xs" : "btn btn--lime btn--xs";
+            toggleBtn.textContent = isStarter ? "In Panchina" : "Schiera Titolare";
+            toggleBtn.addEventListener("click", function () {
+                if (isStarter) {
+                    LineupStore.setStarterForSubject(carta.ruolo, "");
+                } else {
+                    LineupStore.setStarterForSubject(carta.ruolo, carta.nome);
+                }
+                if (typeof opts.onLineupChange === "function") {
+                    opts.onLineupChange();
+                }
+            });
+            actionsBar.appendChild(toggleBtn);
+        } else {
+            var waitHint = document.createElement("span");
+            waitHint.className = "player-card__slot-hint";
+            waitHint.textContent = "Attende convalida";
+            actionsBar.appendChild(waitHint);
+        }
+
         article.appendChild(top);
-        article.appendChild(visual);
-        article.appendChild(body);
+        article.appendChild(mainRow);
+        article.appendChild(actionsBar);
         return article;
     }
 
@@ -290,11 +415,11 @@
 
             var emptyTitle = document.createElement("h2");
             emptyTitle.className = "state-box__title";
-            emptyTitle.textContent = "Nessuna carta per questa materia";
+            emptyTitle.textContent = "Nessun candidato trovato";
 
             var emptyDesc = document.createElement("p");
             emptyDesc.className = "state-box__desc";
-            emptyDesc.textContent = "Nessuno Studente o Professore corrisponde ai filtri selezionati.";
+            emptyDesc.textContent = "Nessuno Studente o Professore corrisponde ai filtri o alla ricerca selezionata.";
 
             var actions = document.createElement("div");
             actions.className = "state-box__actions";
@@ -305,9 +430,11 @@
             resetBtn.textContent = "Mostra tutte le 9 materie";
 
             var cta = document.createElement("a");
-            cta.href = "/suggerisci";
-            cta.className = "btn btn--primary btn--sm";
-            cta.textContent = "+ Crea Carta";
+            cta.href = (payload && payload.activeRuolo)
+                ? ("/suggerisci?ruolo=" + encodeURIComponent(payload.activeRuolo))
+                : "/suggerisci";
+            cta.className = "btn btn--lime btn--sm";
+            cta.textContent = "+ Proponi Candidato";
 
             actions.appendChild(resetBtn);
             actions.appendChild(cta);
@@ -324,7 +451,10 @@
             grid.id = "carte-grid";
             var items = (payload && Array.isArray(payload.items)) ? payload.items : [];
             items.forEach(function (c) {
-                grid.appendChild(buildCartaNode(c));
+                grid.appendChild(buildCartaNode(c, {
+                    defaultStarter: (payload && payload.defaultStarters) ? payload.defaultStarters[c.ruolo] : "",
+                    onLineupChange: payload ? payload.onLineupChange : null
+                }));
             });
             container.appendChild(grid);
         }
@@ -393,14 +523,369 @@
         }
         window.setTimeout(function () {
             splash.classList.add("is-dismissed");
-        }, 180);
+        }, 160);
     }
 
+    /**
+     * Vertical Slice 1: Interactive 3-3-3 Tactical Pitch & Position Inspector (index.html)
+     */
+    function initTacticalPitch() {
+        var pitchEl = document.getElementById("tactical-pitch-board");
+        var dockEl = document.getElementById("tactical-slot-dock");
+        if (!pitchEl || !dockEl) {
+            return;
+        }
+
+        var pitchNodes = pitchEl.querySelectorAll(".pitch-node[data-materia]");
+        var matrixPills = document.querySelectorAll(".matrix-pill[data-materia]");
+        var resetBtn = document.getElementById("btn-reset-lineup");
+
+        var dockCodeEl = document.getElementById("dock-slot-code");
+        var dockAreaEl = document.getElementById("dock-slot-area");
+        var dockTitleEl = document.getElementById("dock-slot-title");
+        var dockStatusEl = document.getElementById("dock-slot-status");
+        var dockStarterBox = document.getElementById("dock-starter-box");
+        var dockStarterMonogram = document.getElementById("dock-starter-monogram");
+        var dockStarterName = document.getElementById("dock-starter-name");
+        var dockStarterLabel = document.getElementById("dock-starter-label");
+        var dockBenchBtn = document.getElementById("dock-btn-bench");
+        var dockCandidatesList = document.getElementById("dock-candidate-list");
+        var dockProposeLink = document.getElementById("dock-link-propose");
+        var dockMercatoLink = document.getElementById("dock-link-mercato");
+
+        var totalCoveredEl = document.getElementById("scoreboard-covered-count");
+        var readinessStatusEl = document.getElementById("readiness-status-text");
+        var readinessSegs = document.querySelectorAll("[data-readiness-seg]");
+
+        // Build initial catalog map per subject from server-rendered pitch nodes + fetch fresh from /api/carte
+        var defaultStarters = {};
+        var candidatesBySubject = {};
+        var pendingBySubject = {};
+
+        SchemaValidator.allowedRuoli.forEach(function (r) {
+            candidatesBySubject[r] = [];
+            pendingBySubject[r] = [];
+        });
+
+        pitchNodes.forEach(function (node) {
+            var mat = node.getAttribute("data-materia") || "";
+            var defHolder = node.getAttribute("data-default-holder") || "";
+            if (mat) {
+                defaultStarters[mat] = defHolder;
+                if (defHolder) {
+                    candidatesBySubject[mat].push({
+                        nome: defHolder,
+                        ruolo: mat,
+                        stato: "approvata"
+                    });
+                }
+            }
+        });
+
+        var selectedMateria = "Informatica";
+
+        function getActiveStarter(materia) {
+            var candidateNames = (candidatesBySubject[materia] || []).map(function (c) {
+                return c.nome;
+            });
+            var chosen = LineupStore.getStarterForSubject(materia, defaultStarters[materia] || "");
+            if (chosen && candidateNames.length > 0 && candidateNames.indexOf(chosen) === -1) {
+                return defaultStarters[materia] || "";
+            }
+            return chosen;
+        }
+
+        function syncPitchAndScoreboard() {
+            var coveredCount = 0;
+            var lineCounts = { scientifica: 0, umanistica: 0, linguistica: 0 };
+
+            pitchNodes.forEach(function (node, idx) {
+                var mat = node.getAttribute("data-materia") || "";
+                var meta = SchemaValidator.getMateriaMeta(mat);
+                var starterName = getActiveStarter(mat);
+                var poolCount = (candidatesBySubject[mat] || []).length;
+                var isOccupied = Boolean(starterName);
+
+                if (isOccupied) {
+                    coveredCount += 1;
+                    if (lineCounts[meta.reparto] !== undefined) {
+                        lineCounts[meta.reparto] += 1;
+                    }
+                }
+
+                node.classList.toggle("is-occupied", isOccupied);
+                node.classList.toggle("is-vacant", !isOccupied);
+                node.classList.toggle("is-selected", mat === selectedMateria);
+                node.setAttribute("aria-pressed", mat === selectedMateria ? "true" : "false");
+
+                var monogramEl = node.querySelector("[data-node-monogram]");
+                var holderEl = node.querySelector("[data-node-holder]");
+                var poolEl = node.querySelector("[data-node-pool]");
+
+                if (monogramEl) {
+                    monogramEl.textContent = isOccupied ? SchemaValidator.getMonogram(starterName) : "+";
+                }
+                if (holderEl) {
+                    holderEl.textContent = isOccupied ? starterName : "Schiera Titolare";
+                }
+                if (poolEl) {
+                    poolEl.textContent = poolCount + " disp.";
+                }
+
+                if (readinessSegs[idx]) {
+                    readinessSegs[idx].classList.toggle("is-filled", isOccupied);
+                }
+            });
+
+            matrixPills.forEach(function (pill) {
+                var mat = pill.getAttribute("data-materia") || "";
+                var isOccupied = Boolean(getActiveStarter(mat));
+                pill.classList.toggle("is-covered", isOccupied);
+                pill.classList.toggle("is-selected", mat === selectedMateria);
+            });
+
+            var sciCountEl = document.getElementById("line-count-scientifica");
+            var umaCountEl = document.getElementById("line-count-umanistica");
+            var linCountEl = document.getElementById("line-count-linguistica");
+            if (sciCountEl) { sciCountEl.textContent = lineCounts.scientifica + "/3"; }
+            if (umaCountEl) { umaCountEl.textContent = lineCounts.umanistica + "/3"; }
+            if (linCountEl) { linCountEl.textContent = lineCounts.linguistica + "/3"; }
+
+            if (totalCoveredEl) {
+                totalCoveredEl.textContent = coveredCount + " / 9";
+            }
+            if (readinessStatusEl) {
+                var missing = 9 - coveredCount;
+                readinessStatusEl.textContent = missing === 0
+                    ? "Formazione 3-3-3 Completa!"
+                    : (coveredCount + " di 9 cattedre schierate (" + missing + " scoperte)");
+            }
+        }
+
+        function renderSelectedSlotDock() {
+            var meta = SchemaValidator.getMateriaMeta(selectedMateria);
+            var starterName = getActiveStarter(selectedMateria);
+            var approvedList = candidatesBySubject[selectedMateria] || [];
+            var pendingList = pendingBySubject[selectedMateria] || [];
+
+            if (dockCodeEl) {
+                dockCodeEl.textContent = meta.codice;
+                dockCodeEl.setAttribute("data-codice", meta.codice);
+            }
+            if (dockAreaEl) {
+                dockAreaEl.textContent = meta.area;
+            }
+            if (dockTitleEl) {
+                dockTitleEl.textContent = selectedMateria;
+            }
+            if (dockStatusEl) {
+                dockStatusEl.className = "status-tag " + (starterName ? "status-tag--ok" : "status-tag--wait");
+                dockStatusEl.textContent = starterName ? "Titolare in Campo" : "Cattedra Scoperta";
+            }
+
+            if (dockStarterBox) {
+                dockStarterBox.classList.toggle("is-empty", !starterName);
+            }
+            if (dockStarterMonogram) {
+                dockStarterMonogram.textContent = starterName ? SchemaValidator.getMonogram(starterName) : meta.codice;
+            }
+            if (dockStarterLabel) {
+                dockStarterLabel.textContent = starterName ? ("Titolare • " + meta.codice) : ("Posizione Vacante • " + meta.codice);
+            }
+            if (dockStarterName) {
+                dockStarterName.textContent = starterName || "Nessun titolare assegnato";
+            }
+            if (dockBenchBtn) {
+                dockBenchBtn.hidden = !starterName;
+            }
+
+            if (dockProposeLink) {
+                dockProposeLink.href = "/suggerisci?ruolo=" + encodeURIComponent(selectedMateria);
+                dockProposeLink.textContent = "+ Proponi " + meta.codice;
+            }
+            if (dockMercatoLink) {
+                dockMercatoLink.href = "/mercato?ruolo=" + encodeURIComponent(selectedMateria);
+            }
+
+            if (dockCandidatesList) {
+                clearElement(dockCandidatesList);
+                if (approvedList.length === 0 && pendingList.length === 0) {
+                    var emptyNotice = document.createElement("div");
+                    emptyNotice.className = "dock-empty-notice";
+
+                    var p = document.createElement("p");
+                    p.textContent = "Nessuno Studente o Professore approvato per " + selectedMateria + ".";
+
+                    var cta = document.createElement("a");
+                    cta.href = "/suggerisci?ruolo=" + encodeURIComponent(selectedMateria);
+                    cta.className = "btn btn--lime btn--xs";
+                    cta.textContent = "+ Proponi il primo candidato per " + meta.codice;
+
+                    emptyNotice.appendChild(p);
+                    emptyNotice.appendChild(cta);
+                    dockCandidatesList.appendChild(emptyNotice);
+                } else {
+                    approvedList.forEach(function (cand) {
+                        var isCurrentStarter = cand.nome === starterName;
+                        var row = document.createElement("div");
+                        row.className = "dock-candidate-row" + (isCurrentStarter ? " is-active-starter" : "");
+
+                        var left = document.createElement("div");
+                        left.className = "dock-candidate-row__left";
+
+                        var badge = document.createElement("div");
+                        badge.className = "dock-candidate-row__badge";
+                        badge.textContent = SchemaValidator.getMonogram(cand.nome);
+
+                        var info = document.createElement("div");
+                        var nameEl = document.createElement("p");
+                        nameEl.className = "dock-candidate-row__name";
+                        nameEl.textContent = cand.nome;
+
+                        var subEl = document.createElement("p");
+                        subEl.className = "dock-candidate-row__sub";
+                        subEl.textContent = isCurrentStarter ? "Titolare schierato in campo" : "Disponibile nel Listone";
+
+                        info.appendChild(nameEl);
+                        info.appendChild(subEl);
+                        left.appendChild(badge);
+                        left.appendChild(info);
+
+                        var actionBtn = document.createElement("button");
+                        actionBtn.type = "button";
+                        actionBtn.className = isCurrentStarter ? "btn btn--emerald btn--xs" : "btn btn--primary btn--xs";
+                        actionBtn.textContent = isCurrentStarter ? "In Campo ✓" : "Schiera";
+                        actionBtn.addEventListener("click", function () {
+                            if (isCurrentStarter) {
+                                LineupStore.setStarterForSubject(selectedMateria, "");
+                            } else {
+                                LineupStore.setStarterForSubject(selectedMateria, cand.nome);
+                            }
+                            syncPitchAndScoreboard();
+                            renderSelectedSlotDock();
+                        });
+
+                        row.appendChild(left);
+                        row.appendChild(actionBtn);
+                        dockCandidatesList.appendChild(row);
+                    });
+
+                    pendingList.forEach(function (pend) {
+                        var row = document.createElement("div");
+                        row.className = "dock-candidate-row";
+
+                        var left = document.createElement("div");
+                        left.className = "dock-candidate-row__left";
+
+                        var badge = document.createElement("div");
+                        badge.className = "dock-candidate-row__badge";
+                        badge.textContent = SchemaValidator.getMonogram(pend.nome);
+
+                        var info = document.createElement("div");
+                        var nameEl = document.createElement("p");
+                        nameEl.className = "dock-candidate-row__name";
+                        nameEl.textContent = pend.nome;
+
+                        var subEl = document.createElement("p");
+                        subEl.className = "dock-candidate-row__sub";
+                        subEl.textContent = "Proposta in attesa di verifica";
+
+                        info.appendChild(nameEl);
+                        info.appendChild(subEl);
+                        left.appendChild(badge);
+                        left.appendChild(info);
+
+                        var waitTag = document.createElement("span");
+                        waitTag.className = "status-tag status-tag--wait";
+                        waitTag.textContent = "In Verifica";
+
+                        row.appendChild(left);
+                        row.appendChild(waitTag);
+                        dockCandidatesList.appendChild(row);
+                    });
+                }
+            }
+        }
+
+        function selectSubject(materia, scrollOnMobile) {
+            if (!materia || SchemaValidator.allowedRuoli.indexOf(materia) === -1) {
+                return;
+            }
+            selectedMateria = materia;
+            syncPitchAndScoreboard();
+            renderSelectedSlotDock();
+            if (scrollOnMobile && window.innerWidth < 1024 && dockEl.scrollIntoView) {
+                dockEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        }
+
+        pitchNodes.forEach(function (node) {
+            node.addEventListener("click", function () {
+                var mat = node.getAttribute("data-materia") || "";
+                selectSubject(mat, true);
+            });
+        });
+
+        matrixPills.forEach(function (pill) {
+            pill.addEventListener("click", function () {
+                var mat = pill.getAttribute("data-materia") || "";
+                selectSubject(mat, false);
+            });
+        });
+
+        if (dockBenchBtn) {
+            dockBenchBtn.addEventListener("click", function () {
+                LineupStore.setStarterForSubject(selectedMateria, "");
+                syncPitchAndScoreboard();
+                renderSelectedSlotDock();
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener("click", function () {
+                LineupStore.resetAll();
+                syncPitchAndScoreboard();
+                renderSelectedSlotDock();
+            });
+        }
+
+        // Initial render from SSR state, then enrich with full /api/carte dataset
+        syncPitchAndScoreboard();
+        renderSelectedSlotDock();
+
+        FantaclasseAPI.listCarte("")
+            .then(function (items) {
+                SchemaValidator.allowedRuoli.forEach(function (r) {
+                    candidatesBySubject[r] = [];
+                    pendingBySubject[r] = [];
+                });
+                items.forEach(function (c) {
+                    if (c.stato === "approvata" && candidatesBySubject[c.ruolo]) {
+                        candidatesBySubject[c.ruolo].push(c);
+                        if (!defaultStarters[c.ruolo]) {
+                            defaultStarters[c.ruolo] = c.nome;
+                        }
+                    } else if (c.stato === "in_attesa" && pendingBySubject[c.ruolo]) {
+                        pendingBySubject[c.ruolo].push(c);
+                    }
+                });
+                syncPitchAndScoreboard();
+                renderSelectedSlotDock();
+            })
+            .catch(function () {
+                // Keep SSR state if offline
+            });
+    }
+
+    /**
+     * Vertical Slice 2: Class Roster & Candidate Scouting (mercato.html)
+     */
     function initMercatoFilters() {
         var container = document.getElementById("carte-state-container");
         var totalBadge = document.getElementById("carte-total-badge");
         var statoButtons = document.querySelectorAll("[data-filter-stato]");
         var ruoloButtons = document.querySelectorAll("[data-filter-ruolo]");
+        var searchInput = document.getElementById("mercato-search-input");
 
         if (!container || (statoButtons.length === 0 && ruoloButtons.length === 0)) {
             return;
@@ -408,6 +893,9 @@
 
         var activeStato = "";
         var activeRuolo = "";
+        var searchQuery = "";
+        var cachedItems = null;
+        var defaultStarters = {};
 
         statoButtons.forEach(function (b) {
             if (b.classList.contains("is-active")) {
@@ -420,24 +908,51 @@
             }
         });
 
+        function applyClientFilters(items) {
+            var filtered = items.filter(function (c) {
+                if (activeRuolo && c.ruolo !== activeRuolo) {
+                    return false;
+                }
+                if (searchQuery) {
+                    var q = searchQuery.toLowerCase();
+                    var matchNome = c.nome.toLowerCase().indexOf(q) !== -1;
+                    var matchRuolo = c.ruolo.toLowerCase().indexOf(q) !== -1;
+                    if (!matchNome && !matchRuolo) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (totalBadge) {
+                totalBadge.textContent = filtered.length + (filtered.length === 1 ? " Carta" : " Carte");
+            }
+
+            if (filtered.length === 0) {
+                renderCarteState(container, "empty-state", { activeRuolo: activeRuolo });
+            } else {
+                renderCarteState(container, "success", {
+                    items: filtered,
+                    defaultStarters: defaultStarters,
+                    onLineupChange: function () {
+                        applyClientFilters(cachedItems || items);
+                    }
+                });
+            }
+        }
+
         function refreshCatalog() {
             renderCarteState(container, "loading", {});
             FantaclasseAPI.listCarte(activeStato)
                 .then(function (items) {
-                    var filtered = items;
-                    if (activeRuolo) {
-                        filtered = items.filter(function (c) {
-                            return c.ruolo === activeRuolo;
-                        });
-                    }
-                    if (totalBadge) {
-                        totalBadge.textContent = filtered.length + " Carte";
-                    }
-                    if (filtered.length === 0) {
-                        renderCarteState(container, "empty-state", {});
-                    } else {
-                        renderCarteState(container, "success", { items: filtered });
-                    }
+                    cachedItems = items;
+                    defaultStarters = {};
+                    items.forEach(function (c) {
+                        if (c.stato === "approvata" && !defaultStarters[c.ruolo]) {
+                            defaultStarters[c.ruolo] = c.nome;
+                        }
+                    });
+                    applyClientFilters(items);
                 })
                 .catch(function (err) {
                     renderCarteState(container, "error", {
@@ -465,19 +980,47 @@
                 ev.preventDefault();
                 activeRuolo = btn.getAttribute("data-filter-ruolo") || "";
                 ruoloButtons.forEach(function (b) {
-                    var isCurrent = b === btn;
+                    var bRuolo = b.getAttribute("data-filter-ruolo") || "";
+                    var isCurrent = bRuolo === activeRuolo;
                     b.classList.toggle("is-active", isCurrent);
                     b.setAttribute("aria-pressed", isCurrent ? "true" : "false");
                 });
-                refreshCatalog();
+                if (cachedItems) {
+                    applyClientFilters(cachedItems);
+                } else {
+                    refreshCatalog();
+                }
             });
         });
+
+        if (searchInput) {
+            searchInput.addEventListener("input", function () {
+                searchQuery = searchInput.value.trim();
+                if (cachedItems) {
+                    applyClientFilters(cachedItems);
+                } else {
+                    refreshCatalog();
+                }
+            });
+        }
+
+        // Hydrate starter buttons on SSR cards immediately
+        var ssrCards = container.querySelectorAll(".player-card[data-ruolo][data-nome]");
+        if (ssrCards.length > 0) {
+            refreshCatalog();
+        }
     }
 
+    /**
+     * Vertical Slice 3: Card Proposal & Live Verification Queue (suggerisci.html)
+     */
     function initSuggerisciForm() {
         var form = document.getElementById("form-suggerisci");
         var feedbackBox = document.getElementById("suggerisci-feedback");
         var submitBtn = document.getElementById("btn-submit-carta");
+        var queueList = document.getElementById("verification-queue-list");
+        var queueCountBadge = document.getElementById("verification-queue-count");
+
         if (!form) {
             return;
         }
@@ -500,7 +1043,7 @@
                 previewName.textContent = currentNome || "Nome Studente / Prof";
             }
             if (previewInitial) {
-                previewInitial.textContent = currentNome ? currentNome.charAt(0).toUpperCase() : "F";
+                previewInitial.textContent = currentNome ? SchemaValidator.getMonogram(currentNome) : "FC";
             }
             if (previewRole) {
                 previewRole.textContent = currentRuolo || "Seleziona Materia";
@@ -539,6 +1082,8 @@
             });
         });
 
+        updateLivePreview();
+
         form.addEventListener("submit", function (ev) {
             var nomeVal = nomeInput ? nomeInput.value : "";
             var ruoloVal = ruoloInput ? ruoloInput.value : "";
@@ -560,6 +1105,7 @@
 
                 FantaclasseAPI.createCarta(nomeVal, ruoloVal)
                     .then(function (res) {
+                        var created = (res && res.item) ? res.item : { nome: nomeVal.trim(), ruolo: ruoloVal.trim(), stato: "in_attesa" };
                         form.reset();
                         updateLivePreview();
                         if (feedbackBox) {
@@ -571,16 +1117,54 @@
                             var wrap = document.createElement("div");
                             var title = document.createElement("p");
                             title.className = "status-banner__title";
-                            title.textContent = "Proposta inviata con successo";
+                            title.textContent = "Proposta registrata nella coda di verifica";
 
                             var text = document.createElement("p");
                             text.className = "status-banner__text";
-                            text.textContent = res.message || "La carta è stata inviata ed è in attesa di verifica.";
+                            text.textContent = res.message || "La carta è stata inviata ed è in attesa di approvazione.";
 
                             wrap.appendChild(title);
                             wrap.appendChild(text);
                             banner.appendChild(wrap);
                             feedbackBox.appendChild(banner);
+                        }
+
+                        if (queueList) {
+                            var emptyQueueMsg = queueList.querySelector("[data-empty-queue]");
+                            if (emptyQueueMsg) {
+                                emptyQueueMsg.remove();
+                            }
+                            var meta = SchemaValidator.getMateriaMeta(created.ruolo);
+                            var row = document.createElement("div");
+                            row.className = "queue-row";
+
+                            var left = document.createElement("div");
+                            left.className = "queue-row__left";
+
+                            var codeBadge = document.createElement("span");
+                            codeBadge.className = "role-code";
+                            codeBadge.setAttribute("data-codice", meta.codice);
+                            codeBadge.textContent = meta.codice;
+
+                            var nameSpan = document.createElement("span");
+                            nameSpan.className = "queue-row__name";
+                            nameSpan.textContent = created.nome;
+
+                            left.appendChild(codeBadge);
+                            left.appendChild(nameSpan);
+
+                            var tag = document.createElement("span");
+                            tag.className = "status-tag status-tag--wait";
+                            tag.textContent = "In Verifica";
+
+                            row.appendChild(left);
+                            row.appendChild(tag);
+                            queueList.insertBefore(row, queueList.firstChild);
+
+                            if (queueCountBadge) {
+                                var currentCount = parseInt(queueCountBadge.textContent || "0", 10) || 0;
+                                queueCountBadge.textContent = String(currentCount + 1) + " in verifica";
+                            }
                         }
                     })
                     .catch(function (err) {
@@ -611,7 +1195,7 @@
                     .finally(function () {
                         if (submitBtn) {
                             submitBtn.disabled = false;
-                            submitBtn.textContent = "Invia Proposta Carta";
+                            submitBtn.textContent = "Invia Proposta al Comitato";
                         }
                     });
             }
@@ -620,12 +1204,14 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         initAppSplash();
+        initTacticalPitch();
         initMercatoFilters();
         initSuggerisciForm();
     });
 
     window.FantaclasseService = {
         SchemaValidator: SchemaValidator,
+        LineupStore: LineupStore,
         API: FantaclasseAPI,
         renderCarteState: renderCarteState
     };

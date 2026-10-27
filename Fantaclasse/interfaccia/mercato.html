@@ -3,157 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Listone Studenti &amp; Professori</title>
+    <title>Fantaclasse — Listone &amp; Scouting Studenti e Professori</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-page="mercato">
-    <a href="#main-content" class="skip-link">Salta al listone carte</a>
+    <a href="#main-content" class="skip-link">Salta al listone candidati</a>
 
     <div class="app-frame">
-        <!-- Barra Laterale App (PC >= 1024px) -->
-        <aside class="app-sidebar" aria-label="Menu principale">
-            <a href="{{ url_for('home') }}" class="brand-badge">
-                <span class="brand-badge__crest" aria-hidden="true">
-                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
-                        <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        <path d="M11 16h10M16 11v10"/>
-                    </svg>
-                </span>
-                <span class="brand-badge__text">
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                    <span class="brand-badge__sub">Liceo Scientifico</span>
-                </span>
-            </a>
-
-            <nav class="sidebar-nav" aria-label="Navigazione app">
-                <a href="{{ url_for('home') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-                    </svg>
-                    <span>La Mia Formazione</span>
-                </a>
-                <a href="{{ url_for('mercato') }}" class="sidebar-nav__link is-active" aria-current="page">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M4 6h16M4 12h16M4 18h10"/>
-                    </svg>
-                    <span>Listone Classe</span>
-                </a>
-                <a href="{{ url_for('suggerisci') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 8v8M8 12h8"/>
-                    </svg>
-                    <span>Crea Carta</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                {% if utente %}
-                <div class="wallet-widget" aria-label="Profilo squadra e budget">
-                    <div class="wallet-widget__row">
-                        <span class="wallet-widget__label">Squadra</span>
-                        <span class="wallet-widget__status">{{ utente.name }}</span>
-                    </div>
-                    <p class="wallet-widget__amount" data-user-fm>{{ utente.fanta_milioni }} <small>FM</small></p>
-                    <div class="wallet-widget__actions">
-                        <a href="{{ url_for('logout') }}" class="btn btn--ghost btn--sm btn--full">Esci dalla Sessione</a>
-                    </div>
-                </div>
-                {% else %}
-                <div class="wallet-widget">
-                    <div class="wallet-widget__row">
-                        <span class="wallet-widget__label">Ospite</span>
-                        <span class="wallet-widget__status">Solo lettura</span>
-                    </div>
-                    <div class="wallet-widget__actions">
-                        <a href="{{ url_for('login') }}" class="btn btn--lime btn--sm btn--full">Accedi</a>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </aside>
-
-        <!-- Area Principale App -->
-        <div class="app-Workspace">
-            <header class="app-topbar">
-                <a href="{{ url_for('home') }}" class="app-topbar__brand">
+        <!-- Unified Stadium Arena Header -->
+        <header class="arena-header">
+            <div class="arena-header__inner">
+                <a href="{{ url_for('home') }}" class="brand-badge">
                     <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                            <path d="M11 16h10M16 11v10"/>
                         </svg>
                     </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
+                    <span class="brand-badge__text">
+                        <span class="brand-badge__title">FANTACLASSE</span>
+                        <span class="brand-badge__sub">Serie Aula 3-3-3</span>
+                    </span>
                 </a>
 
-                <nav class="app-topbar__nav" aria-label="Navigazione tablet">
-                    <a href="{{ url_for('home') }}" class="topbar-pill">Formazione</a>
-                    <a href="{{ url_for('mercato') }}" class="topbar-pill is-active" aria-current="page">Listone</a>
-                    <a href="{{ url_for('suggerisci') }}" class="topbar-pill">Crea Carta</a>
+                <nav class="arena-nav" aria-label="Navigazione principale">
+                    <a href="{{ url_for('home') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>Campo 3-3-3</span>
+                    </a>
+                    <a href="{{ url_for('mercato') }}" class="arena-nav__link is-active" aria-current="page">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Listone Classe</span>
+                    </a>
+                    <a href="{{ url_for('suggerisci') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+                        </svg>
+                        <span>Scouting &amp; Crea</span>
+                    </a>
                 </nav>
 
-                <div class="app-topbar__right">
+                <div class="arena-hud">
                     {% if utente %}
-                    <span class="fm-chip">{{ utente.fanta_milioni }} FM</span>
-                    <span class="user-chip">{{ utente.name }}</span>
+                    <span class="hud-budget" data-user-fm title="Budget FantaMilioni disponibile">
+                        <span class="hud-budget__dot" aria-hidden="true"></span>
+                        <span>{{ utente.fanta_milioni }} FM</span>
+                    </span>
+                    <span class="hud-manager">{{ utente.name }}</span>
+                    <a href="{{ url_for('logout') }}" class="hud-logout" title="Esci dalla sessione">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                        <span class="hud-logout__text">Esci</span>
+                    </a>
                     {% else %}
-                    <a href="{{ url_for('login') }}" class="btn btn--primary btn--sm">Accedi</a>
+                    <a href="{{ url_for('login') }}" class="btn btn--lime btn--sm">Accedi al Club</a>
                     {% endif %}
                 </div>
-            </header>
+            </div>
+        </header>
 
+        <div class="app-Workspace">
             <main id="main-content" class="app-content" tabindex="-1">
-                <!-- Intestazione Pagina Listone -->
-                <section class="page-head">
-                    <div>
-                        <span class="section-kicker">Albo Ufficiale Liceo Scientifico</span>
-                        <h1 class="page-head__title">Listone Studenti &amp; Professori</h1>
-                        <p class="page-head__desc">Esplora le carte per ciascuna delle 9 materie curricolari del Liceo Scientifico.</p>
-                    </div>
-                    <div class="page-head__actions">
-                        <span class="count-pill" id="carte-total-badge">{{ carte|length }} Carte</span>
-                        {% if utente %}
-                        <a href="{{ url_for('suggerisci') }}" class="btn btn--primary btn--sm">+ Nuova Carta</a>
-                        {% endif %}
-                    </div>
-                </section>
+                <!-- 1. Scouting Header + 9-Subject Coverage Strip -->
+                <section class="scouting-header" aria-label="Riepilogo Listone e Copertura 9 Materie">
+                    <div class="scouting-header__top">
+                        <div>
+                            <span class="club-identity__kicker">Centro Scouting • Liceo Scientifico</span>
+                            <h1 class="scouting-header__title">Listone Studenti &amp; Professori</h1>
+                            <p class="scouting-header__desc">
+                                Confronta i candidati per ciascuna delle 9 materie e schiera subito i titolari nel tuo 3-3-3.
+                            </p>
+                        </div>
 
-                <!-- Barra Filtri per Materia e Stato -->
-                <section class="filter-bar" aria-label="Filtri per materia scolastica">
-                    <div class="filter-bar__group" role="group" aria-label="Filtra per Materia">
-                        <span class="filter-bar__label">Materia</span>
-                        <div class="filter-pills">
-                            <a
-                                href="{{ url_for('mercato', stato=stato_selezionato if stato_selezionato else None) }}"
-                                class="filter-pill {% if not ruolo_selezionato %}is-active{% endif %}"
-                                data-filter-ruolo=""
-                                aria-pressed="{{ 'true' if not ruolo_selezionato else 'false' }}"
-                            >
-                                Tutte (9)
+                        <div class="scouting-header__badges">
+                            <span class="count-pill" id="carte-total-badge">
+                                {{ carte|length }} {% if carte|length == 1 %}Carta{% else %}Carte{% endif %}
+                            </span>
+                            <a href="{{ url_for('home') }}" class="btn btn--ghost btn--sm">Vai al Campo 3-3-3</a>
+                            {% if utente %}
+                            <a href="{{ url_for('suggerisci', ruolo=ruolo_selezionato if ruolo_selezionato else None) }}" class="btn btn--lime btn--sm">
+                                + Proponi Carta
                             </a>
-                            {% for r in ruoli_ammessi %}
-                            {% set meta = materie_meta.get(r, {'codice': 'MAT'}) %}
-                            <a
-                                href="{{ url_for('mercato', ruolo=r, stato=stato_selezionato if stato_selezionato else None) }}"
-                                class="filter-pill {% if ruolo_selezionato == r %}is-active{% endif %}"
-                                data-filter-ruolo="{{ r }}"
-                                aria-pressed="{{ 'true' if ruolo_selezionato == r else 'false' }}"
-                            >
-                                <strong>{{ meta.codice }}</strong> • {{ r }}
-                            </a>
-                            {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
 
-                    {% if utente %}
-                    <div class="filter-bar__group" role="group" aria-label="Filtra per stato approvazione">
-                        <span class="filter-bar__label">Stato</span>
-                        <div class="filter-pills">
+                    <!-- Interactive 9-Subject Coverage Strip -->
+                    <div class="coverage-strip" role="group" aria-label="Copertura candidati per materia">
+                        {% for r in ruoli_ammessi %}
+                        {% set meta = materie_meta.get(r, {'codice': 'MAT'}) %}
+                        {% set count_r = conteggio_ruoli.get(r, 0) if conteggio_ruoli is defined else 0 %}
+                        <a
+                            href="{{ url_for('mercato', ruolo=r, stato=stato_selezionato if stato_selezionato else None) }}"
+                            class="coverage-chip {% if count_r > 0 %}has-cards{% endif %} {% if ruolo_selezionato == r %}is-active{% endif %}"
+                            data-filter-ruolo="{{ r }}"
+                            aria-pressed="{{ 'true' if ruolo_selezionato == r else 'false' }}"
+                            title="{{ r }} ({{ count_r }} carte)"
+                        >
+                            <strong>{{ meta.codice }}</strong>
+                            <span>{{ count_r }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- 2. Scouting Toolbar: Instant Search + Subject & Status Filters -->
+                <section class="scouting-toolbar" aria-label="Ricerca e filtri listone">
+                    <div class="scouting-toolbar__top">
+                        <div class="scouting-search">
+                            <svg class="scouting-search__icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input
+                                type="search"
+                                id="mercato-search-input"
+                                class="scouting-search__input"
+                                placeholder="Cerca studente, professore o materia..."
+                                aria-label="Cerca per nome o materia"
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        {% if utente %}
+                        <div class="filter-pills" role="group" aria-label="Filtra per stato verifica">
                             <a
                                 href="{{ url_for('mercato', ruolo=ruolo_selezionato if ruolo_selezionato else None) }}"
                                 class="filter-pill {% if not stato_selezionato %}is-active{% endif %}"
@@ -179,11 +164,33 @@
                                 In Verifica
                             </a>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
+
+                    <div class="filter-pills" role="group" aria-label="Filtra per Materia">
+                        <a
+                            href="{{ url_for('mercato', stato=stato_selezionato if stato_selezionato else None) }}"
+                            class="filter-pill {% if not ruolo_selezionato %}is-active{% endif %}"
+                            data-filter-ruolo=""
+                            aria-pressed="{{ 'true' if not ruolo_selezionato else 'false' }}"
+                        >
+                            Tutte le 9 Materie
+                        </a>
+                        {% for r in ruoli_ammessi %}
+                        {% set meta = materie_meta.get(r, {'codice': 'MAT'}) %}
+                        <a
+                            href="{{ url_for('mercato', ruolo=r, stato=stato_selezionato if stato_selezionato else None) }}"
+                            class="filter-pill {% if ruolo_selezionato == r %}is-active{% endif %}"
+                            data-filter-ruolo="{{ r }}"
+                            aria-pressed="{{ 'true' if ruolo_selezionato == r else 'false' }}"
+                        >
+                            <strong>{{ meta.codice }}</strong> • {{ r }}
+                        </a>
+                        {% endfor %}
+                    </div>
                 </section>
 
-                <!-- Contenitore Dinamico Stato (loading / success / empty-state / error) -->
+                <!-- 3. Dynamic Scouting State Container (loading / success / empty-state / error) -->
                 <section
                     id="carte-state-container"
                     data-ui-state="{% if errore_caricamento %}error{% elif carte|length == 0 %}empty-state{% else %}success{% endif %}"
@@ -197,14 +204,16 @@
                     </div>
                     {% elif carte|length == 0 %}
                     <div class="state-box">
-                        <h2 class="state-box__title">Nessuna carta trovata per questa materia</h2>
+                        <h2 class="state-box__title">Nessun candidato trovato per questa materia</h2>
                         <p class="state-box__desc">
                             Non ci sono ancora Studenti o Professori associati ai filtri selezionati.
                         </p>
                         <div class="state-box__actions">
-                            <a href="{{ url_for('mercato') }}" class="btn btn--secondary btn--sm">Mostra tutte le materie</a>
+                            <a href="{{ url_for('mercato') }}" class="btn btn--secondary btn--sm">Mostra tutte le 9 materie</a>
                             {% if utente %}
-                            <a href="{{ url_for('suggerisci') }}" class="btn btn--primary btn--sm">+ Crea Carta</a>
+                            <a href="{{ url_for('suggerisci', ruolo=ruolo_selezionato if ruolo_selezionato else None) }}" class="btn btn--lime btn--sm">
+                                + Proponi Candidato
+                            </a>
                             {% endif %}
                         </div>
                     </div>
@@ -216,24 +225,38 @@
                             data-ruolo="{{ carta.ruolo }}"
                             data-stato="{{ carta.stato }}"
                             data-codice="{{ carta.codice_materia }}"
+                            data-nome="{{ carta.nome }}"
                         >
                             <div class="player-card__top">
-                                <span class="role-code" data-codice="{{ carta.codice_materia }}">{{ carta.codice_materia }}</span>
+                                <div class="player-card__badges">
+                                    <span class="role-code" data-codice="{{ carta.codice_materia }}">{{ carta.codice_materia }}</span>
+                                </div>
                                 <span class="status-tag {% if carta.stato == 'approvata' %}status-tag--ok{% else %}status-tag--wait{% endif %}">
                                     {% if carta.stato == 'approvata' %}Approvata{% else %}In Verifica{% endif %}
                                 </span>
                             </div>
 
-                            <div class="player-card__visual" aria-hidden="true">
-                                <div class="player-card__emblem" data-codice="{{ carta.codice_materia }}">
-                                    <span>{{ carta.nome[:1] | upper }}</span>
+                            <div class="player-card__main">
+                                <div class="player-card__visual" aria-hidden="true">
+                                    <div class="player-card__emblem" data-codice="{{ carta.codice_materia }}">
+                                        <span>{{ carta.nome[:2] | upper }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="player-card__body">
+                                    <h2 class="player-card__name">{{ carta.nome }}</h2>
+                                    <span class="player-card__role-pill" data-codice="{{ carta.codice_materia }}">{{ carta.ruolo }}</span>
+                                    <p class="player-card__dept">{{ carta.area_materia }}</p>
                                 </div>
                             </div>
 
-                            <div class="player-card__body">
-                                <h2 class="player-card__name">{{ carta.nome }}</h2>
-                                <span class="player-card__role-pill" data-codice="{{ carta.codice_materia }}">{{ carta.ruolo }}</span>
-                                <p class="player-card__dept">{{ carta.area_materia }}</p>
+                            <div class="player-card__actions">
+                                <span class="player-card__slot-hint">Cattedra {{ carta.codice_materia }}</span>
+                                {% if carta.stato == 'approvata' %}
+                                <a href="{{ url_for('home') }}" class="btn btn--lime btn--xs">Gestisci nel 3-3-3</a>
+                                {% else %}
+                                <span class="player-card__slot-hint">Attende convalida</span>
+                                {% endif %}
                             </div>
                         </article>
                         {% endfor %}
@@ -243,40 +266,40 @@
             </main>
         </div>
 
-        <!-- Barra di Navigazione Inferiore (Telefono <= 767px) -->
+        <!-- Mobile Persistent Sports Dock (<= 767px) -->
         <nav class="mobile-tabbar" aria-label="Navigazione mobile">
             <a href="{{ url_for('home') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <circle cx="12" cy="12" r="3"/>
                 </svg>
-                <span>Formazione</span>
+                <span>Campo 3-3-3</span>
             </a>
             <a href="{{ url_for('mercato') }}" class="mobile-tabbar__item is-active" aria-current="page">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <path d="M4 6h16M4 12h16M4 18h10"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
                 </svg>
                 <span>Listone</span>
             </a>
             <a href="{{ url_for('suggerisci') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/>
                     <path d="M12 8v8M8 12h8"/>
                 </svg>
-                <span>Crea Carta</span>
+                <span>Scouting</span>
             </a>
             {% if utente %}
             <a href="{{ url_for('logout') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
                 </svg>
                 <span>Esci</span>
             </a>
             {% else %}
             <a href="{{ url_for('login') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
                 </svg>
                 <span>Accedi</span>

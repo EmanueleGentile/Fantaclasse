@@ -3,120 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Crea Carta Studente o Professore</title>
+    <title>Fantaclasse — Scouting &amp; Proposta Nuova Carta</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body data-page="suggerisci">
-    <a href="#main-content" class="skip-link">Salta al modulo di creazione carta</a>
+    <a href="#main-content" class="skip-link">Salta al modulo di proposta carta</a>
 
     <div class="app-frame">
-        <!-- Barra Laterale App (PC >= 1024px) -->
-        <aside class="app-sidebar" aria-label="Menu principale">
-            <a href="{{ url_for('home') }}" class="brand-badge">
-                <span class="brand-badge__crest" aria-hidden="true">
-                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
-                        <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
-                        <path d="M11 16h10M16 11v10"/>
-                    </svg>
-                </span>
-                <span class="brand-badge__text">
-                    <span class="brand-badge__title">FANTACLASSE</span>
-                    <span class="brand-badge__sub">Liceo Scientifico</span>
-                </span>
-            </a>
-
-            <nav class="sidebar-nav" aria-label="Navigazione app">
-                <a href="{{ url_for('home') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-                    </svg>
-                    <span>La Mia Formazione</span>
-                </a>
-                <a href="{{ url_for('mercato') }}" class="sidebar-nav__link">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M4 6h16M4 12h16M4 18h10"/>
-                    </svg>
-                    <span>Listone Classe</span>
-                </a>
-                <a href="{{ url_for('suggerisci') }}" class="sidebar-nav__link is-active" aria-current="page">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 8v8M8 12h8"/>
-                    </svg>
-                    <span>Crea Carta</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                {% if utente %}
-                <div class="wallet-widget" aria-label="Profilo squadra e budget">
-                    <div class="wallet-widget__row">
-                        <span class="wallet-widget__label">Squadra</span>
-                        <span class="wallet-widget__status">{{ utente.name }}</span>
-                    </div>
-                    <p class="wallet-widget__amount" data-user-fm>{{ utente.fanta_milioni }} <small>FM</small></p>
-                    <div class="wallet-widget__actions">
-                        <a href="{{ url_for('logout') }}" class="btn btn--ghost btn--sm btn--full">Esci dalla Sessione</a>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </aside>
-
-        <!-- Area Principale App -->
-        <div class="app-Workspace">
-            <header class="app-topbar">
-                <a href="{{ url_for('home') }}" class="app-topbar__brand">
+        <!-- Unified Stadium Arena Header -->
+        <header class="arena-header">
+            <div class="arena-header__inner">
+                <a href="{{ url_for('home') }}" class="brand-badge">
                     <span class="brand-badge__crest" aria-hidden="true">
-                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                            <path d="M11 16h10M16 11v10"/>
                         </svg>
                     </span>
-                    <span class="brand-badge__title">FANTACLASSE</span>
+                    <span class="brand-badge__text">
+                        <span class="brand-badge__title">FANTACLASSE</span>
+                        <span class="brand-badge__sub">Serie Aula 3-3-3</span>
+                    </span>
                 </a>
 
-                <nav class="app-topbar__nav" aria-label="Navigazione tablet">
-                    <a href="{{ url_for('home') }}" class="topbar-pill">Formazione</a>
-                    <a href="{{ url_for('mercato') }}" class="topbar-pill">Listone</a>
-                    <a href="{{ url_for('suggerisci') }}" class="topbar-pill is-active" aria-current="page">Crea Carta</a>
+                <nav class="arena-nav" aria-label="Navigazione principale">
+                    <a href="{{ url_for('home') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>Campo 3-3-3</span>
+                    </a>
+                    <a href="{{ url_for('mercato') }}" class="arena-nav__link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Listone Classe</span>
+                    </a>
+                    <a href="{{ url_for('suggerisci') }}" class="arena-nav__link is-active" aria-current="page">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+                        </svg>
+                        <span>Scouting &amp; Crea</span>
+                    </a>
                 </nav>
 
-                <div class="app-topbar__right">
+                <div class="arena-hud">
                     {% if utente %}
-                    <span class="fm-chip">{{ utente.fanta_milioni }} FM</span>
-                    <span class="user-chip">{{ utente.name }}</span>
+                    <span class="hud-budget" data-user-fm title="Budget FantaMilioni disponibile">
+                        <span class="hud-budget__dot" aria-hidden="true"></span>
+                        <span>{{ utente.fanta_milioni }} FM</span>
+                    </span>
+                    <span class="hud-manager">{{ utente.name }}</span>
+                    <a href="{{ url_for('logout') }}" class="hud-logout" title="Esci dalla sessione">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                        <span class="hud-logout__text">Esci</span>
+                    </a>
                     {% endif %}
                 </div>
-            </header>
+            </div>
+        </header>
 
+        <div class="app-Workspace">
             <main id="main-content" class="app-content" tabindex="-1">
-                <section class="page-head">
-                    <div>
-                        <span class="section-kicker">Laboratorio Carte • Liceo Scientifico</span>
-                        <h1 class="page-head__title">Proponi Studente o Professore</h1>
-                        <p class="page-head__desc">
-                            Inserisci il nominativo e assegna una delle 9 materie curricolari del Liceo Scientifico.
-                        </p>
-                    </div>
-                    <div class="page-head__actions">
-                        <a href="{{ url_for('mercato') }}" class="btn btn--secondary btn--sm">Vai al Listone</a>
+                <!-- 1. Scouting Studio Header -->
+                <section class="scouting-header" aria-label="Intestazione Laboratorio Carte">
+                    <div class="scouting-header__top">
+                        <div>
+                            <span class="club-identity__kicker">Centro Scouting Ufficiale • Liceo Scientifico</span>
+                            <h1 class="scouting-header__title">Proponi Studente o Professore</h1>
+                            <p class="scouting-header__desc">
+                                Candica un nuovo protagonista per una delle 9 materie curricolari e segui lo stato di convalida.
+                            </p>
+                        </div>
+                        <div class="scouting-header__badges">
+                            <a href="{{ url_for('home') }}" class="btn btn--ghost btn--sm">Torna al Campo 3-3-3</a>
+                            <a href="{{ url_for('mercato') }}" class="btn btn--lime btn--sm">Apri Listone</a>
+                        </div>
                     </div>
                 </section>
 
+                <!-- 2. 3-Step Verification Pipeline Indicator -->
+                <section class="workflow-steps" aria-label="Fasi del flusso di verifica carta">
+                    <div class="workflow-step is-current">
+                        <span class="workflow-step__num">01</span>
+                        <div class="workflow-step__text">
+                            <strong class="workflow-step__title">Proposta Allenatore</strong>
+                            <span class="workflow-step__sub">Scegli nominativo e materia ufficiale</span>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <span class="workflow-step__num">02</span>
+                        <div class="workflow-step__text">
+                            <strong class="workflow-step__title">Verifica Comitato</strong>
+                            <span class="workflow-step__sub">Stato iniziale: In Verifica (anti-duplicati)</span>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <span class="workflow-step__num">03</span>
+                        <div class="workflow-step__text">
+                            <strong class="workflow-step__title">Schierabile nel 3-3-3</strong>
+                            <span class="workflow-step__sub">Dopo approvazione entra nel Listone</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Two-Column Creator Split: Form + Live Shield Card & Verification Queue -->
                 <div class="creator-split">
-                    <!-- Colonna Modulo -->
+                    <!-- Left Column: Candidate Proposal Form -->
                     <section class="panel-card" aria-labelledby="form-card-heading">
                         <div class="panel-card__head">
                             <div>
-                                <h2 id="form-card-heading" class="panel-card__title">Dati Nominativo &amp; Materia</h2>
-                                <p class="panel-card__sub">Le proposte vengono sottoposte a verifica prima di entrare nell'albo.</p>
+                                <h2 id="form-card-heading" class="panel-card__title">Scheda Tecnica Candidato</h2>
+                                <p class="panel-card__sub">Compila i dati anagrafici e assegna la cattedra del Liceo Scientifico.</p>
                             </div>
+                            <span class="status-tag status-tag--wait">Nuova Proposta</span>
                         </div>
 
                         <div id="suggerisci-feedback" aria-live="polite">
@@ -161,7 +170,7 @@
                             </div>
 
                             <div class="form-group {% if field_errors and field_errors.get('ruolo') %}has-error{% endif %}">
-                                <label class="form-label" for="ruolo">Materia del Liceo Scientifico</label>
+                                <label class="form-label" for="ruolo">Cattedra / Materia del Liceo Scientifico</label>
                                 <select
                                     class="form-select"
                                     id="ruolo"
@@ -182,7 +191,7 @@
                                     {% endfor %}
                                 </select>
 
-                                <!-- Griglia Selezione Rapida 9 Materie (3x3) -->
+                                <!-- 3x3 Quick Subject Selector -->
                                 <div class="role-quick-grid-9" role="group" aria-label="Scelta rapida tra le 9 materie">
                                     {% for r in ruoli_ammessi %}
                                     {% set meta = materie_meta.get(r, {'codice': 'MAT'}) %}
@@ -206,81 +215,114 @@
 
                             <div class="form-actions">
                                 <button type="submit" id="btn-submit-carta" class="btn btn--primary btn--full">
-                                    Invia Proposta Carta
+                                    Invia Proposta al Comitato
                                 </button>
                             </div>
                         </form>
                     </section>
 
-                    <!-- Colonna Anteprima Live Campioncino Scolastico -->
-                    <aside class="preview-stage" aria-label="Anteprima campioncino scolastico">
-                        <span class="preview-stage__label">Anteprima Live Campioncino</span>
+                    <!-- Right Column: Live Campioncino Preview + Real Verification Queue -->
+                    <aside class="creator-sidebar" aria-label="Anteprima campioncino e coda di verifica">
+                        <div class="preview-stage">
+                            <span class="preview-stage__label">Anteprima Live Campioncino Ufficiale</span>
 
-                        {% set initial_ruolo = form_values.get('ruolo', '') if form_values else '' %}
-                        {% set initial_meta = materie_meta.get(initial_ruolo, {'codice': 'MAT', 'area': 'Liceo Scientifico'}) %}
+                            {% set initial_ruolo = form_values.get('ruolo', '') if form_values else '' %}
+                            {% set initial_meta = materie_meta.get(initial_ruolo, {'codice': 'MAT', 'area': 'Liceo Scientifico'}) %}
 
-                        <div class="trading-card" id="live-card-preview">
-                            <div class="trading-card__top">
-                                <span class="role-code" id="preview-role-code" data-codice="{{ initial_meta.codice }}">
-                                    {{ initial_meta.codice if initial_ruolo else 'LICEO' }}
-                                </span>
-                                <span class="status-tag status-tag--wait">In Verifica</span>
-                            </div>
+                            <div class="trading-card" id="live-card-preview">
+                                <div class="trading-card__top">
+                                    <span class="role-code" id="preview-role-code" data-codice="{{ initial_meta.codice }}">
+                                        {{ initial_meta.codice if initial_ruolo else 'LICEO' }}
+                                    </span>
+                                    <span class="status-tag status-tag--wait">In Verifica</span>
+                                </div>
 
-                            <div class="trading-card__crest" id="preview-crest" aria-hidden="true">
-                                <span id="preview-initial">
-                                    {% if form_values and form_values.get('nome') %}
-                                        {{ form_values.get('nome')[:1] | upper }}
-                                    {% else %}
-                                        F
-                                    {% endif %}
-                                </span>
-                            </div>
+                                <div class="trading-card__crest" id="preview-crest" aria-hidden="true">
+                                    <span id="preview-initial">
+                                        {% if form_values and form_values.get('nome') %}
+                                            {{ form_values.get('nome')[:2] | upper }}
+                                        {% else %}
+                                            FC
+                                        {% endif %}
+                                    </span>
+                                </div>
 
-                            <h3 class="trading-card__name" id="preview-card-name">
-                                {{ form_values.get('nome') if (form_values and form_values.get('nome')) else 'Nome Studente / Prof' }}
-                            </h3>
+                                <h3 class="trading-card__name" id="preview-card-name">
+                                    {{ form_values.get('nome') if (form_values and form_values.get('nome')) else 'Nome Studente / Prof' }}
+                                </h3>
 
-                            <p class="trading-card__role" id="preview-card-role">
-                                {{ initial_ruolo if initial_ruolo else 'Seleziona Materia' }}
-                            </p>
+                                <p class="trading-card__role" id="preview-card-role">
+                                    {{ initial_ruolo if initial_ruolo else 'Seleziona Materia' }}
+                                </p>
 
-                            <div class="trading-card__footer">
-                                <span id="preview-card-dept">{{ initial_meta.area }}</span>
-                                <span>FANTACLASSE</span>
+                                <div class="trading-card__footer">
+                                    <span id="preview-card-dept">{{ initial_meta.area }}</span>
+                                    <span>SERIE AULA</span>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Real Verification Queue from PocketBase -->
+                        <section class="panel-card" aria-labelledby="queue-heading">
+                            <div class="panel-card__head">
+                                <div>
+                                    <h3 id="queue-heading" class="panel-card__title">Coda Proposte in Verifica</h3>
+                                    <p class="panel-card__sub">Carte inviate in attesa di approvazione</p>
+                                </div>
+                                <span class="status-tag status-tag--wait" id="verification-queue-count">
+                                    {{ carte_in_attesa|length if carte_in_attesa is defined else 0 }} in verifica
+                                </span>
+                            </div>
+
+                            <div class="verification-queue" id="verification-queue-list">
+                                {% if carte_in_attesa is defined and carte_in_attesa|length > 0 %}
+                                    {% for item in carte_in_attesa %}
+                                    <div class="queue-row">
+                                        <div class="queue-row__left">
+                                            <span class="role-code" data-codice="{{ item.codice_materia }}">{{ item.codice_materia }}</span>
+                                            <span class="queue-row__name">{{ item.nome }}</span>
+                                        </div>
+                                        <span class="status-tag status-tag--wait">In Verifica</span>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="dock-empty-notice" data-empty-queue>
+                                        Nessuna proposta in coda in questo momento.
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </section>
                     </aside>
                 </div>
             </main>
         </div>
 
-        <!-- Barra di Navigazione Inferiore (Telefono <= 767px) -->
+        <!-- Mobile Persistent Sports Dock (<= 767px) -->
         <nav class="mobile-tabbar" aria-label="Navigazione mobile">
             <a href="{{ url_for('home') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <circle cx="12" cy="12" r="3"/>
                 </svg>
-                <span>Formazione</span>
+                <span>Campo 3-3-3</span>
             </a>
             <a href="{{ url_for('mercato') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <path d="M4 6h16M4 12h16M4 18h10"/>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
                 </svg>
                 <span>Listone</span>
             </a>
             <a href="{{ url_for('suggerisci') }}" class="mobile-tabbar__item is-active" aria-current="page">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <circle cx="12" cy="12" r="9"/>
                     <path d="M12 8v8M8 12h8"/>
                 </svg>
-                <span>Crea Carta</span>
+                <span>Scouting</span>
             </a>
             <a href="{{ url_for('logout') }}" class="mobile-tabbar__item">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
                 </svg>
                 <span>Esci</span>
