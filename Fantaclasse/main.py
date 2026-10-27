@@ -21,8 +21,8 @@ from flask import (
 )
 
 from logica.modelli import AuthSession
-from logica.pb_service import PocketBaseService, get_pocketbase_base_url
-from logica.regole import RUOLI_CARTE_AMMESSI, STATI_CARTE_AMMESSI
+from logica.pb_service import PocketBaseService
+from logica.regole import MATERIE_META, RUOLI_CARTE_AMMESSI, STATI_CARTE_AMMESSI
 
 app = Flask(__name__, template_folder="interfaccia", static_folder="grafica")
 app.secret_key = (
@@ -81,8 +81,8 @@ def login_required(view_func):
 @app.context_processor
 def inject_global_context():
     return {
-        "pb_base_url": get_pocketbase_base_url(),
         "ruoli_ammessi": RUOLI_CARTE_AMMESSI,
+        "materie_meta": MATERIE_META,
     }
 
 
@@ -124,14 +124,32 @@ def home():
         carte_in_attesa = [c for c in carte_list if c.stato == "in_attesa"]
 
     conteggio_ruoli = {r: 0 for r in RUOLI_CARTE_AMMESSI}
+    titolari_per_materia = {}
     for c in carte_approvate:
         if c.ruolo in conteggio_ruoli:
             conteggio_ruoli[c.ruolo] += 1
+            if c.ruolo not in titolari_per_materia:
+                titolari_per_materia[c.ruolo] = c
+
+    formazione_materie = []
+    for materia in RUOLI_CARTE_AMMESSI:
+        meta = MATERIE_META.get(materia, {"codice": "MAT", "area": "Area Scientifica"})
+        titolare = titolari_per_materia.get(materia)
+        formazione_materie.append({
+            "materia": materia,
+            "codice": meta["codice"],
+            "area": meta["area"],
+            "titolare": titolare,
+            "totale_materia": conteggio_ruoli.get(materia, 0),
+        })
+
+    totale_schierate = sum(1 for slot in formazione_materie if slot["titolare"] is not None)
 
     return render_template(
         "index.html",
         utente=user_dict,
-        carte_recenti=carte_approvate[:6],
+        formazione_materie=formazione_materie,
+        totale_schierate=totale_schierate,
         totale_approvate=len(carte_approvate),
         totale_in_attesa=len(carte_in_attesa),
         conteggio_ruoli=conteggio_ruoli,

@@ -3,274 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Dashboard App</title>
+    <title>Fantaclasse — La Mia Formazione (Liceo Scientifico)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
+<body data-page="home">
+    <a href="#main-content" class="skip-link">Salta alla formazione</a>
 
-    <!-- Sprite SVG Ufficiale dell'App -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite-defs" aria-hidden="true">
-        <defs>
-            <symbol id="icon-crest" viewBox="0 0 64 64">
-                <path d="M32 4 L56 13 V31 C56 46.5 45.8 56.8 32 61 C18.2 56.8 8 46.5 8 31 V13 Z" fill="#172033" stroke="#C5F36A" stroke-width="3.5"/>
-                <circle cx="32" cy="31" r="11" fill="none" stroke="#C5F36A" stroke-width="2.2"/>
-                <polygon points="32,23 37,27 35,34 29,34 27,27" fill="#C5F36A"/>
-            </symbol>
-            <symbol id="icon-jersey" viewBox="0 0 64 64">
-                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="currentColor" opacity="0.16"/>
-                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
-            </symbol>
-            <symbol id="icon-home" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
-                <line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
-            </symbol>
-            <symbol id="icon-cards" viewBox="0 0 24 24">
-                <rect x="4" y="4" width="12" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M16 7h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </symbol>
-            <symbol id="icon-forge" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </symbol>
-            <symbol id="icon-feedback" viewBox="0 0 24 24">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </symbol>
-        </defs>
-    </svg>
-
-    <div class="app-shell">
-        <!-- App Sidebar (PC) / Top App Bar (Tablet & Telefono) -->
-        <header class="app-sidebar">
-            <div class="sidebar-brand">
-                <a href="/" class="brand-link" aria-label="Fantaclasse Home">
-                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#icon-crest"></use></svg>
-                    <span class="brand-name">Fantaclasse</span>
-                </a>
+    <!-- Fase 1: Caricamento Iniziale App (Splash Loader) -->
+    <div id="app-splash-loader" class="app-splash" role="status" aria-live="polite">
+        <div class="app-splash__card">
+            <div class="app-splash__crest" aria-hidden="true">
+                <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                    <path d="M10 16l4 4 8-8"/>
+                </svg>
             </div>
+            <p class="app-splash__brand">FANTACLASSE</p>
+            <p class="app-splash__subtitle">Liceo Scientifico • Sincronizzazione Aula</p>
+            <div class="app-splash__bar" aria-hidden="true">
+                <span class="app-splash__bar-fill"></span>
+            </div>
+        </div>
+    </div>
 
-            <nav class="sidebar-nav" aria-label="Navigazione principale">
-                <a href="/" class="sidebar-link active" aria-current="page">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-home"></use></svg>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/mercato" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-cards"></use></svg>
-                    <span>Listone</span>
-                </a>
-                <a href="/suggerisci" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-forge"></use></svg>
-                    <span>Crea Carta</span>
-                </a>
-                <a href="/sito/" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-feedback"></use></svg>
-                    <span>Feedback</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-user">
-                {% if utente %}
-                <div class="user-wallet-card">
-                    <div class="user-wallet-info">
-                        <span class="user-avatar-mini" aria-hidden="true">{{ utente.name[0]|upper if utente.name else 'M' }}</span>
-                        <div class="user-wallet-text">
-                            <span class="user-name" id="header-user-name">{{ utente.name }}</span>
-                            <span class="fanta-milioni-badge" id="header-user-fm">{{ utente.fanta_milioni }} FM</span>
+    {% if not utente %}
+    <!-- Fase 2 (Ospite non autenticato): Gate di Accesso App -->
+    <div class="auth-viewport">
+        <main id="main-content" class="auth-stage" tabindex="-1">
+            <section class="auth-showcase" aria-label="Anteprima Aula 3-3-3 Liceo Scientifico">
+                <div class="auth-showcase__top">
+                    <div class="auth-showcase__brand">
+                        <span class="brand-badge__crest" aria-hidden="true">
+                            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                                <path d="M11 16h10M16 11v10"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <span class="brand-badge__title">FANTACLASSE</span>
+                            <span class="brand-badge__sub">Liceo Scientifico App</span>
                         </div>
                     </div>
-                    <a href="/logout" class="logout-btn">Esci</a>
-                </div>
-                {% else %}
-                <div class="user-wallet-card user-wallet-card--guest">
-                    <span class="fanta-milioni-badge">100 FM Bonus</span>
-                    <a href="/login" class="login-btn-header">Accedi</a>
-                </div>
-                {% endif %}
-            </div>
-        </header>
 
-        <!-- Main App Workspace -->
-        <main id="main-content" class="app-workspace" tabindex="-1">
-            <!-- Top App Context Bar -->
-            <div class="workspace-topbar">
-                <div class="workspace-title-group">
-                    <span class="workspace-eyebrow">Stagione 2025/26</span>
-                    <h1 class="workspace-title">
-                        {% if utente %}
-                        Ciao, Mister {{ utente.name }}
-                        {% else %}
-                        Centro Tattico Fantaclasse
-                        {% endif %}
-                    </h1>
+                    <span class="auth-showcase__tag">Modulo Scolastico 3-3-3</span>
+                    <h1 class="auth-showcase__headline">La tua Aula del Liceo Scientifico ti aspetta.</h1>
+                    <p class="auth-showcase__lead">
+                        Accedi per schierare Studenti e Professori titolari nelle 9 materie curricolari e gestire il tuo budget da 100 FantaMilioni.
+                    </p>
                 </div>
-                <div class="workspace-actions">
-                    <a href="/mercato" class="btn-secondary">Esplora Listone</a>
-                    {% if utente %}
-                    <a href="/suggerisci" class="btn-primary">+ Crea Carta</a>
-                    {% else %}
-                    <a href="/registrati" class="btn-primary">Inizia con 100 FM</a>
-                    {% endif %}
-                </div>
-            </div>
 
-            <!-- 3 KPI Metric Cards -->
-            <section class="kpi-strip" aria-label="Statistiche Lega">
-                <div class="kpi-card">
-                    <span class="kpi-label">Carte Schierabili</span>
-                    <div class="kpi-value-row">
-                        <strong class="kpi-value">{{ totale_approvate }}</strong>
-                        <span class="kpi-chip kpi-chip--success">Ufficiali</span>
+                <!-- Anteprima Compatta delle 9 Cattedre -->
+                <div class="gate-formation-preview" aria-label="Cattedre ufficiali del Liceo Scientifico">
+                    {% for slot in formazione_materie %}
+                    <div class="gate-slot {% if slot.titolare %}is-filled{% endif %}">
+                        <span class="gate-slot__code">{{ slot.codice }}</span>
+                        <span class="gate-slot__subject">{{ slot.materia }}</span>
+                        <strong class="gate-slot__holder">
+                            {% if slot.titolare %}{{ slot.titolare.nome }}{% else %}Cattedra Libera{% endif %}
+                        </strong>
                     </div>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">In Moderazione</span>
-                    <div class="kpi-value-row">
-                        <strong class="kpi-value">{{ totale_in_attesa }}</strong>
-                        <span class="kpi-chip kpi-chip--warning">Cattedra</span>
-                    </div>
-                </div>
-                <div class="kpi-card kpi-card--accent">
-                    <span class="kpi-label">Budget Squadra</span>
-                    <div class="kpi-value-row">
-                        <strong class="kpi-value">{{ utente.fanta_milioni if utente else 100 }} FM</strong>
-                        <span class="kpi-chip kpi-chip--dark">Crediti</span>
-                    </div>
+                    {% endfor %}
                 </div>
             </section>
 
-            <!-- Main App Grid: Tactical Pitch + Featured Trading Cards -->
-            <div class="dashboard-bento">
-                <!-- Left Column: Interactive Tactical Pitch -->
-                <section class="pitch-panel" aria-label="Reparti in Campo">
-                    <div class="panel-header-clean">
-                        <div>
-                            <h2 class="panel-title">Campo &amp; Reparti</h2>
-                            <p class="panel-subtitle">Tocca un reparto per filtrare il listone</p>
-                        </div>
-                        <span class="panel-badge">4 Ruoli</span>
+            <section class="auth-card" aria-labelledby="gate-login-heading">
+                <div class="auth-card__mobile-brand">
+                    <span class="brand-badge__crest" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        </svg>
+                    </span>
+                    <span class="brand-badge__title">FANTACLASSE</span>
+                </div>
+
+                <div class="auth-card__tabs" role="navigation" aria-label="Accesso o Registrazione">
+                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi</a>
+                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Nuova Squadra</a>
+                </div>
+
+                <header class="auth-card__header">
+                    <h2 id="gate-login-heading" class="auth-card__title">Accesso Rapido Squadra</h2>
+                    <p class="auth-card__subtitle">Autenticati per sbloccare la tua formazione e proporre nuove carte.</p>
+                </header>
+
+                {% if errore_caricamento %}
+                <div class="status-banner status-banner--error" role="alert">
+                    <div>
+                        <p class="status-banner__title">Servizio temporaneamente non disponibile</p>
+                        <p class="status-banner__text">{{ errore_caricamento }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('login') }}" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="gate-email">Email Studente o Docente</label>
+                        <input
+                            class="form-input"
+                            type="email"
+                            id="gate-email"
+                            name="email"
+                            placeholder="nome@scuola.it"
+                            autocomplete="email"
+                            required
+                        >
                     </div>
 
-                    <div class="tactical-pitch-board">
-                        <a href="/mercato?ruolo=Attaccante" class="pitch-line-card">
-                            <div class="pitch-line-left">
-                                <span class="role-shield role-shield--a">A</span>
-                                <div>
-                                    <strong class="pitch-line-name">Attaccanti</strong>
-                                    <span class="pitch-line-sub">Bonus voti alti</span>
-                                </div>
-                            </div>
-                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Attaccante', 0) if conteggio_ruoli else 0 }} carte</span>
-                        </a>
-
-                        <a href="/mercato?ruolo=Centrocampista" class="pitch-line-card">
-                            <div class="pitch-line-left">
-                                <span class="role-shield role-shield--c">C</span>
-                                <div>
-                                    <strong class="pitch-line-name">Centrocampisti</strong>
-                                    <span class="pitch-line-sub">Regia e costanza</span>
-                                </div>
-                            </div>
-                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Centrocampista', 0) if conteggio_ruoli else 0 }} carte</span>
-                        </a>
-
-                        <a href="/mercato?ruolo=Difensore" class="pitch-line-card">
-                            <div class="pitch-line-left">
-                                <span class="role-shield role-shield--d">D</span>
-                                <div>
-                                    <strong class="pitch-line-name">Difensori</strong>
-                                    <span class="pitch-line-sub">Zero assenze e disciplina</span>
-                                </div>
-                            </div>
-                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Difensore', 0) if conteggio_ruoli else 0 }} carte</span>
-                        </a>
-
-                        <a href="/mercato?ruolo=Portiere" class="pitch-line-card">
-                            <div class="pitch-line-left">
-                                <span class="role-shield role-shield--p">P</span>
-                                <div>
-                                    <strong class="pitch-line-name">Portieri</strong>
-                                    <span class="pitch-line-sub">Imbattibilità registro</span>
-                                </div>
-                            </div>
-                            <span class="pitch-line-pill">{{ conteggio_ruoli.get('Portiere', 0) if conteggio_ruoli else 0 }} carte</span>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- Right Column: Collectible Trading Cards -->
-                <section class="cards-showcase-panel" aria-labelledby="heading-carte-campo">
-                    <div class="panel-header-clean">
-                        <div>
-                            <h2 id="heading-carte-campo" class="panel-title">Carte Ufficiali</h2>
-                            <p class="panel-subtitle">Protagonisti approvati e schierabili in formazione</p>
-                        </div>
-                        <a href="/mercato" class="btn-link-pill">Vedi tutte ({{ totale_approvate }}) &rarr;</a>
+                    <div class="form-group">
+                        <label class="form-label" for="gate-password">Password</label>
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="gate-password"
+                            name="password"
+                            placeholder="Inserisci la tua password"
+                            autocomplete="current-password"
+                            required
+                        >
                     </div>
 
-                    {% if carte_recenti %}
-                    <div class="trading-cards-grid">
-                        {% for carta in carte_recenti %}
-                        {% set r_code = carta.ruolo[0]|upper if carta.ruolo else '?' %}
-                        <article class="player-card" data-card-ruolo="{{ carta.ruolo or 'Non assegnato' }}">
-                            <div class="tc-banner">
-                                <span class="tc-role-emblem">{{ r_code }}</span>
-                                <span class="status-pill status-approved">Schierabile</span>
-                            </div>
-                            <div class="tc-medallion-wrap">
-                                <div class="tc-medallion" aria-hidden="true">
-                                    <svg class="tc-jersey-svg"><use href="#icon-jersey"></use></svg>
-                                    <span class="tc-initial">{{ carta.nome[0]|upper if carta.nome else '?' }}</span>
-                                </div>
-                            </div>
-                            <div class="tc-body">
-                                <h3 class="player-name">{{ carta.nome }}</h3>
-                                <span class="role-badge">{{ carta.ruolo if carta.ruolo else 'Non assegnato' }}</span>
-                            </div>
-                            <div class="tc-footer">
-                                <div class="tc-stat">
-                                    <span class="tc-stat-label">Reparto</span>
-                                    <strong class="tc-stat-val">{{ carta.ruolo[:3]|upper if carta.ruolo else 'N/D' }}</strong>
-                                </div>
-                                <div class="tc-stat">
-                                    <span class="tc-stat-label">Stagione</span>
-                                    <strong class="tc-stat-val">{{ carta.created[:4] if carta.created else '2026' }}</strong>
-                                </div>
-                            </div>
-                        </article>
-                        {% endfor %}
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary btn--full">
+                            Entra nella Formazione
+                        </button>
                     </div>
-                    {% else %}
-                    <div class="state-box">
-                        <p class="state-title">Nessuna carta ancora in campo</p>
-                        <p class="state-desc">Crea la prima carta della tua classe e inviala in approvazione.</p>
-                        <a href="/suggerisci" class="btn-primary">Crea la Prima Carta</a>
-                    </div>
-                    {% endif %}
-                </section>
-            </div>
+                </form>
+
+                <div class="gate-secondary-actions">
+                    <a href="{{ url_for('registrati') }}" class="btn btn--secondary btn--full">
+                        Crea Squadra (+100 FM)
+                    </a>
+                    <a href="{{ url_for('mercato') }}" class="gate-catalog-link">
+                        Consulta il Listone Studenti &amp; Professori ({{ totale_approvate }})
+                    </a>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- Bottom App Tab Bar (Solo Telefono) -->
-    <nav class="bottom-nav" aria-label="Menu principale mobile">
-        <a href="/" class="nav-item active" aria-current="page">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-home"></use></svg>
-            <span>Home</span>
-        </a>
-        <a href="/mercato" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-cards"></use></svg>
-            <span>Listone</span>
-        </a>
-        <a href="/suggerisci" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-forge"></use></svg>
-            <span>Crea</span>
-        </a>
-        <a href="/sito/" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-feedback"></use></svg>
-            <span>Feedback</span>
-        </a>
-    </nav>
+    {% else %}
+    <!-- Fase 3 (Utente Autenticato): App Shell + Formazione Scolastica 3-3-3 -->
+    <div class="app-frame">
+        <!-- Barra Laterale App (PC >= 1024px) -->
+        <aside class="app-sidebar" aria-label="Menu principale">
+            <a href="{{ url_for('home') }}" class="brand-badge">
+                <span class="brand-badge__crest" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        <path d="M11 16h10M16 11v10"/>
+                    </svg>
+                </span>
+                <span class="brand-badge__text">
+                    <span class="brand-badge__title">FANTACLASSE</span>
+                    <span class="brand-badge__sub">Liceo Scientifico</span>
+                </span>
+            </a>
+
+            <nav class="sidebar-nav" aria-label="Navigazione app">
+                <a href="{{ url_for('home') }}" class="sidebar-nav__link is-active" aria-current="page">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                    </svg>
+                    <span>La Mia Formazione</span>
+                </a>
+                <a href="{{ url_for('mercato') }}" class="sidebar-nav__link">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M4 6h16M4 12h16M4 18h10"/>
+                    </svg>
+                    <span>Listone Classe</span>
+                </a>
+                <a href="{{ url_for('suggerisci') }}" class="sidebar-nav__link">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 8v8M8 12h8"/>
+                    </svg>
+                    <span>Crea Carta</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="wallet-widget" aria-label="Profilo squadra e budget">
+                    <div class="wallet-widget__row">
+                        <span class="wallet-widget__label">Squadra</span>
+                        <span class="wallet-widget__status">{{ utente.name }}</span>
+                    </div>
+                    <p class="wallet-widget__amount" data-user-fm>{{ utente.fanta_milioni }} <small>FM</small></p>
+                    <div class="wallet-widget__actions">
+                        <a href="{{ url_for('logout') }}" class="btn btn--ghost btn--sm btn--full">Esci dalla Sessione</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Area Principale App -->
+        <div class="app-Workspace">
+            <header class="app-topbar">
+                <a href="{{ url_for('home') }}" class="app-topbar__brand">
+                    <span class="brand-badge__crest" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        </svg>
+                    </span>
+                    <span class="brand-badge__title">FANTACLASSE</span>
+                </a>
+
+                <nav class="app-topbar__nav" aria-label="Navigazione tablet">
+                    <a href="{{ url_for('home') }}" class="topbar-pill is-active" aria-current="page">Formazione</a>
+                    <a href="{{ url_for('mercato') }}" class="topbar-pill">Listone</a>
+                    <a href="{{ url_for('suggerisci') }}" class="topbar-pill">Crea Carta</a>
+                </nav>
+
+                <div class="app-topbar__right">
+                    <span class="fm-chip">{{ utente.fanta_milioni }} FM</span>
+                    <span class="user-chip">{{ utente.name }}</span>
+                </div>
+            </header>
+
+            <main id="main-content" class="app-content" tabindex="-1">
+                {% if errore_caricamento %}
+                <div class="status-banner status-banner--error" role="alert">
+                    <div>
+                        <p class="status-banner__title">Errore caricamento formazione</p>
+                        <p class="status-banner__text">{{ errore_caricamento }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Intestazione Formazione Scolastica -->
+                <section class="formation-summary-bar" aria-label="Riepilogo Squadra">
+                    <div class="formation-summary-bar__main">
+                        <span class="section-kicker">Modulo Scolastico 3-3-3 • Liceo Scientifico</span>
+                        <h1 class="formation-summary-bar__title">Aula Titolare di {{ utente.name }}</h1>
+                    </div>
+                    <div class="formation-summary-bar__stats">
+                        <div class="mini-stat">
+                            <span class="mini-stat__label">Cattedre Coperte</span>
+                            <strong class="mini-stat__value">{{ totale_schierate }} / 9</strong>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-stat__label">Budget Squadra</span>
+                            <strong class="mini-stat__value mini-stat__value--accent">{{ utente.fanta_milioni }} FM</strong>
+                        </div>
+                        {% if totale_in_attesa > 0 %}
+                        <div class="mini-stat">
+                            <span class="mini-stat__label">Proposte in Verifica</span>
+                            <strong class="mini-stat__value">{{ totale_in_attesa }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- Lavagna Tattica 3-3-3 delle 9 Materie del Liceo Scientifico -->
+                <section class="classroom-board" aria-labelledby="board-heading">
+                    <div class="classroom-board__header">
+                        <div>
+                            <h2 id="board-heading" class="classroom-board__title">Schieramento 9 Materie Curricolari</h2>
+                            <p class="classroom-board__sub">Seleziona una cattedra per filtrare Studenti e Professori di quella materia nel Listone.</p>
+                        </div>
+                        <div class="classroom-board__actions">
+                            <a href="{{ url_for('suggerisci') }}" class="btn btn--lime btn--sm">+ Proponi Studente / Prof</a>
+                        </div>
+                    </div>
+
+                    <div class="formation-9-grid">
+                        {% for slot in formazione_materie %}
+                        <article
+                            class="subject-desk {% if slot.titolare %}is-occupied{% else %}is-vacant{% endif %}"
+                            data-codice="{{ slot.codice }}"
+                        >
+                            <div class="subject-desk__top">
+                                <span class="subject-desk__code" data-codice="{{ slot.codice }}">{{ slot.codice }}</span>
+                                <span class="subject-desk__area">{{ slot.area }}</span>
+                            </div>
+
+                            <h3 class="subject-desk__subject">{{ slot.materia }}</h3>
+
+                            {% if slot.titolare %}
+                            <div class="subject-desk__card">
+                                <div class="subject-desk__avatar" data-codice="{{ slot.codice }}" aria-hidden="true">
+                                    {{ slot.titolare.nome[:1] | upper }}
+                                </div>
+                                <div class="subject-desk__info">
+                                    <strong class="subject-desk__holder">{{ slot.titolare.nome }}</strong>
+                                    <span class="subject-desk__status">Titolare in Cattedra</span>
+                                </div>
+                            </div>
+                            <div class="subject-desk__footer">
+                                <span class="subject-desk__count">{{ slot.totale_materia }} disponibili</span>
+                                <a href="{{ url_for('mercato', ruolo=slot.materia) }}" class="subject-desk__link">Cambia &rarr;</a>
+                            </div>
+                            {% else %}
+                            <div class="subject-desk__empty">
+                                <p class="subject-desk__empty-text">Nessun titolare assegnato</p>
+                                <a href="{{ url_for('mercato', ruolo=slot.materia) }}" class="btn btn--secondary btn--sm">
+                                    Esplora {{ slot.codice }}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Barra di Navigazione Inferiore (Telefono <= 767px) -->
+        <nav class="mobile-tabbar" aria-label="Navigazione mobile">
+            <a href="{{ url_for('home') }}" class="mobile-tabbar__item is-active" aria-current="page">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span>Formazione</span>
+            </a>
+            <a href="{{ url_for('mercato') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h10"/>
+                </svg>
+                <span>Listone</span>
+            </a>
+            <a href="{{ url_for('suggerisci') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 8v8M8 12h8"/>
+                </svg>
+                <span>Crea Carta</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+                <span>Esci</span>
+            </a>
+        </nav>
+    </div>
+    {% endif %}
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>
 </body>

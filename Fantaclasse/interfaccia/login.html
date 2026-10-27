@@ -3,156 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Accesso App</title>
+    <title>Fantaclasse — Accesso App Liceo Scientifico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="auth-body">
+<body data-page="login">
     <a href="#main-content" class="skip-link">Salta al modulo di accesso</a>
 
-    <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite-defs" aria-hidden="true">
-        <defs>
-            <symbol id="icon-crest" viewBox="0 0 64 64">
-                <path d="M32 4 L56 13 V31 C56 46.5 45.8 56.8 32 61 C18.2 56.8 8 46.5 8 31 V13 Z" fill="#172033" stroke="#C5F36A" stroke-width="3.5"/>
-                <circle cx="32" cy="31" r="11" fill="none" stroke="#C5F36A" stroke-width="2.2"/>
-                <polygon points="32,23 37,27 35,34 29,34 27,27" fill="#C5F36A"/>
-            </symbol>
-        </defs>
-    </svg>
-
-    <main id="main-content" class="auth-screen" tabindex="-1">
-        <div class="auth-topbar">
-            <a href="/" class="auth-back-pill">&larr; Torna alla Dashboard</a>
+    <!-- Fase 1: Caricamento Iniziale App (Splash Loader) -->
+    <div id="app-splash-loader" class="app-splash" role="status" aria-live="polite">
+        <div class="app-splash__card">
+            <div class="app-splash__crest" aria-hidden="true">
+                <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                    <path d="M10 16l4 4 8-8"/>
+                </svg>
+            </div>
+            <p class="app-splash__brand">FANTACLASSE</p>
+            <p class="app-splash__subtitle">Liceo Scientifico • Caricamento App</p>
+            <div class="app-splash__bar" aria-hidden="true">
+                <span class="app-splash__bar-fill"></span>
+            </div>
         </div>
+    </div>
 
-        <div class="auth-app-shell">
-            <!-- Form Principale App -->
-            <section class="auth-form-panel" aria-labelledby="login-heading">
-                <div class="auth-brand-head">
-                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#icon-crest"></use></svg>
-                    <span class="brand-name">Fantaclasse</span>
-                </div>
-
-                <!-- Segmented Switcher Accedi / Registrati -->
-                <div class="auth-tabs" role="navigation" aria-label="Scegli accesso o registrazione">
-                    <a href="/login" class="auth-tab active" aria-current="page">Accedi</a>
-                    <a href="/registrati" class="auth-tab">Registrati</a>
-                </div>
-
-                <div class="auth-title-block">
-                    <h1 id="login-heading" class="auth-heading">Bentornato Mister</h1>
-                    <p class="auth-subtext">Inserisci le tue credenziali per gestire la tua squadra.</p>
-                </div>
-
-                {% if registered_ok %}
-                <div class="alert-box alert-success" role="status">
-                    Registrazione completata! Ora puoi accedere con le tue credenziali.
-                </div>
-                {% endif %}
-
-                <div
-                    id="login-error-banner"
-                    class="alert-box alert-error"
-                    role="alert"
-                    {% if not errore %}hidden{% endif %}
-                >{{ errore or '' }}</div>
-
-                <form id="form-login" action="/login" method="POST" novalidate>
-                    <div class="input-group">
-                        <label class="input-label" for="login-email">Email</label>
-                        <input
-                            id="login-email"
-                            type="email"
-                            name="email"
-                            class="form-input {% if field_errors and field_errors.get('email') %}input-invalid{% endif %}"
-                            placeholder="nome@scuola.it"
-                            value="{{ email_val or '' }}"
-                            maxlength="255"
-                            autocomplete="email"
-                            aria-describedby="login-email-error"
-                            {% if field_errors and field_errors.get('email') %}aria-invalid="true"{% endif %}
-                            required
-                        >
-                        <span
-                            id="login-email-error"
-                            class="field-error-msg"
-                            data-field-error="email"
-                            role="alert"
-                            {% if not (field_errors and field_errors.get('email')) %}hidden{% endif %}
-                        >{{ field_errors.get('email', '') if field_errors else '' }}</span>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="input-label" for="login-password">Password</label>
-                        <div class="password-field-wrap">
-                            <input
-                                id="login-password"
-                                type="password"
-                                name="password"
-                                class="form-input {% if field_errors and field_errors.get('password') %}input-invalid{% endif %}"
-                                placeholder="Almeno 8 caratteri"
-                                minlength="8"
-                                maxlength="72"
-                                autocomplete="current-password"
-                                aria-describedby="login-password-error"
-                                {% if field_errors and field_errors.get('password') %}aria-invalid="true"{% endif %}
-                                required
-                            >
-                            <button
-                                type="button"
-                                class="btn-toggle-pass"
-                                data-toggle-password="login-password"
-                                aria-label="Mostra o nascondi password"
-                                aria-pressed="false"
-                            >Mostra</button>
+    <!-- Fase 2: Schermata di Accesso App -->
+    <div class="auth-viewport">
+        <main id="main-content" class="auth-stage" tabindex="-1">
+            <!-- Colonna Sinistra (PC): Identità Liceo Scientifico -->
+            <section class="auth-showcase" aria-label="Presentazione Fantaclasse Liceo Scientifico">
+                <div class="auth-showcase__top">
+                    <div class="auth-showcase__brand">
+                        <span class="brand-badge__crest" aria-hidden="true">
+                            <svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                                <path d="M11 16h10M16 11v10"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <span class="brand-badge__title">FANTACLASSE</span>
+                            <span class="brand-badge__sub">Liceo Scientifico Edition</span>
                         </div>
-                        <span
-                            id="login-password-error"
-                            class="field-error-msg"
-                            data-field-error="password"
-                            role="alert"
-                            {% if not (field_errors and field_errors.get('password')) %}hidden{% endif %}
-                        >{{ field_errors.get('password', '') if field_errors else '' }}</span>
                     </div>
 
-                    <button type="submit" id="btn-submit-login" class="btn-primary btn-full">
-                        Entra nell'App
-                    </button>
-                </form>
+                    <span class="auth-showcase__tag">Anno Scolastico Ufficiale</span>
+                    <h1 class="auth-showcase__headline">Schiera i migliori Studenti e Professori nelle 9 Materie.</h1>
+                    <p class="auth-showcase__lead">
+                        Componi la tua aula titolare scegliendo una carta per ciascuna delle 9 materie del Liceo Scientifico con 100 FantaMilioni di budget iniziale.
+                    </p>
+                </div>
 
-                <div class="auth-footer-note">
-                    Non hai ancora una squadra? <a href="/registrati">Crea un profilo e ricevi 100 FM</a>
+                <!-- Anteprima Dipartimenti Scolastici -->
+                <div class="auth-departments" aria-label="Dipartimenti del Liceo Scientifico">
+                    <div class="auth-dept-row">
+                        <span class="auth-dept-row__code">INF • MAT • SCI</span>
+                        <span class="auth-dept-row__name">Dipartimento Scientifico</span>
+                    </div>
+                    <div class="auth-dept-row">
+                        <span class="auth-dept-row__code">ITA • FIL • STO</span>
+                        <span class="auth-dept-row__name">Dipartimento Umanistico</span>
+                    </div>
+                    <div class="auth-dept-row">
+                        <span class="auth-dept-row__code">ING • ART • MOT</span>
+                        <span class="auth-dept-row__name">Dipartimento Linguistico &amp; Arte</span>
+                    </div>
                 </div>
             </section>
 
-            <!-- Pannello Visuale Sportivo (PC & Tablet) -->
-            <aside class="auth-visual-panel" aria-label="Anteprima Lega">
-                <div class="auth-visual-top">
-                    <span class="auth-visual-pill">Stagione Ufficiale</span>
-                    <h2 class="auth-visual-title">La tua classe.<br>La tua formazione.</h2>
-                    <p class="auth-visual-desc">Esplora il listone dei compagni, proponi nuove carte nei 4 ruoli ufficiali e gestisci il tuo budget da 100 FantaMilioni.</p>
+            <!-- Colonna Destra: Modulo Accesso -->
+            <section class="auth-card" aria-labelledby="login-heading">
+                <div class="auth-card__mobile-brand">
+                    <span class="brand-badge__crest" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        </svg>
+                    </span>
+                    <span class="brand-badge__title">FANTACLASSE</span>
                 </div>
 
-                <div class="auth-roles-preview">
-                    <div class="auth-role-chip">
-                        <span class="role-shield role-shield--p">P</span>
-                        <span>Portieri</span>
-                    </div>
-                    <div class="auth-role-chip">
-                        <span class="role-shield role-shield--d">D</span>
-                        <span>Difensori</span>
-                    </div>
-                    <div class="auth-role-chip">
-                        <span class="role-shield role-shield--c">C</span>
-                        <span>Centrocampisti</span>
-                    </div>
-                    <div class="auth-role-chip">
-                        <span class="role-shield role-shield--a">A</span>
-                        <span>Attaccanti</span>
+                <div class="auth-card__tabs" role="navigation" aria-label="Metodo di autenticazione">
+                    <a href="{{ url_for('login') }}" class="auth-card__tab is-active" aria-current="page">Accedi</a>
+                    <a href="{{ url_for('registrati') }}" class="auth-card__tab">Nuova Squadra</a>
+                </div>
+
+                <header class="auth-card__header">
+                    <h2 id="login-heading" class="auth-card__title">Entra nella tua Aula</h2>
+                    <p class="auth-card__subtitle">Inserisci le tue credenziali per gestire la formazione scolastica.</p>
+                </header>
+
+                {% if registered_ok %}
+                <div class="status-banner status-banner--success" role="status" aria-live="polite">
+                    <div>
+                        <p class="status-banner__title">Squadra registrata con successo</p>
+                        <p class="status-banner__text">Il tuo budget iniziale di <strong>100 FM</strong> è pronto. Accedi per schierare la classe.</p>
                     </div>
                 </div>
-            </aside>
-        </div>
-    </main>
+                {% endif %}
+
+                {% if errore %}
+                <div id="login-error-banner" class="status-banner status-banner--error" role="alert" aria-live="assertive">
+                    <div>
+                        <p class="status-banner__title">Accesso non riuscito</p>
+                        <p class="status-banner__text">{{ errore }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form id="form-login" method="POST" action="{{ url_for('login') }}" novalidate>
+                    <div class="form-group {% if field_errors and field_errors.get('email') %}has-error{% endif %}">
+                        <label class="form-label" for="email">Email Studente o Docente</label>
+                        <input
+                            class="form-input"
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ email_val or '' }}"
+                            placeholder="nome@scuola.it"
+                            autocomplete="email"
+                            aria-invalid="{{ 'true' if (field_errors and field_errors.get('email')) else 'false' }}"
+                            aria-describedby="error-email"
+                            required
+                        >
+                        <p id="error-email" class="field-error" data-field-error="email" role="alert">
+                            {{ field_errors.get('email', '') if field_errors else '' }}
+                        </p>
+                    </div>
+
+                    <div class="form-group {% if field_errors and field_errors.get('password') %}has-error{% endif %}">
+                        <label class="form-label" for="password">Password</label>
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Inserisci la tua password"
+                            autocomplete="current-password"
+                            aria-invalid="{{ 'true' if (field_errors and field_errors.get('password')) else 'false' }}"
+                            aria-describedby="error-password"
+                            required
+                        >
+                        <p id="error-password" class="field-error" data-field-error="password" role="alert">
+                            {{ field_errors.get('password', '') if field_errors else '' }}
+                        </p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btn-submit-login" class="btn btn--primary btn--full">
+                            Entra in Fantaclasse
+                        </button>
+                    </div>
+                </form>
+
+                <footer class="auth-card__footer">
+                    Non hai ancora una squadra? <a href="{{ url_for('registrati') }}">Registrati e ricevi 100 FM</a>
+                </footer>
+            </section>
+        </main>
+    </div>
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>
 </body>

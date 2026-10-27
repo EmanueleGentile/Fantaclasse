@@ -3,280 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantaclasse — Crea Carta Giocatore</title>
+    <title>Fantaclasse — Crea Carta Studente o Professore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
+<body data-page="suggerisci">
+    <a href="#main-content" class="skip-link">Salta al modulo di creazione carta</a>
 
-    <!-- Sprite SVG Ufficiale dell'App -->
-    <svg xmlns="http://www.w3.org/2000/svg" class="svg-sprite-defs" aria-hidden="true">
-        <defs>
-            <symbol id="icon-crest" viewBox="0 0 64 64">
-                <path d="M32 4 L56 13 V31 C56 46.5 45.8 56.8 32 61 C18.2 56.8 8 46.5 8 31 V13 Z" fill="#172033" stroke="#C5F36A" stroke-width="3.5"/>
-                <circle cx="32" cy="31" r="11" fill="none" stroke="#C5F36A" stroke-width="2.2"/>
-                <polygon points="32,23 37,27 35,34 29,34 27,27" fill="#C5F36A"/>
-            </symbol>
-            <symbol id="icon-jersey" viewBox="0 0 64 64">
-                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="currentColor" opacity="0.18"/>
-                <path d="M20 10 L26 14 C29.5 16.5 34.5 16.5 38 14 L44 10 L56 18 L50 30 L44 27 V52 H20 V27 L14 30 L8 18 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
-            </symbol>
-            <symbol id="icon-home" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
-                <line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
-            </symbol>
-            <symbol id="icon-cards" viewBox="0 0 24 24">
-                <rect x="4" y="4" width="12" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M16 7h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </symbol>
-            <symbol id="icon-forge" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </symbol>
-            <symbol id="icon-feedback" viewBox="0 0 24 24">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </symbol>
-        </defs>
-    </svg>
+    <div class="app-frame">
+        <!-- Barra Laterale App (PC >= 1024px) -->
+        <aside class="app-sidebar" aria-label="Menu principale">
+            <a href="{{ url_for('home') }}" class="brand-badge">
+                <span class="brand-badge__crest" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        <path d="M11 16h10M16 11v10"/>
+                    </svg>
+                </span>
+                <span class="brand-badge__text">
+                    <span class="brand-badge__title">FANTACLASSE</span>
+                    <span class="brand-badge__sub">Liceo Scientifico</span>
+                </span>
+            </a>
 
-    <div class="app-shell">
-        <!-- App Sidebar (PC) / Top App Bar (Tablet & Telefono) -->
-        <header class="app-sidebar">
-            <div class="sidebar-brand">
-                <a href="/" class="brand-link" aria-label="Fantaclasse Home">
-                    <svg class="brand-crest-svg" aria-hidden="true"><use href="#icon-crest"></use></svg>
-                    <span class="brand-name">Fantaclasse</span>
+            <nav class="sidebar-nav" aria-label="Navigazione app">
+                <a href="{{ url_for('home') }}" class="sidebar-nav__link">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                    </svg>
+                    <span>La Mia Formazione</span>
                 </a>
-            </div>
-
-            <nav class="sidebar-nav" aria-label="Navigazione principale">
-                <a href="/" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-home"></use></svg>
-                    <span>Dashboard</span>
+                <a href="{{ url_for('mercato') }}" class="sidebar-nav__link">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M4 6h16M4 12h16M4 18h10"/>
+                    </svg>
+                    <span>Listone Classe</span>
                 </a>
-                <a href="/mercato" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-cards"></use></svg>
-                    <span>Listone</span>
-                </a>
-                <a href="/suggerisci" class="sidebar-link active" aria-current="page">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-forge"></use></svg>
+                <a href="{{ url_for('suggerisci') }}" class="sidebar-nav__link is-active" aria-current="page">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 8v8M8 12h8"/>
+                    </svg>
                     <span>Crea Carta</span>
-                </a>
-                <a href="/sito/" class="sidebar-link">
-                    <svg class="sidebar-icon" aria-hidden="true"><use href="#icon-feedback"></use></svg>
-                    <span>Feedback</span>
                 </a>
             </nav>
 
-            <div class="sidebar-user">
-                <div class="user-wallet-card">
-                    <div class="user-wallet-info">
-                        <span class="user-avatar-mini" aria-hidden="true">{{ utente.name[0]|upper if utente and utente.name else 'M' }}</span>
-                        <div class="user-wallet-text">
-                            <span class="user-name" id="header-user-name">{{ utente.name if utente else '' }}</span>
-                            <span class="fanta-milioni-badge" id="header-user-fm">{{ utente.fanta_milioni if utente else 100 }} FM</span>
-                        </div>
+            <div class="sidebar-footer">
+                {% if utente %}
+                <div class="wallet-widget" aria-label="Profilo squadra e budget">
+                    <div class="wallet-widget__row">
+                        <span class="wallet-widget__label">Squadra</span>
+                        <span class="wallet-widget__status">{{ utente.name }}</span>
                     </div>
-                    <a href="/logout" class="logout-btn">Esci</a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main App Workspace -->
-        <main id="main-content" class="app-workspace" tabindex="-1">
-            <div class="workspace-topbar">
-                <div class="workspace-title-group">
-                    <span class="workspace-eyebrow">Studio Creazione</span>
-                    <h1 class="workspace-title">Crea Nuova Carta Giocatore</h1>
-                </div>
-                <div class="workspace-actions">
-                    <a href="/mercato" class="btn-secondary">&larr; Torna al Listone</a>
-                </div>
-            </div>
-
-            <div class="forge-studio-grid">
-                <!-- Left Panel: Configuratore Carta -->
-                <section class="forge-form-panel" aria-label="Configurazione Carta">
-                    <div class="panel-header-clean">
-                        <div>
-                            <h2 class="panel-title">Dati del Giocatore</h2>
-                            <p class="panel-subtitle">Inserisci il nome del compagno e scegli il reparto in campo</p>
-                        </div>
+                    <p class="wallet-widget__amount" data-user-fm>{{ utente.fanta_milioni }} <small>FM</small></p>
+                    <div class="wallet-widget__actions">
+                        <a href="{{ url_for('logout') }}" class="btn btn--ghost btn--sm btn--full">Esci dalla Sessione</a>
                     </div>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
 
-                    <div
-                        id="suggerisci-error-banner"
-                        class="alert-box alert-error"
-                        role="alert"
-                        {% if not errore %}hidden{% endif %}
-                    >{{ errore or '' }}</div>
+        <!-- Area Principale App -->
+        <div class="app-Workspace">
+            <header class="app-topbar">
+                <a href="{{ url_for('home') }}" class="app-topbar__brand">
+                    <span class="brand-badge__crest" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4">
+                            <path d="M16 3L28 8v8c0 7.5-5.1 12.2-12 14-6.9-1.8-12-6.5-12-14V8l12-5z"/>
+                        </svg>
+                    </span>
+                    <span class="brand-badge__title">FANTACLASSE</span>
+                </a>
 
-                    <div
-                        id="suggerisci-success-banner"
-                        class="alert-box alert-success"
-                        role="status"
-                        {% if not successo %}hidden{% endif %}
-                    >{{ successo or '' }}</div>
+                <nav class="app-topbar__nav" aria-label="Navigazione tablet">
+                    <a href="{{ url_for('home') }}" class="topbar-pill">Formazione</a>
+                    <a href="{{ url_for('mercato') }}" class="topbar-pill">Listone</a>
+                    <a href="{{ url_for('suggerisci') }}" class="topbar-pill is-active" aria-current="page">Crea Carta</a>
+                </nav>
 
-                    <form id="form-suggerisci-carta" action="/suggerisci" method="POST" novalidate>
-                        <div class="input-group">
-                            <div class="input-label-row">
-                                <label class="input-label" for="carta-nome">Nome e Cognome sul Campioncino</label>
-                                <span id="carta-nome-counter" class="char-counter" aria-live="polite">0 / 100</span>
-                            </div>
-                            <input
-                                id="carta-nome"
-                                type="text"
-                                name="nome"
-                                class="form-input {% if field_errors and field_errors.get('nome') %}input-invalid{% endif %}"
-                                placeholder="Es. Mario Rossi"
-                                value="{{ form_values.nome if form_values else '' }}"
-                                minlength="2"
-                                maxlength="100"
-                                autocomplete="off"
-                                aria-describedby="carta-nome-error"
-                                {% if field_errors and field_errors.get('nome') %}aria-invalid="true"{% endif %}
-                                required
-                            >
-                            <span
-                                id="carta-nome-error"
-                                class="field-error-msg"
-                                data-field-error="nome"
-                                role="alert"
-                                {% if not (field_errors and field_errors.get('nome')) %}hidden{% endif %}
-                            >{{ field_errors.get('nome', '') if field_errors else '' }}</span>
-                        </div>
+                <div class="app-topbar__right">
+                    {% if utente %}
+                    <span class="fm-chip">{{ utente.fanta_milioni }} FM</span>
+                    <span class="user-chip">{{ utente.name }}</span>
+                    {% endif %}
+                </div>
+            </header>
 
-                        <div class="input-group">
-                            <label class="input-label" for="carta-ruolo">Seleziona il Reparto Tattico</label>
-                            {% set ruoli_ufficiali = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'] %}
-                            <div class="role-quick-selector" role="group" aria-label="Scelta ruolo tattico">
-                                {% for r_item in ruoli_ufficiali %}
-                                {% set is_sel = (form_values and form_values.ruolo == r_item) %}
-                                <button
-                                    type="button"
-                                    class="role-pick-btn {% if is_sel %}active{% endif %}"
-                                    data-pick-ruolo="{{ r_item }}"
-                                    data-role-code="{{ r_item[0]|upper }}"
-                                    aria-pressed="{{ 'true' if is_sel else 'false' }}"
-                                >
-                                    <span class="role-pick-code role-shield--{{ r_item[0]|lower }}">{{ r_item[0]|upper }}</span>
-                                    <span class="role-pick-label">{{ r_item }}</span>
-                                </button>
-                                {% endfor %}
-                            </div>
-
-                            <select
-                                id="carta-ruolo"
-                                name="ruolo"
-                                class="form-input {% if field_errors and field_errors.get('ruolo') %}input-invalid{% endif %}"
-                                aria-describedby="carta-ruolo-error"
-                                {% if field_errors and field_errors.get('ruolo') %}aria-invalid="true"{% endif %}
-                                required
-                            >
-                                <option value="">-- Scegli il ruolo in campo --</option>
-                                {% for ruolo_opt in ruoli_ufficiali %}
-                                <option
-                                    value="{{ ruolo_opt }}"
-                                    {% if form_values and form_values.ruolo == ruolo_opt %}selected{% endif %}
-                                >{{ ruolo_opt }}</option>
-                                {% endfor %}
-                            </select>
-                            <span
-                                id="carta-ruolo-error"
-                                class="field-error-msg"
-                                data-field-error="ruolo"
-                                role="alert"
-                                {% if not (field_errors and field_errors.get('ruolo')) %}hidden{% endif %}
-                            >{{ field_errors.get('ruolo', '') if field_errors else '' }}</span>
-                        </div>
-
-                        <div class="cta-row">
-                            <button type="submit" id="btn-submit-carta" class="btn-primary">
-                                Invia Carta in Approvazione
-                            </button>
-                            <button type="button" id="btn-reset-forge" class="btn-secondary">
-                                Ripristina
-                            </button>
-                        </div>
-                    </form>
+            <main id="main-content" class="app-content" tabindex="-1">
+                <section class="page-head">
+                    <div>
+                        <span class="section-kicker">Laboratorio Carte • Liceo Scientifico</span>
+                        <h1 class="page-head__title">Proponi Studente o Professore</h1>
+                        <p class="page-head__desc">
+                            Inserisci il nominativo e assegna una delle 9 materie curricolari del Liceo Scientifico.
+                        </p>
+                    </div>
+                    <div class="page-head__actions">
+                        <a href="{{ url_for('mercato') }}" class="btn btn--secondary btn--sm">Vai al Listone</a>
+                    </div>
                 </section>
 
-                <!-- Right Panel: Authentic Collectible Trading Card Showcase -->
-                <aside class="forge-preview-panel" aria-label="Campioncino in Tempo Reale">
-                    <div class="forge-stage-top">
-                        <span class="forge-stage-tag">Campioncino Ufficiale</span>
-                        <span class="forge-stage-season">2025/26</span>
-                    </div>
-
-                    <div class="collectible-card-pedestal">
-                        {% set init_ruolo = form_values.ruolo if form_values else '' %}
-                        {% set init_nome = form_values.nome if form_values else '' %}
-                        <article
-                            id="preview-card-article"
-                            class="collectible-card"
-                            data-card-ruolo="{{ init_ruolo if init_ruolo else 'Portiere' }}"
-                        >
-                            <div class="cc-top-bar">
-                                <div class="cc-role-crest">
-                                    <span id="preview-card-emblem" class="cc-role-letter">{{ init_ruolo[0]|upper if init_ruolo else 'P' }}</span>
-                                    <span id="preview-card-reparto" class="cc-role-short">{{ init_ruolo[:3]|upper if init_ruolo else 'POR' }}</span>
-                                </div>
-                                <svg class="cc-league-crest" aria-hidden="true"><use href="#icon-crest"></use></svg>
+                <div class="creator-split">
+                    <!-- Colonna Modulo -->
+                    <section class="panel-card" aria-labelledby="form-card-heading">
+                        <div class="panel-card__head">
+                            <div>
+                                <h2 id="form-card-heading" class="panel-card__title">Dati Nominativo &amp; Materia</h2>
+                                <p class="panel-card__sub">Le proposte vengono sottoposte a verifica prima di entrare nell'albo.</p>
                             </div>
+                        </div>
 
-                            <div class="cc-kit-stage" aria-hidden="true">
-                                <div class="cc-kit-halo"></div>
-                                <svg class="cc-kit-svg"><use href="#icon-jersey"></use></svg>
-                                <span id="preview-card-avatar" class="cc-kit-number">{{ init_nome[0]|upper if init_nome else '★' }}</span>
-                            </div>
-
-                            <div class="cc-identity-plate">
-                                <h3 id="preview-card-nome" class="cc-player-name">{{ init_nome if init_nome else 'Nome Giocatore' }}</h3>
-                                <span id="preview-card-ruolo" class="cc-role-pill">{{ init_ruolo if init_ruolo else 'Portiere' }}</span>
-                            </div>
-
-                            <div class="cc-stats-grid">
-                                <div class="cc-stat-box">
-                                    <span class="cc-stat-lbl">Lega</span>
-                                    <strong class="cc-stat-num">3DIA</strong>
-                                </div>
-                                <div class="cc-stat-box">
-                                    <span class="cc-stat-lbl">Valore</span>
-                                    <strong class="cc-stat-num">10 FM</strong>
-                                </div>
-                                <div class="cc-stat-box">
-                                    <span class="cc-stat-lbl">Stato</span>
-                                    <strong class="cc-stat-num">Nuova</strong>
+                        <div id="suggerisci-feedback" aria-live="polite">
+                            {% if successo %}
+                            <div class="status-banner status-banner--success" role="status">
+                                <div>
+                                    <p class="status-banner__title">Proposta inviata con successo</p>
+                                    <p class="status-banner__text">{{ successo }}</p>
                                 </div>
                             </div>
-                        </article>
-                    </div>
-                </aside>
-            </div>
-        </main>
+                            {% endif %}
+
+                            {% if errore %}
+                            <div class="status-banner status-banner--error" role="alert">
+                                <div>
+                                    <p class="status-banner__title">Verifica i campi inseriti</p>
+                                    <p class="status-banner__text">{{ errore }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <form id="form-suggerisci" method="POST" action="{{ url_for('suggerisci') }}" novalidate>
+                            <div class="form-group {% if field_errors and field_errors.get('nome') %}has-error{% endif %}">
+                                <label class="form-label" for="nome">Nome Studente o Professore</label>
+                                <input
+                                    class="form-input"
+                                    type="text"
+                                    id="nome"
+                                    name="nome"
+                                    value="{{ form_values.get('nome', '') if form_values else '' }}"
+                                    placeholder="Es. Prof.ssa Bianchi o Alessandro Verdi"
+                                    maxlength="80"
+                                    autocomplete="off"
+                                    aria-invalid="{{ 'true' if (field_errors and field_errors.get('nome')) else 'false' }}"
+                                    aria-describedby="error-nome"
+                                    required
+                                >
+                                <p id="error-nome" class="field-error" data-field-error="nome" role="alert">
+                                    {{ field_errors.get('nome', '') if field_errors else '' }}
+                                </p>
+                            </div>
+
+                            <div class="form-group {% if field_errors and field_errors.get('ruolo') %}has-error{% endif %}">
+                                <label class="form-label" for="ruolo">Materia del Liceo Scientifico</label>
+                                <select
+                                    class="form-select"
+                                    id="ruolo"
+                                    name="ruolo"
+                                    aria-invalid="{{ 'true' if (field_errors and field_errors.get('ruolo')) else 'false' }}"
+                                    aria-describedby="error-ruolo"
+                                    required
+                                >
+                                    <option value="">-- Seleziona una delle 9 Materie --</option>
+                                    {% for r in ruoli_ammessi %}
+                                    {% set meta = materie_meta.get(r, {'codice': 'MAT', 'area': 'Area Scientifica'}) %}
+                                    <option
+                                        value="{{ r }}"
+                                        {% if form_values and form_values.get('ruolo') == r %}selected{% endif %}
+                                    >
+                                        {{ meta.codice }} — {{ r }} ({{ meta.area }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <!-- Griglia Selezione Rapida 9 Materie (3x3) -->
+                                <div class="role-quick-grid-9" role="group" aria-label="Scelta rapida tra le 9 materie">
+                                    {% for r in ruoli_ammessi %}
+                                    {% set meta = materie_meta.get(r, {'codice': 'MAT'}) %}
+                                    <button
+                                        type="button"
+                                        class="role-quick-btn {% if form_values and form_values.get('ruolo') == r %}is-selected{% endif %}"
+                                        data-quick-role="{{ r }}"
+                                        data-quick-code="{{ meta.codice }}"
+                                        aria-pressed="{{ 'true' if (form_values and form_values.get('ruolo') == r) else 'false' }}"
+                                    >
+                                        <strong>{{ meta.codice }}</strong>
+                                        <span>{{ r }}</span>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+
+                                <p id="error-ruolo" class="field-error" data-field-error="ruolo" role="alert">
+                                    {{ field_errors.get('ruolo', '') if field_errors else '' }}
+                                </p>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" id="btn-submit-carta" class="btn btn--primary btn--full">
+                                    Invia Proposta Carta
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Colonna Anteprima Live Campioncino Scolastico -->
+                    <aside class="preview-stage" aria-label="Anteprima campioncino scolastico">
+                        <span class="preview-stage__label">Anteprima Live Campioncino</span>
+
+                        {% set initial_ruolo = form_values.get('ruolo', '') if form_values else '' %}
+                        {% set initial_meta = materie_meta.get(initial_ruolo, {'codice': 'MAT', 'area': 'Liceo Scientifico'}) %}
+
+                        <div class="trading-card" id="live-card-preview">
+                            <div class="trading-card__top">
+                                <span class="role-code" id="preview-role-code" data-codice="{{ initial_meta.codice }}">
+                                    {{ initial_meta.codice if initial_ruolo else 'LICEO' }}
+                                </span>
+                                <span class="status-tag status-tag--wait">In Verifica</span>
+                            </div>
+
+                            <div class="trading-card__crest" id="preview-crest" aria-hidden="true">
+                                <span id="preview-initial">
+                                    {% if form_values and form_values.get('nome') %}
+                                        {{ form_values.get('nome')[:1] | upper }}
+                                    {% else %}
+                                        F
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <h3 class="trading-card__name" id="preview-card-name">
+                                {{ form_values.get('nome') if (form_values and form_values.get('nome')) else 'Nome Studente / Prof' }}
+                            </h3>
+
+                            <p class="trading-card__role" id="preview-card-role">
+                                {{ initial_ruolo if initial_ruolo else 'Seleziona Materia' }}
+                            </p>
+
+                            <div class="trading-card__footer">
+                                <span id="preview-card-dept">{{ initial_meta.area }}</span>
+                                <span>FANTACLASSE</span>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </main>
+        </div>
+
+        <!-- Barra di Navigazione Inferiore (Telefono <= 767px) -->
+        <nav class="mobile-tabbar" aria-label="Navigazione mobile">
+            <a href="{{ url_for('home') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span>Formazione</span>
+            </a>
+            <a href="{{ url_for('mercato') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h10"/>
+                </svg>
+                <span>Listone</span>
+            </a>
+            <a href="{{ url_for('suggerisci') }}" class="mobile-tabbar__item is-active" aria-current="page">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 8v8M8 12h8"/>
+                </svg>
+                <span>Crea Carta</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="mobile-tabbar__item">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+                <span>Esci</span>
+            </a>
+        </nav>
     </div>
-
-    <!-- Bottom App Tab Bar (Solo Telefono) -->
-    <nav class="bottom-nav" aria-label="Menu principale mobile">
-        <a href="/" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-home"></use></svg>
-            <span>Home</span>
-        </a>
-        <a href="/mercato" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-cards"></use></svg>
-            <span>Listone</span>
-        </a>
-        <a href="/suggerisci" class="nav-item active" aria-current="page">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-forge"></use></svg>
-            <span>Crea</span>
-        </a>
-        <a href="/sito/" class="nav-item">
-            <svg class="nav-icon-svg" aria-hidden="true"><use href="#icon-feedback"></use></svg>
-            <span>Feedback</span>
-        </a>
-    </nav>
 
     <script src="{{ url_for('static', filename='services/api.js') }}" defer></script>
 </body>

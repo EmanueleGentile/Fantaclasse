@@ -200,9 +200,9 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
             valida_registrazione_input("studente@scuola.it", "Marco", "password123", "diversa123"),
         )
 
-        self.assertEqual(valida_carta_input("Mario Rossi", "Attaccante"), {})
-        self.assertIn("nome", valida_carta_input("<img src=x>", "Attaccante"))
-        self.assertIn("nome", valida_carta_input("https://spam.com", "Attaccante"))
+        self.assertEqual(valida_carta_input("Mario Rossi", "Informatica"), {})
+        self.assertIn("nome", valida_carta_input("<img src=x>", "Informatica"))
+        self.assertIn("nome", valida_carta_input("https://spam.com", "Informatica"))
         self.assertIn("ruolo", valida_carta_input("Mario Rossi", "RuoloInesistente"))
 
     def test_03_route_guard_e_endpoints_pocketbase(self):
@@ -238,6 +238,7 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
         self.assertGreaterEqual(len(data_carte["items"]), 1)
         for item in data_carte["items"]:
             self.assertEqual(item["stato"], "approvata")
+            self.assertNotIn("id", item)
 
         # 3. Auth Guard su /suggerisci: redirect a /login se non autenticato
         resp_suggerisci = self.client.get("/suggerisci", follow_redirects=False)
@@ -247,7 +248,7 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
         # 4. Endpoint POST /api/carte bloccato con 401 senza token
         resp_post_unauth = self.client.post(
             "/api/carte",
-            json={"nome": "Studente SmokeTest", "ruolo": "Attaccante"},
+            json={"nome": "Studente SmokeTest", "ruolo": "Informatica"},
         )
         self.assertEqual(resp_post_unauth.status_code, 401)
 
@@ -279,16 +280,19 @@ class FantaclasseStrictSmokeTest(unittest.TestCase):
         sess_json = sess_resp.get_json()
         self.assertTrue(sess_json["authenticated"])
         self.assertEqual(sess_json["user"]["fanta_milioni"], 100)
+        self.assertNotIn("id", sess_json["user"])
+        self.assertNotIn("email", sess_json["user"])
 
         create_resp = self.client.post(
             "/api/carte",
-            json={"nome": "Studente SmokeTest", "ruolo": "Centrocampista"},
+            json={"nome": "Studente SmokeTest", "ruolo": "Matematica"},
         )
         self.assertEqual(create_resp.status_code, 201)
         created_item = create_resp.get_json()["item"]
         self.assertEqual(created_item["nome"], "Studente SmokeTest")
-        self.assertEqual(created_item["ruolo"], "Centrocampista")
+        self.assertEqual(created_item["ruolo"], "Matematica")
         self.assertEqual(created_item["stato"], "in_attesa")
+        self.assertNotIn("id", created_item)
 
     def test_04_audit_zero_xss_zero_mock_zero_orfani(self):
         files_to_scan = [

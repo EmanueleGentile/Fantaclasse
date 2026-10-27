@@ -1,5 +1,5 @@
 """
-Regole di validazione e costanti applicative speculari allo schema PocketBase (pb_data/data.db).
+Regole di validazione e costanti applicative per Fantaclasse (Liceo Scientifico).
 Tutte le funzioni restituiscono un dizionario di errori per singolo campo (vuoto se valido).
 """
 
@@ -8,29 +8,71 @@ from typing import Dict
 
 BUDGET_INIZIALE_FANTA_MILIONI: int = 100
 
-# Pattern nativo PocketBase per gli ID dei record (15 caratteri alfanumerici minuscoli)
+# Pattern nativo per la validazione interna degli ID backend (15 caratteri alfanumerici)
 PB_ID_REGEX = re.compile(r"^[a-z0-9]{15}$")
 
-# Pattern email conforme RFC / PocketBase
+# Pattern email conforme RFC
 EMAIL_REGEX = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]{2,}$")
 
 # Pattern anti-HTML/XSS per i campi testuali (nessun tag < o >)
 SAFE_TEXT_REGEX = re.compile(r"^[^<>]*$")
 
-# Valori ammessi per i ruoli e gli stati della collezione Carte
-RUOLI_CARTE_AMMESSI = ("Portiere", "Difensore", "Centrocampista", "Attaccante")
+# Le 9 Materie Ufficiali del Liceo Scientifico (Ruoli delle Carte Studenti/Professori)
+RUOLI_CARTE_AMMESSI = (
+    "Informatica",
+    "Matematica",
+    "Scienze",
+    "Italiano",
+    "Filosofia",
+    "Storia",
+    "Inglese",
+    "Disegno e Storia dell'Arte",
+    "Scienze Motorie",
+)
+
+# Metadati per ciascuna materia (codice breve e area dipartimentale)
+MATERIE_META = {
+    "Informatica": {"codice": "INF", "area": "Area Scientifica"},
+    "Matematica": {"codice": "MAT", "area": "Area Scientifica"},
+    "Scienze": {"codice": "SCI", "area": "Area Scientifica"},
+    "Italiano": {"codice": "ITA", "area": "Area Umanistica"},
+    "Filosofia": {"codice": "FIL", "area": "Area Umanistica"},
+    "Storia": {"codice": "STO", "area": "Area Umanistica"},
+    "Inglese": {"codice": "ING", "area": "Area Linguistica & Arte"},
+    "Disegno e Storia dell'Arte": {"codice": "ART", "area": "Area Linguistica & Arte"},
+    "Scienze Motorie": {"codice": "MOT", "area": "Area Linguistica & Arte"},
+}
+
 STATI_CARTE_AMMESSI = ("in_attesa", "approvata")
+
+# Mappa di conversione automatica per eventuali vecchi record calcistici nel database
+LEGACY_ROLE_MAP = {
+    "Attaccante": "Informatica",
+    "Centrocampista": "Matematica",
+    "Difensore": "Scienze",
+    "Portiere": "Italiano",
+}
+
+
+def normalizza_materia(ruolo_raw: str) -> str:
+    """Converte eventuali vecchi ruoli calcistici in materie del Liceo Scientifico."""
+    pulito = (ruolo_raw or "").strip()
+    if pulito in RUOLI_CARTE_AMMESSI:
+        return pulito
+    if pulito in LEGACY_ROLE_MAP:
+        return LEGACY_ROLE_MAP[pulito]
+    return "Informatica" if not pulito else pulito
 
 
 def valida_id_pocketbase(record_id: str) -> bool:
-    """Verifica che un ID rispetti il formato a 15 caratteri di PocketBase."""
+    """Verifica internamente nel backend che un ID rispetti il formato a 15 caratteri."""
     if not isinstance(record_id, str):
         return False
     return bool(PB_ID_REGEX.match(record_id.strip()))
 
 
 def valida_login_input(identity: str, password: str) -> Dict[str, str]:
-    """Valida i campi di autenticazione per /api/collections/users/auth-with-password."""
+    """Valida i campi di autenticazione."""
     errors: Dict[str, str] = {}
     clean_identity = (identity or "").strip()
     clean_password = password or ""
@@ -56,13 +98,7 @@ def valida_registrazione_input(
     password: str,
     password_confirm: str,
 ) -> Dict[str, str]:
-    """
-    Valida il payload di creazione utente sulla collezione `users`:
-    - email: required, formato email valido
-    - name: text opzionale/consigliato, max 255 caratteri, privo di tag HTML
-    - password: required, min 8 caratteri, max 72 caratteri
-    - passwordConfirm: deve coincidere con password
-    """
+    """Valida i campi di registrazione nuovo allenatore."""
     errors: Dict[str, str] = {}
     clean_email = (email or "").strip()
     clean_name = (name or "").strip()
@@ -100,27 +136,28 @@ def valida_registrazione_input(
 
 def valida_carta_input(nome: str, ruolo: str) -> Dict[str, str]:
     """
-    Valida il payload di creazione record sulla collezione `Carte`:
-    - Campi reali nello schema: `nome` (text), `ruolo` (text), `stato` (text)
+    Valida il payload di creazione di una Carta Studente/Professore:
+    - `nome`: nome dello studente o professore (2-100 caratteri, no HTML/link)
+    - `ruolo`: una delle 9 materie ufficiali del Liceo Scientifico
     """
     errors: Dict[str, str] = {}
     clean_nome = (nome or "").strip()
     clean_ruolo = (ruolo or "").strip()
 
     if not clean_nome:
-        errors["nome"] = "Il nome della carta è obbligatorio."
+        errors["nome"] = "Inserisci il nome dello studente o professore."
     elif len(clean_nome) < 2:
-        errors["nome"] = "Il nome della carta deve contenere almeno 2 caratteri."
+        errors["nome"] = "Il nome deve contenere almeno 2 caratteri."
     elif len(clean_nome) > 100:
-        errors["nome"] = "Il nome della carta non può superare i 100 caratteri."
+        errors["nome"] = "Il nome non può superare i 100 caratteri."
     elif not SAFE_TEXT_REGEX.match(clean_nome):
-        errors["nome"] = "Il nome contiene caratteri HTML non ammessi (< o >)."
+        errors["nome"] = "Il nome contiene caratteri non ammessi (< o >)."
     elif re.search(r"(https?://|www\.)", clean_nome, re.IGNORECASE):
-        errors["nome"] = "Non è consentito inserire link nel nome della carta."
+        errors["nome"] = "Non è consentito inserire link nel nome."
 
     if not clean_ruolo:
-        errors["ruolo"] = "Seleziona un ruolo per la carta."
+        errors["ruolo"] = "Seleziona la materia del Liceo Scientifico."
     elif clean_ruolo not in RUOLI_CARTE_AMMESSI:
-        errors["ruolo"] = f"Ruolo non valido. Scegli tra: {', '.join(RUOLI_CARTE_AMMESSI)}."
+        errors["ruolo"] = f"Materia non valida. Scegli tra: {', '.join(RUOLI_CARTE_AMMESSI)}."
 
     return errors

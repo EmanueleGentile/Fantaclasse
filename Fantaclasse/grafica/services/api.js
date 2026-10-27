@@ -1,921 +1,632 @@
 /**
- * Fantaclasse Frontend Service Layer, AuthStore, Live Card Forge & 4-State UI Engine
- * - 100% DOM API sicure (document.createElement + textContent)
- * - Gestione deterministica dei 4 stati asincroni: loading, success, empty-state, error (con retry)
- * - Filtro combinato (Stato DB + Ruolo Tattico + Ricerca Testuale Live), Vista Griglia/Tabella e Live Preview
+ * Service Layer Frontend per Fantaclasse — Liceo Scientifico Edition (grafica/services/api.js)
+ * - Validazione per le 9 Materie Curricolari del Liceo Scientifico.
+ * - Zero esposizione di ID database, email o metadati interni (GDPR & Security by Design).
+ * - Gestione esplicita dei 4 stati asincroni per componente:
+ *   1. `loading` (Skeleton UI)
+ *   2. `success` (Rendering sicuro con createElement / textContent)
+ *   3. `empty-state` (Illustrazione + CTA contestuale)
+ *   4. `error` (Banner accessibile con pulsante Riprova)
  */
+
 (function () {
-  "use strict";
+    "use strict";
 
-  const PB_ID_REGEX = /^[a-z0-9]{15}$/;
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const SAFE_TEXT_REGEX = /^[^<>]*$/;
-  const URL_BLOCK_REGEX = /(https?:\/\/|www\.)/i;
-  const ALLOWED_RUOLI = ["Portiere", "Difensore", "Centrocampista", "Attaccante"];
-  const ALLOWED_STATI = ["approvata", "in_attesa"];
+    var SchemaValidator = {
+        allowedStati: ["in_attesa", "approvata"],
+        allowedRuoli: [
+            "Informatica",
+            "Matematica",
+            "Scienze",
+            "Italiano",
+            "Filosofia",
+            "Storia",
+            "Inglese",
+            "Disegno e Storia dell'Arte",
+            "Scienze Motorie"
+        ],
+        materieMeta: {
+            "Informatica": { codice: "INF", area: "Area Scientifica" },
+            "Matematica": { codice: "MAT", area: "Area Scientifica" },
+            "Scienze": { codice: "SCI", area: "Area Scientifica" },
+            "Italiano": { codice: "ITA", area: "Area Umanistica" },
+            "Filosofia": { codice: "FIL", area: "Area Umanistica" },
+            "Storia": { codice: "STO", area: "Area Umanistica" },
+            "Inglese": { codice: "ING", area: "Area Linguistica & Arte" },
+            "Disegno e Storia dell'Arte": { codice: "ART", area: "Area Linguistica & Arte" },
+            "Scienze Motorie": { codice: "MOT", area: "Area Linguistica & Arte" }
+        },
 
-  /**
-   * 1. Configurazione centralizzata
-   */
-  const FantaclasseConfig = {
-    get pbBaseUrl() {
-      const rootAttr = document.documentElement.getAttribute("data-pb-url");
-      return (rootAttr || "http://127.0.0.1:8090").replace(/\/+$/, "");
-    },
-    endpoints: {
-      sessionCheck: "/api/auth/session",
-      carteList: "/api/carte",
-      carteCreate: "/api/carte",
-    },
-  };
+        isNonEmptyString: function (val) {
+            return typeof val === "string" && val.trim().length > 0;
+        },
 
-  /**
-   * 2. Validatore Client-Side Speculare al Database PocketBase
-   */
-  const SchemaValidator = {
-    isValidPocketBaseId(id) {
-      return typeof id === "string" && PB_ID_REGEX.test(id.trim());
-    },
-
-    validateLogin(email, password) {
-      const errors = {};
-      const cleanEmail = (email || "").trim();
-      const cleanPass = password || "";
-
-      if (!cleanEmail) {
-        errors.email = "Inserisci il tuo indirizzo email.";
-      } else if (cleanEmail.length > 255 || !EMAIL_REGEX.test(cleanEmail)) {
-        errors.email = "Inserisci un indirizzo email valido.";
-      }
-
-      if (!cleanPass) {
-        errors.password = "Inserisci la password.";
-      } else if (cleanPass.length < 8) {
-        errors.password = "La password deve contenere almeno 8 caratteri.";
-      } else if (cleanPass.length > 72) {
-        errors.password = "La password supera la lunghezza massima consentita.";
-      }
-
-      return errors;
-    },
-
-    validateRegistration(name, email, password, passwordConfirm) {
-      const errors = {};
-      const cleanName = (name || "").trim();
-      const cleanEmail = (email || "").trim();
-      const cleanPass = password || "";
-      const cleanConfirm = passwordConfirm || "";
-
-      if (!cleanName) {
-        errors.name = "Inserisci un nome o nickname visibile.";
-      } else if (cleanName.length < 2) {
-        errors.name = "Il nome deve avere almeno 2 caratteri.";
-      } else if (cleanName.length > 255) {
-        errors.name = "Il nome non può superare i 255 caratteri.";
-      } else if (!SAFE_TEXT_REGEX.test(cleanName)) {
-        errors.name = "Il nome contiene caratteri non consentiti (< o >).";
-      }
-
-      if (!cleanEmail) {
-        errors.email = "L'indirizzo email è obbligatorio.";
-      } else if (cleanEmail.length > 255 || !EMAIL_REGEX.test(cleanEmail)) {
-        errors.email = "Formato email non valido.";
-      }
-
-      if (!cleanPass) {
-        errors.password = "La password è obbligatoria.";
-      } else if (cleanPass.length < 8) {
-        errors.password = "La password deve contenere almeno 8 caratteri.";
-      } else if (cleanPass.length > 72) {
-        errors.password = "La password non può superare i 72 caratteri.";
-      }
-
-      if (!cleanConfirm) {
-        errors.passwordConfirm = "Conferma la password inserita.";
-      } else if (cleanPass !== cleanConfirm) {
-        errors.passwordConfirm = "Le due password non coincidono.";
-      }
-
-      return errors;
-    },
-
-    validateCarta(nome, ruolo) {
-      const errors = {};
-      const cleanNome = (nome || "").trim();
-      const cleanRuolo = (ruolo || "").trim();
-
-      if (!cleanNome) {
-        errors.nome = "Il nome della carta è obbligatorio.";
-      } else if (cleanNome.length < 2) {
-        errors.nome = "Il nome della carta deve contenere almeno 2 caratteri.";
-      } else if (cleanNome.length > 100) {
-        errors.nome = "Il nome della carta non può superare i 100 caratteri.";
-      } else if (!SAFE_TEXT_REGEX.test(cleanNome)) {
-        errors.nome = "Il nome contiene caratteri HTML non ammessi (< o >).";
-      } else if (URL_BLOCK_REGEX.test(cleanNome)) {
-        errors.nome = "Non è consentito inserire link nel nome della carta.";
-      }
-
-      if (!cleanRuolo) {
-        errors.ruolo = "Seleziona un ruolo per la carta.";
-      } else if (!ALLOWED_RUOLI.includes(cleanRuolo)) {
-        errors.ruolo = "Ruolo non valido. Scegli un ruolo dalla lista.";
-      }
-
-      return errors;
-    },
-  };
-
-  /**
-   * 3. Gestione Sessione e AuthStore PocketBase lato Client
-   */
-  const FantaclasseAuthStore = {
-    STORAGE_KEY: "fc_pb_auth_model",
-
-    saveModel(userModel) {
-      try {
-        if (userModel && SchemaValidator.isValidPocketBaseId(userModel.id)) {
-          sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(userModel));
-        }
-      } catch (_) {
-        // Ignora errori di storage privato
-      }
-    },
-
-    clear() {
-      try {
-        sessionStorage.removeItem(this.STORAGE_KEY);
-      } catch (_) {
-        // Ignora
-      }
-    },
-
-    async verifySessionOnStartup() {
-      const requiresAuth = document.body.getAttribute("data-require-auth") === "true";
-      try {
-        const resp = await fetch(FantaclasseConfig.endpoints.sessionCheck, {
-          method: "GET",
-          headers: { Accept: "application/json" },
-          credentials: "same-origin",
-        });
-        if (!resp.ok) {
-          this.clear();
-          if (requiresAuth) {
-            window.location.replace("/login");
-          }
-          return null;
-        }
-        const payload = await resp.json();
-        if (payload && payload.authenticated && payload.user) {
-          this.saveModel(payload.user);
-          return payload.user;
-        }
-        this.clear();
-        if (requiresAuth) {
-          window.location.replace("/login");
-        }
-        return null;
-      } catch (_) {
-        return null;
-      }
-    },
-  };
-
-  /**
-   * 4. Safe Error Handler centralizzato con supporto WCAG 2.2 AA (aria-invalid & focus)
-   */
-  const SafeErrorMapper = {
-    mapHttpStatus(status, serverMessage) {
-      if (typeof serverMessage === "string" && serverMessage.trim().length > 0) {
-        return serverMessage.trim();
-      }
-      switch (status) {
-        case 400:
-          return "I dati inseriti non sono validi. Controlla i campi evidenziati.";
-        case 401:
-          return "Sessione scaduta o non autenticata. Effettua nuovamente il login.";
-        case 403:
-          return "Non hai i permessi per eseguire questa operazione.";
-        case 404:
-          return "La risorsa richiesta non è disponibile.";
-        default:
-          return "Servizio temporaneamente non disponibile. Riprova tra qualche istante.";
-      }
-    },
-
-    clearFormErrors(formEl) {
-      if (!formEl) return;
-      const errorSpans = formEl.querySelectorAll("[data-field-error]");
-      errorSpans.forEach((el) => {
-        el.textContent = "";
-        el.hidden = true;
-      });
-      const inputs = formEl.querySelectorAll(".form-input");
-      inputs.forEach((input) => {
-        input.classList.remove("input-invalid");
-        input.removeAttribute("aria-invalid");
-      });
-      const banner = formEl.querySelector("[data-form-banner]");
-      if (banner) {
-        banner.textContent = "";
-        banner.hidden = true;
-      }
-    },
-
-    renderFieldErrors(formEl, fieldErrors, bannerMessage) {
-      if (!formEl) return;
-      this.clearFormErrors(formEl);
-
-      let firstInvalidInput = null;
-      const banner = formEl.querySelector("[data-form-banner]");
-
-      if (bannerMessage && banner) {
-        banner.textContent = bannerMessage;
-        banner.hidden = false;
-        banner.setAttribute("tabindex", "-1");
-      }
-
-      if (fieldErrors && typeof fieldErrors === "object") {
-        Object.keys(fieldErrors).forEach((fieldName) => {
-          const msg = fieldErrors[fieldName];
-          const errEl = formEl.querySelector('[data-field-error="' + fieldName + '"]');
-          const inputEl = formEl.querySelector('[name="' + fieldName + '"]');
-          if (errEl && msg) {
-            errEl.textContent = String(msg);
-            errEl.hidden = false;
-            if (inputEl && inputEl.id && !errEl.id) {
-              errEl.id = inputEl.id + "-error";
+        getMateriaMeta: function (ruolo) {
+            if (ruolo && SchemaValidator.materieMeta[ruolo]) {
+                return SchemaValidator.materieMeta[ruolo];
             }
-            if (inputEl && errEl.id) {
-              inputEl.setAttribute("aria-describedby", errEl.id);
+            return { codice: "MAT", area: "Liceo Scientifico" };
+        },
+
+        validateCartaRecord: function (record) {
+            if (!record || typeof record !== "object") {
+                return false;
             }
-          }
-          if (inputEl) {
-            inputEl.classList.add("input-invalid");
-            inputEl.setAttribute("aria-invalid", "true");
-            if (!firstInvalidInput) {
-              firstInvalidInput = inputEl;
+            if (!this.isNonEmptyString(record.nome)) {
+                return false;
             }
-          }
-        });
-      }
+            if (!this.isNonEmptyString(record.ruolo)) {
+                return false;
+            }
+            if (this.allowedStati.indexOf(record.stato) === -1) {
+                return false;
+            }
+            return true;
+        },
 
-      if (firstInvalidInput) {
-        firstInvalidInput.focus();
-      } else if (banner && !banner.hidden) {
-        banner.focus();
-      }
-    },
-  };
+        validateCartaCreateInput: function (nome, ruolo) {
+            var fieldErrors = {};
+            var cleanNome = typeof nome === "string" ? nome.trim() : "";
+            var cleanRuolo = typeof ruolo === "string" ? ruolo.trim() : "";
 
-  /**
-   * 5. Service API isolato per la collezione Carte
-   */
-  const FantaclasseAPI = {
-    async fetchCarte(statoFilter) {
-      const params = new URLSearchParams();
-      if (statoFilter && ALLOWED_STATI.includes(statoFilter)) {
-        params.set("stato", statoFilter);
-      }
-      const queryString = params.toString();
-      const url = queryString
-        ? FantaclasseConfig.endpoints.carteList + "?" + queryString
-        : FantaclasseConfig.endpoints.carteList;
+            if (!cleanNome) {
+                fieldErrors.nome = "Il nome dello studente o professore è obbligatorio.";
+            } else if (cleanNome.length < 2) {
+                fieldErrors.nome = "Il nome deve contenere almeno 2 caratteri.";
+            } else if (cleanNome.length > 80) {
+                fieldErrors.nome = "Il nome non può superare 80 caratteri.";
+            }
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: { Accept: "application/json" },
-        credentials: "same-origin",
-      });
+            if (!cleanRuolo) {
+                fieldErrors.ruolo = "Seleziona una delle 9 materie del Liceo Scientifico.";
+            } else if (this.allowedRuoli.indexOf(cleanRuolo) === -1) {
+                fieldErrors.ruolo = "Materia non valida. Scegli una materia ufficiale del Liceo Scientifico.";
+            }
 
-      let payload = null;
-      try {
-        payload = await response.json();
-      } catch (_) {
-        payload = null;
-      }
+            return {
+                valid: Object.keys(fieldErrors).length === 0,
+                fieldErrors: fieldErrors,
+                payload: {
+                    nome: cleanNome,
+                    ruolo: cleanRuolo
+                }
+            };
+        }
+    };
 
-      if (!response.ok) {
-        const err = new Error(
-          SafeErrorMapper.mapHttpStatus(response.status, payload && payload.message)
+    var FantaclasseAPI = {
+        getSession: function () {
+            return fetch("/api/auth/session", {
+                method: "GET",
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            }).then(function (res) {
+                return res.json();
+            });
+        },
+
+        listCarte: function (statoFilter) {
+            var url = "/api/carte";
+            if (statoFilter && SchemaValidator.allowedStati.indexOf(statoFilter) !== -1) {
+                url += "?stato=" + encodeURIComponent(statoFilter);
+            }
+            return fetch(url, {
+                method: "GET",
+                headers: { "Accept": "application/json" },
+                credentials: "same-origin"
+            }).then(function (res) {
+                return res.json().then(function (body) {
+                    if (!res.ok) {
+                        var err = new Error((body && body.message) || "Errore caricamento carte.");
+                        err.status = res.status;
+                        throw err;
+                    }
+                    var rawItems = (body && Array.isArray(body.items)) ? body.items : [];
+                    var validItems = rawItems.filter(function (item) {
+                        return SchemaValidator.validateCartaRecord(item);
+                    });
+                    return validItems;
+                });
+            });
+        },
+
+        createCarta: function (nome, ruolo) {
+            var validation = SchemaValidator.validateCartaCreateInput(nome, ruolo);
+            if (!validation.valid) {
+                var validationErr = new Error("Controlla i campi evidenziati prima di inviare.");
+                validationErr.fieldErrors = validation.fieldErrors;
+                return Promise.reject(validationErr);
+            }
+
+            return fetch("/api/carte", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify(validation.payload)
+            }).then(function (res) {
+                return res.json().then(function (body) {
+                    if (!res.ok) {
+                        var err = new Error((body && body.message) || "Impossibile salvare la carta.");
+                        err.status = res.status;
+                        err.fieldErrors = (body && body.field_errors) ? body.field_errors : {};
+                        throw err;
+                    }
+                    return body;
+                });
+            });
+        }
+    };
+
+    function clearElement(el) {
+        while (el && el.firstChild) {
+            el.removeChild(el.firstChild);
+        }
+    }
+
+    function buildCartaNode(carta) {
+        var meta = SchemaValidator.getMateriaMeta(carta.ruolo);
+        var codice = carta.codice_materia || meta.codice;
+        var area = carta.area_materia || meta.area;
+
+        var article = document.createElement("article");
+        article.className = "player-card";
+        article.setAttribute("data-ruolo", carta.ruolo);
+        article.setAttribute("data-stato", carta.stato);
+        article.setAttribute("data-codice", codice);
+
+        var top = document.createElement("div");
+        top.className = "player-card__top";
+
+        var roleCode = document.createElement("span");
+        roleCode.className = "role-code";
+        roleCode.setAttribute("data-codice", codice);
+        roleCode.textContent = codice;
+
+        var statusTag = document.createElement("span");
+        statusTag.className = "status-tag " + (
+            carta.stato === "approvata" ? "status-tag--ok" : "status-tag--wait"
         );
-        err.status = response.status;
-        throw err;
-      }
+        statusTag.textContent = carta.stato === "approvata" ? "Approvata" : "In Verifica";
 
-      return Array.isArray(payload && payload.items) ? payload.items : [];
-    },
-  };
+        top.appendChild(roleCode);
+        top.appendChild(statusTag);
 
-  /**
-   * 6. Gestore Deterministico dei 4 Stati Asincroni (loading, success, empty-state, error)
-   */
-  const UIStateManager = {
-    clearContainer(container) {
-      while (container.firstChild) {
-        container.removeChild(container.firstChild);
-      }
-    },
+        var visual = document.createElement("div");
+        visual.className = "player-card__visual";
+        visual.setAttribute("aria-hidden", "true");
 
-    renderLoading(container, filterButtons) {
-      if (!container) return;
-      this.clearContainer(container);
-      container.setAttribute("data-async-state", "loading");
+        var emblem = document.createElement("div");
+        emblem.className = "player-card__emblem";
+        emblem.setAttribute("data-codice", codice);
 
-      if (filterButtons) {
-        filterButtons.forEach((btn) => {
-          btn.disabled = true;
+        var initial = document.createElement("span");
+        initial.textContent = carta.nome.charAt(0).toUpperCase();
+        emblem.appendChild(initial);
+        visual.appendChild(emblem);
+
+        var body = document.createElement("div");
+        body.className = "player-card__body";
+
+        var title = document.createElement("h2");
+        title.className = "player-card__name";
+        title.textContent = carta.nome;
+
+        var rolePill = document.createElement("span");
+        rolePill.className = "player-card__role-pill";
+        rolePill.setAttribute("data-codice", codice);
+        rolePill.textContent = carta.ruolo;
+
+        var dept = document.createElement("p");
+        dept.className = "player-card__dept";
+        dept.textContent = area;
+
+        body.appendChild(title);
+        body.appendChild(rolePill);
+        body.appendChild(dept);
+
+        article.appendChild(top);
+        article.appendChild(visual);
+        article.appendChild(body);
+        return article;
+    }
+
+    function renderCarteState(container, stateName, payload) {
+        if (!container) {
+            return;
+        }
+        container.setAttribute("data-ui-state", stateName);
+        clearElement(container);
+
+        if (stateName === "loading") {
+            var skGrid = document.createElement("div");
+            skGrid.className = "skeleton-grid";
+            for (var i = 0; i < 4; i++) {
+                var sk = document.createElement("div");
+                sk.className = "skeleton-card";
+                skGrid.appendChild(sk);
+            }
+            container.appendChild(skGrid);
+            return;
+        }
+
+        if (stateName === "error") {
+            var errBox = document.createElement("div");
+            errBox.className = "state-box";
+            errBox.setAttribute("role", "alert");
+
+            var errTitle = document.createElement("h2");
+            errTitle.className = "state-box__title";
+            errTitle.textContent = "Impossibile aggiornare il Listone";
+
+            var errDesc = document.createElement("p");
+            errDesc.className = "state-box__desc";
+            errDesc.textContent = (payload && payload.message) ? payload.message : "Errore di connessione.";
+
+            var retryBtn = document.createElement("button");
+            retryBtn.type = "button";
+            retryBtn.className = "btn btn--primary btn--sm";
+            retryBtn.textContent = "Riprova";
+            retryBtn.addEventListener("click", function () {
+                if (payload && typeof payload.onRetry === "function") {
+                    payload.onRetry();
+                } else {
+                    window.location.reload();
+                }
+            });
+
+            errBox.appendChild(errTitle);
+            errBox.appendChild(errDesc);
+            errBox.appendChild(retryBtn);
+            container.appendChild(errBox);
+            return;
+        }
+
+        if (stateName === "empty-state") {
+            var emptyBox = document.createElement("div");
+            emptyBox.className = "state-box";
+
+            var emptyTitle = document.createElement("h2");
+            emptyTitle.className = "state-box__title";
+            emptyTitle.textContent = "Nessuna carta per questa materia";
+
+            var emptyDesc = document.createElement("p");
+            emptyDesc.className = "state-box__desc";
+            emptyDesc.textContent = "Nessuno Studente o Professore corrisponde ai filtri selezionati.";
+
+            var actions = document.createElement("div");
+            actions.className = "state-box__actions";
+
+            var resetBtn = document.createElement("a");
+            resetBtn.href = "/mercato";
+            resetBtn.className = "btn btn--secondary btn--sm";
+            resetBtn.textContent = "Mostra tutte le 9 materie";
+
+            var cta = document.createElement("a");
+            cta.href = "/suggerisci";
+            cta.className = "btn btn--primary btn--sm";
+            cta.textContent = "+ Crea Carta";
+
+            actions.appendChild(resetBtn);
+            actions.appendChild(cta);
+            emptyBox.appendChild(emptyTitle);
+            emptyBox.appendChild(emptyDesc);
+            emptyBox.appendChild(actions);
+            container.appendChild(emptyBox);
+            return;
+        }
+
+        if (stateName === "success") {
+            var grid = document.createElement("div");
+            grid.className = "cards-grid";
+            grid.id = "carte-grid";
+            var items = (payload && Array.isArray(payload.items)) ? payload.items : [];
+            items.forEach(function (c) {
+                grid.appendChild(buildCartaNode(c));
+            });
+            container.appendChild(grid);
+        }
+    }
+
+    function applyFieldErrors(formEl, fieldErrors) {
+        if (!formEl) {
+            return;
+        }
+        var errorNodes = formEl.querySelectorAll("[data-field-error]");
+        errorNodes.forEach(function (node) {
+            node.textContent = "";
+            var group = node.closest(".form-group");
+            if (group) {
+                group.classList.remove("has-error");
+                var ctrl = group.querySelector(".form-input, .form-select");
+                if (ctrl) {
+                    ctrl.setAttribute("aria-invalid", "false");
+                }
+            }
         });
-      }
 
-      for (let i = 0; i < 4; i += 1) {
-        const skel = document.createElement("div");
-        skel.className = "skeleton-card";
-        const line1 = document.createElement("div");
-        line1.className = "skeleton-line skeleton-title";
-        const line2 = document.createElement("div");
-        line2.className = "skeleton-line skeleton-subtitle";
-        skel.appendChild(line1);
-        skel.appendChild(line2);
-        container.appendChild(skel);
-      }
-    },
-
-    renderEmptyState(container, message, ctaText, ctaHref) {
-      if (!container) return;
-      this.clearContainer(container);
-      container.setAttribute("data-async-state", "empty-state");
-
-      const box = document.createElement("div");
-      box.className = "state-box state-empty";
-
-      const title = document.createElement("h3");
-      title.className = "state-title";
-      title.textContent = "Nessuna Carta Trovata nel Settore";
-
-      const desc = document.createElement("p");
-      desc.className = "state-desc";
-      desc.textContent =
-        message || "Non sono state trovate carte per i filtri tattici selezionati.";
-
-      box.appendChild(title);
-      box.appendChild(desc);
-
-      if (ctaText && ctaHref) {
-        const link = document.createElement("a");
-        link.className = "btn-primary state-action-link";
-        link.href = ctaHref;
-        link.textContent = ctaText;
-        box.appendChild(link);
-      }
-
-      container.appendChild(box);
-    },
-
-    renderError(container, errorMessage, onRetry) {
-      if (!container) return;
-      this.clearContainer(container);
-      container.setAttribute("data-async-state", "error");
-
-      const box = document.createElement("div");
-      box.className = "state-box state-error";
-      box.setAttribute("role", "alert");
-
-      const title = document.createElement("h3");
-      title.className = "state-title";
-      title.textContent = "Errore di Sincronizzazione";
-
-      const desc = document.createElement("p");
-      desc.className = "state-desc";
-      desc.textContent =
-        errorMessage || "Impossibile recuperare i dati da PocketBase in questo momento.";
-
-      box.appendChild(title);
-      box.appendChild(desc);
-
-      if (typeof onRetry === "function") {
-        const retryBtn = document.createElement("button");
-        retryBtn.type = "button";
-        retryBtn.className = "btn-retry";
-        retryBtn.textContent = "Riprova Connessione";
-        retryBtn.addEventListener("click", onRetry);
-        box.appendChild(retryBtn);
-      }
-
-      container.appendChild(box);
-    },
-
-    renderCarteSuccess(container, items) {
-      if (!container) return;
-      this.clearContainer(container);
-      container.setAttribute("data-async-state", "success");
-
-      const svgNS = "http://www.w3.org/2000/svg";
-
-      items.forEach((carta) => {
-        const isApproved = carta.stato === "approvata";
-        const roleStr = (carta.ruolo || "").trim();
-        const roleCode = roleStr ? roleStr.charAt(0).toUpperCase() : "?";
-        const roleShort = roleStr ? roleStr.slice(0, 3).toUpperCase() : "N/D";
-        const initial = (carta.nome || "?").trim().charAt(0).toUpperCase() || "?";
-        const yearStr = String(carta.created || "").slice(0, 4) || "2026";
-
-        const card = document.createElement("article");
-        card.className = isApproved
-          ? "player-card"
-          : "player-card player-card--pending";
-        if (SchemaValidator.isValidPocketBaseId(carta.id)) {
-          card.setAttribute("data-record-id", carta.id);
+        if (!fieldErrors || typeof fieldErrors !== "object") {
+            return;
         }
-        card.setAttribute("data-card-ruolo", roleStr || "Non assegnato");
-        card.setAttribute("data-card-nome", (carta.nome || "").toLowerCase());
-        card.setAttribute("data-card-stato", carta.stato || "");
 
-        const banner = document.createElement("div");
-        banner.className = "tc-banner";
-
-        const emblem = document.createElement("span");
-        emblem.className = "tc-role-emblem";
-        emblem.textContent = roleCode;
-
-        const statusBadge = document.createElement("span");
-        statusBadge.className = isApproved
-          ? "status-pill status-approved"
-          : "status-pill status-pending";
-        statusBadge.textContent = isApproved ? "Schierabile" : "In Verifica";
-
-        banner.appendChild(emblem);
-        banner.appendChild(statusBadge);
-        card.appendChild(banner);
-
-        const medallionWrap = document.createElement("div");
-        medallionWrap.className = "tc-medallion-wrap";
-
-        const medallion = document.createElement("div");
-        medallion.className = "tc-medallion";
-        medallion.setAttribute("aria-hidden", "true");
-
-        const jerseySvg = document.createElementNS(svgNS, "svg");
-        jerseySvg.setAttribute("class", "tc-jersey-svg");
-        const useEl = document.createElementNS(svgNS, "use");
-        useEl.setAttribute("href", "#icon-jersey");
-        jerseySvg.appendChild(useEl);
-
-        const initSpan = document.createElement("span");
-        initSpan.className = "tc-initial";
-        initSpan.textContent = initial;
-
-        medallion.appendChild(jerseySvg);
-        medallion.appendChild(initSpan);
-        medallionWrap.appendChild(medallion);
-        card.appendChild(medallionWrap);
-
-        const body = document.createElement("div");
-        body.className = "tc-body";
-
-        const nameEl = document.createElement("h3");
-        nameEl.className = "player-name";
-        nameEl.textContent = carta.nome || "Giocatore";
-
-        const roleBadge = document.createElement("span");
-        roleBadge.className = "role-badge";
-        roleBadge.textContent = roleStr || "Non assegnato";
-
-        body.appendChild(nameEl);
-        body.appendChild(roleBadge);
-        card.appendChild(body);
-
-        const footer = document.createElement("div");
-        footer.className = "tc-footer";
-
-        const statReparto = document.createElement("div");
-        statReparto.className = "tc-stat";
-        const lblReparto = document.createElement("span");
-        lblReparto.className = "tc-stat-label";
-        lblReparto.textContent = "Reparto";
-        const valReparto = document.createElement("strong");
-        valReparto.className = "tc-stat-val";
-        valReparto.textContent = roleShort;
-        statReparto.appendChild(lblReparto);
-        statReparto.appendChild(valReparto);
-
-        const statSeason = document.createElement("div");
-        statSeason.className = "tc-stat";
-        const lblSeason = document.createElement("span");
-        lblSeason.className = "tc-stat-label";
-        lblSeason.textContent = "Stagione";
-        const valSeason = document.createElement("strong");
-        valSeason.className = "tc-stat-val";
-        valSeason.textContent = yearStr;
-        statSeason.appendChild(lblSeason);
-        statSeason.appendChild(valSeason);
-
-        footer.appendChild(statReparto);
-        footer.appendChild(statSeason);
-        card.appendChild(footer);
-
-        container.appendChild(card);
-      });
-    },
-  };
-
-  /**
-   * 7. Toggle Visibilità Password nei Form Auth
-   */
-  function initPasswordToggles() {
-    const toggleButtons = Array.from(document.querySelectorAll("[data-toggle-password]"));
-    toggleButtons.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const targetId = btn.getAttribute("data-toggle-password");
-        const inputEl = targetId ? document.getElementById(targetId) : null;
-        if (!inputEl) return;
-
-        const isHidden = inputEl.type === "password";
-        inputEl.type = isHidden ? "text" : "password";
-        btn.textContent = isHidden ? "Nascondi" : "Mostra";
-        btn.setAttribute("aria-pressed", isHidden ? "true" : "false");
-      });
-    });
-  }
-
-  /**
-   * 8. Live Card Forge Preview (/suggerisci) & Validazione Form
-   */
-  function initForgeLivePreview() {
-    const cartaForm =
-      document.getElementById("form-suggerisci-carta") ||
-      document.getElementById("form-suggerisci");
-    if (!cartaForm) return;
-
-    const nomeInput = document.getElementById("carta-nome");
-    const nomeCounter = document.getElementById("carta-nome-counter");
-    const ruoloSelect = document.getElementById("carta-ruolo");
-    const previewArticle = document.getElementById("preview-card-article");
-    const previewEmblem = document.getElementById("preview-card-emblem");
-    const previewReparto = document.getElementById("preview-card-reparto");
-    const previewAvatar = document.getElementById("preview-card-avatar");
-    const previewName =
-      document.getElementById("preview-card-nome") ||
-      document.getElementById("preview-card-name");
-    const previewRole =
-      document.getElementById("preview-card-ruolo") ||
-      document.getElementById("preview-card-role");
-    const resetBtn = document.getElementById("btn-reset-forge");
-    const quickRoleBtns = Array.from(document.querySelectorAll("[data-pick-ruolo]"));
-
-    function syncPreview() {
-      const rawName = (nomeInput && nomeInput.value) || "";
-      const currentName = rawName.trim();
-      const currentRole = ((ruoloSelect && ruoloSelect.value) || "").trim();
-      const displayRole = currentRole || "Portiere";
-
-      if (nomeCounter) {
-        nomeCounter.textContent = rawName.length + " / 100";
-      }
-      if (previewName) {
-        previewName.textContent = currentName || "Nome Giocatore";
-      }
-      if (previewAvatar) {
-        previewAvatar.textContent = currentName
-          ? currentName.charAt(0).toUpperCase()
-          : "★";
-      }
-      if (previewRole) {
-        previewRole.textContent = displayRole;
-      }
-      if (previewEmblem) {
-        previewEmblem.textContent = displayRole.charAt(0).toUpperCase();
-      }
-      if (previewReparto) {
-        previewReparto.textContent = displayRole.slice(0, 3).toUpperCase();
-      }
-      if (previewArticle) {
-        previewArticle.setAttribute("data-card-ruolo", displayRole);
-      }
-
-      quickRoleBtns.forEach((btn) => {
-        const val = btn.getAttribute("data-pick-ruolo");
-        const isSelected = val === currentRole && currentRole !== "";
-        if (isSelected) {
-          btn.classList.add("active");
-          btn.setAttribute("aria-pressed", "true");
-        } else {
-          btn.classList.remove("active");
-          btn.setAttribute("aria-pressed", "false");
-        }
-      });
-    }
-
-    if (nomeInput) {
-      nomeInput.addEventListener("input", syncPreview);
-    }
-    if (ruoloSelect) {
-      ruoloSelect.addEventListener("change", syncPreview);
-    }
-
-    quickRoleBtns.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const picked = btn.getAttribute("data-pick-ruolo") || "";
-        if (ruoloSelect) {
-          ruoloSelect.value = picked;
-        }
-        syncPreview();
-      });
-    });
-
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function () {
-        cartaForm.reset();
-        if (nomeInput) nomeInput.value = "";
-        if (ruoloSelect) ruoloSelect.value = "";
-        SafeErrorMapper.clearFormErrors(cartaForm);
-        syncPreview();
-        if (nomeInput) nomeInput.focus();
-      });
-    }
-
-    syncPreview();
-  }
-
-  function initFormsValidation() {
-    const loginForm = document.getElementById("form-login");
-    if (loginForm) {
-      loginForm.addEventListener("submit", function (e) {
-        const email = (loginForm.elements.email && loginForm.elements.email.value) || "";
-        const password = (loginForm.elements.password && loginForm.elements.password.value) || "";
-        const errors = SchemaValidator.validateLogin(email, password);
-
-        if (Object.keys(errors).length > 0) {
-          e.preventDefault();
-          SafeErrorMapper.renderFieldErrors(
-            loginForm,
-            errors,
-            "Controlla i campi evidenziati prima di procedere."
-          );
-          return;
-        }
-        const submitBtn = loginForm.querySelector('button[type="submit"]');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = "Accesso in corso...";
-        }
-      });
-    }
-
-    const registerForm = document.getElementById("form-register");
-    if (registerForm) {
-      registerForm.addEventListener("submit", function (e) {
-        const name = (registerForm.elements.name && registerForm.elements.name.value) || "";
-        const email = (registerForm.elements.email && registerForm.elements.email.value) || "";
-        const password =
-          (registerForm.elements.password && registerForm.elements.password.value) || "";
-        const passwordConfirm =
-          (registerForm.elements.passwordConfirm &&
-            registerForm.elements.passwordConfirm.value) ||
-          "";
-
-        const errors = SchemaValidator.validateRegistration(
-          name,
-          email,
-          password,
-          passwordConfirm
-        );
-
-        if (Object.keys(errors).length > 0) {
-          e.preventDefault();
-          SafeErrorMapper.renderFieldErrors(
-            registerForm,
-            errors,
-            "Correggi i campi evidenziati per completare la registrazione."
-          );
-          return;
-        }
-        const submitBtn = registerForm.querySelector('button[type="submit"]');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = "Registrazione in corso...";
-        }
-      });
-    }
-
-    const cartaForm =
-      document.getElementById("form-suggerisci-carta") ||
-      document.getElementById("form-suggerisci");
-    if (cartaForm) {
-      cartaForm.addEventListener("submit", function (e) {
-        const nome = (cartaForm.elements.nome && cartaForm.elements.nome.value) || "";
-        const ruolo = (cartaForm.elements.ruolo && cartaForm.elements.ruolo.value) || "";
-        const errors = SchemaValidator.validateCarta(nome, ruolo);
-
-        if (Object.keys(errors).length > 0) {
-          e.preventDefault();
-          SafeErrorMapper.renderFieldErrors(
-            cartaForm,
-            errors,
-            "Verifica i dati della carta prima di inviare la proposta."
-          );
-          return;
-        }
-        const submitBtn = cartaForm.querySelector('button[type="submit"]');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = "Invio in corso...";
-        }
-      });
-    }
-  }
-
-  /**
-   * 9. Catalogo Carte Asincrono con Filtro Stato + Filtro Ruolo + Ricerca Live + Switcher Vista
-   */
-  function initMercatoAsyncCatalog() {
-    const container =
-      document.getElementById("carte-grid-container") ||
-      document.getElementById("carte-async-container");
-    if (!container) return;
-
-    const filterButtons = Array.from(
-      document.querySelectorAll("[data-stato], [data-stato-filter]")
-    );
-    const roleButtons = Array.from(
-      document.querySelectorAll("[data-ruolo], [data-ruolo-filter]")
-    );
-    const viewButtons = Array.from(document.querySelectorAll("[data-view-mode]"));
-    const tableHead = document.getElementById("listone-table-head");
-    const searchInput = document.getElementById("search-carte-input");
-    const clearSearchBtn = document.getElementById("btn-clear-search");
-    const countBadge = document.getElementById("carte-count-badge");
-    const statusAnnouncer = document.getElementById("carte-status-announcer");
-
-    function getStatoAttr(btn) {
-      if (!btn) return "";
-      return btn.getAttribute("data-stato") || btn.getAttribute("data-stato-filter") || "";
-    }
-
-    function getRuoloAttr(btn) {
-      if (!btn) return "";
-      return btn.getAttribute("data-ruolo") || btn.getAttribute("data-ruolo-filter") || "";
-    }
-
-    const initialActiveStatoBtn = document.querySelector(".filter-btn.filter-btn-active");
-    const initialActiveRoleBtn = document.querySelector(".role-filter-btn.role-filter-active");
-
-    let activeStatoFilter = getStatoAttr(initialActiveStatoBtn);
-    let activeRoleFilter = getRuoloAttr(initialActiveRoleBtn);
-    let searchQuery = "";
-    let cachedItems = null;
-
-    function announceCount(count) {
-      if (countBadge) {
-        countBadge.textContent = String(count);
-      }
-      if (statusAnnouncer) {
-        statusAnnouncer.textContent = count + " carte visualizzate nel listone.";
-      }
-    }
-
-    function applyLocalFiltersAndRender(itemsSource) {
-      const filtered = itemsSource.filter((item) => {
-        const matchesRole = !activeRoleFilter || (item.ruolo || "") === activeRoleFilter;
-        const matchesQuery =
-          !searchQuery ||
-          String(item.nome || "")
-            .toLowerCase()
-            .includes(searchQuery) ||
-          String(item.ruolo || "")
-            .toLowerCase()
-            .includes(searchQuery);
-        return matchesRole && matchesQuery;
-      });
-
-      announceCount(filtered.length);
-
-      if (filtered.length === 0) {
-        UIStateManager.renderEmptyState(
-          container,
-          "Nessun giocatore corrisponde ai filtri selezionati.",
-          "+ Crea Carta",
-          "/suggerisci"
-        );
-      } else {
-        UIStateManager.renderCarteSuccess(container, filtered);
-      }
-    }
-
-    async function loadCarte(statoValue) {
-      activeStatoFilter = statoValue || "";
-      UIStateManager.renderLoading(container, filterButtons);
-
-      try {
-        const items = await FantaclasseAPI.fetchCarte(activeStatoFilter);
-        cachedItems = items;
-        applyLocalFiltersAndRender(items);
-      } catch (err) {
-        UIStateManager.renderError(container, err.message, function () {
-          loadCarte(activeStatoFilter);
+        var firstInvalidInput = null;
+        Object.keys(fieldErrors).forEach(function (fieldName) {
+            var target = formEl.querySelector('[data-field-error="' + fieldName + '"]');
+            if (target) {
+                target.textContent = fieldErrors[fieldName];
+                var group = target.closest(".form-group");
+                if (group) {
+                    group.classList.add("has-error");
+                    var ctrl = group.querySelector(".form-input, .form-select");
+                    if (ctrl) {
+                        ctrl.setAttribute("aria-invalid", "true");
+                        if (!firstInvalidInput) {
+                            firstInvalidInput = ctrl;
+                        }
+                    }
+                }
+            }
         });
-      } finally {
-        filterButtons.forEach((btn) => {
-          btn.disabled = false;
-        });
-      }
+
+        if (firstInvalidInput && typeof firstInvalidInput.focus === "function") {
+            firstInvalidInput.focus();
+        }
     }
 
-    filterButtons.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const filterVal = getStatoAttr(btn);
-        filterButtons.forEach((b) => {
-          b.classList.remove("filter-btn-active");
-          b.setAttribute("aria-pressed", "false");
+    function initAppSplash() {
+        var splash = document.getElementById("app-splash-loader");
+        if (!splash) {
+            return;
+        }
+        try {
+            if (window.sessionStorage && window.sessionStorage.getItem("fc_splash_seen") === "1") {
+                splash.classList.add("is-dismissed");
+                return;
+            }
+            if (window.sessionStorage) {
+                window.sessionStorage.setItem("fc_splash_seen", "1");
+            }
+        } catch (e) {
+            // sessionStorage non disponibile
+        }
+        window.setTimeout(function () {
+            splash.classList.add("is-dismissed");
+        }, 180);
+    }
+
+    function initMercatoFilters() {
+        var container = document.getElementById("carte-state-container");
+        var totalBadge = document.getElementById("carte-total-badge");
+        var statoButtons = document.querySelectorAll("[data-filter-stato]");
+        var ruoloButtons = document.querySelectorAll("[data-filter-ruolo]");
+
+        if (!container || (statoButtons.length === 0 && ruoloButtons.length === 0)) {
+            return;
+        }
+
+        var activeStato = "";
+        var activeRuolo = "";
+
+        statoButtons.forEach(function (b) {
+            if (b.classList.contains("is-active")) {
+                activeStato = b.getAttribute("data-filter-stato") || "";
+            }
         });
-        btn.classList.add("filter-btn-active");
-        btn.setAttribute("aria-pressed", "true");
-        loadCarte(filterVal);
-      });
+        ruoloButtons.forEach(function (b) {
+            if (b.classList.contains("is-active")) {
+                activeRuolo = b.getAttribute("data-filter-ruolo") || "";
+            }
+        });
+
+        function refreshCatalog() {
+            renderCarteState(container, "loading", {});
+            FantaclasseAPI.listCarte(activeStato)
+                .then(function (items) {
+                    var filtered = items;
+                    if (activeRuolo) {
+                        filtered = items.filter(function (c) {
+                            return c.ruolo === activeRuolo;
+                        });
+                    }
+                    if (totalBadge) {
+                        totalBadge.textContent = filtered.length + " Carte";
+                    }
+                    if (filtered.length === 0) {
+                        renderCarteState(container, "empty-state", {});
+                    } else {
+                        renderCarteState(container, "success", { items: filtered });
+                    }
+                })
+                .catch(function (err) {
+                    renderCarteState(container, "error", {
+                        message: err.message,
+                        onRetry: refreshCatalog
+                    });
+                });
+        }
+
+        statoButtons.forEach(function (btn) {
+            btn.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                activeStato = btn.getAttribute("data-filter-stato") || "";
+                statoButtons.forEach(function (b) {
+                    var isCurrent = b === btn;
+                    b.classList.toggle("is-active", isCurrent);
+                    b.setAttribute("aria-pressed", isCurrent ? "true" : "false");
+                });
+                refreshCatalog();
+            });
+        });
+
+        ruoloButtons.forEach(function (btn) {
+            btn.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                activeRuolo = btn.getAttribute("data-filter-ruolo") || "";
+                ruoloButtons.forEach(function (b) {
+                    var isCurrent = b === btn;
+                    b.classList.toggle("is-active", isCurrent);
+                    b.setAttribute("aria-pressed", isCurrent ? "true" : "false");
+                });
+                refreshCatalog();
+            });
+        });
+    }
+
+    function initSuggerisciForm() {
+        var form = document.getElementById("form-suggerisci");
+        var feedbackBox = document.getElementById("suggerisci-feedback");
+        var submitBtn = document.getElementById("btn-submit-carta");
+        if (!form) {
+            return;
+        }
+
+        var nomeInput = form.querySelector('[name="nome"]');
+        var ruoloInput = form.querySelector('[name="ruolo"]');
+        var quickButtons = form.querySelectorAll("[data-quick-role]");
+
+        var previewName = document.getElementById("preview-card-name");
+        var previewRole = document.getElementById("preview-card-role");
+        var previewCode = document.getElementById("preview-role-code");
+        var previewDept = document.getElementById("preview-card-dept");
+        var previewInitial = document.getElementById("preview-initial");
+
+        function updateLivePreview() {
+            var currentNome = nomeInput ? nomeInput.value.trim() : "";
+            var currentRuolo = ruoloInput ? ruoloInput.value.trim() : "";
+
+            if (previewName) {
+                previewName.textContent = currentNome || "Nome Studente / Prof";
+            }
+            if (previewInitial) {
+                previewInitial.textContent = currentNome ? currentNome.charAt(0).toUpperCase() : "F";
+            }
+            if (previewRole) {
+                previewRole.textContent = currentRuolo || "Seleziona Materia";
+            }
+            if (previewCode) {
+                var meta = SchemaValidator.getMateriaMeta(currentRuolo);
+                var code = currentRuolo ? meta.codice : "LICEO";
+                previewCode.textContent = code;
+                previewCode.setAttribute("data-codice", meta.codice);
+            }
+            if (previewDept) {
+                var areaMeta = SchemaValidator.getMateriaMeta(currentRuolo);
+                previewDept.textContent = currentRuolo ? areaMeta.area : "Liceo Scientifico";
+            }
+            quickButtons.forEach(function (btn) {
+                var btnRole = btn.getAttribute("data-quick-role");
+                var isSelected = btnRole === currentRuolo && currentRuolo !== "";
+                btn.classList.toggle("is-selected", isSelected);
+                btn.setAttribute("aria-pressed", isSelected ? "true" : "false");
+            });
+        }
+
+        if (nomeInput) {
+            nomeInput.addEventListener("input", updateLivePreview);
+        }
+        if (ruoloInput) {
+            ruoloInput.addEventListener("change", updateLivePreview);
+        }
+        quickButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                var selectedRole = btn.getAttribute("data-quick-role") || "";
+                if (ruoloInput) {
+                    ruoloInput.value = selectedRole;
+                }
+                updateLivePreview();
+            });
+        });
+
+        form.addEventListener("submit", function (ev) {
+            var nomeVal = nomeInput ? nomeInput.value : "";
+            var ruoloVal = ruoloInput ? ruoloInput.value : "";
+
+            var check = SchemaValidator.validateCartaCreateInput(nomeVal, ruoloVal);
+            if (!check.valid) {
+                ev.preventDefault();
+                applyFieldErrors(form, check.fieldErrors);
+                return;
+            }
+
+            if (window.fetch) {
+                ev.preventDefault();
+                applyFieldErrors(form, {});
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Invio proposta in corso...";
+                }
+
+                FantaclasseAPI.createCarta(nomeVal, ruoloVal)
+                    .then(function (res) {
+                        form.reset();
+                        updateLivePreview();
+                        if (feedbackBox) {
+                            clearElement(feedbackBox);
+                            var banner = document.createElement("div");
+                            banner.className = "status-banner status-banner--success";
+                            banner.setAttribute("role", "status");
+
+                            var wrap = document.createElement("div");
+                            var title = document.createElement("p");
+                            title.className = "status-banner__title";
+                            title.textContent = "Proposta inviata con successo";
+
+                            var text = document.createElement("p");
+                            text.className = "status-banner__text";
+                            text.textContent = res.message || "La carta è stata inviata ed è in attesa di verifica.";
+
+                            wrap.appendChild(title);
+                            wrap.appendChild(text);
+                            banner.appendChild(wrap);
+                            feedbackBox.appendChild(banner);
+                        }
+                    })
+                    .catch(function (err) {
+                        if (err && err.fieldErrors) {
+                            applyFieldErrors(form, err.fieldErrors);
+                        }
+                        if (feedbackBox) {
+                            clearElement(feedbackBox);
+                            var banner = document.createElement("div");
+                            banner.className = "status-banner status-banner--error";
+                            banner.setAttribute("role", "alert");
+
+                            var wrap = document.createElement("div");
+                            var title = document.createElement("p");
+                            title.className = "status-banner__title";
+                            title.textContent = "Errore durante l'invio";
+
+                            var text = document.createElement("p");
+                            text.className = "status-banner__text";
+                            text.textContent = (err && err.message) ? err.message : "Verifica i dati inseriti.";
+
+                            wrap.appendChild(title);
+                            wrap.appendChild(text);
+                            banner.appendChild(wrap);
+                            feedbackBox.appendChild(banner);
+                        }
+                    })
+                    .finally(function () {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = "Invia Proposta Carta";
+                        }
+                    });
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initAppSplash();
+        initMercatoFilters();
+        initSuggerisciForm();
     });
 
-    roleButtons.forEach((btn) => {
-      btn.addEventListener("click", async function () {
-        activeRoleFilter = getRuoloAttr(btn);
-        roleButtons.forEach((b) => {
-          b.classList.remove("role-filter-active");
-          b.setAttribute("aria-pressed", "false");
-        });
-        btn.classList.add("role-filter-active");
-        btn.setAttribute("aria-pressed", "true");
-        if (cachedItems === null) {
-          await loadCarte(activeStatoFilter);
-        } else {
-          applyLocalFiltersAndRender(cachedItems);
-        }
-      });
-    });
-
-    viewButtons.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const mode = btn.getAttribute("data-view-mode") || "grid";
-        viewButtons.forEach((b) => {
-          b.classList.remove("active");
-          b.setAttribute("aria-pressed", "false");
-        });
-        btn.classList.add("active");
-        btn.setAttribute("aria-pressed", "true");
-
-        if (mode === "list") {
-          container.classList.add("view-list");
-          if (tableHead) tableHead.classList.add("is-visible");
-        } else {
-          container.classList.remove("view-list");
-          if (tableHead) tableHead.classList.remove("is-visible");
-        }
-      });
-    });
-
-    if (searchInput) {
-      searchInput.addEventListener("input", async function () {
-        searchQuery = (searchInput.value || "").trim().toLowerCase();
-        if (clearSearchBtn) {
-          clearSearchBtn.hidden = searchQuery.length === 0;
-        }
-        if (cachedItems === null) {
-          await loadCarte(activeStatoFilter);
-        } else {
-          applyLocalFiltersAndRender(cachedItems);
-        }
-      });
-    }
-
-    if (clearSearchBtn && searchInput) {
-      clearSearchBtn.addEventListener("click", async function () {
-        searchInput.value = "";
-        searchQuery = "";
-        clearSearchBtn.hidden = true;
-        searchInput.focus();
-        if (cachedItems === null) {
-          await loadCarte(activeStatoFilter);
-        } else {
-          applyLocalFiltersAndRender(cachedItems);
-        }
-      });
-    }
-
-    const refreshBtn = document.getElementById("btn-refresh-carte");
-    if (refreshBtn) {
-      refreshBtn.addEventListener("click", function () {
-        loadCarte(activeStatoFilter);
-      });
-    }
-
-    if (activeRoleFilter) {
-      loadCarte(activeStatoFilter);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    FantaclasseAuthStore.verifySessionOnStartup();
-    initPasswordToggles();
-    initFormsValidation();
-    initForgeLivePreview();
-    initMercatoAsyncCatalog();
-  });
+    window.FantaclasseService = {
+        SchemaValidator: SchemaValidator,
+        API: FantaclasseAPI,
+        renderCarteState: renderCarteState
+    };
 })();
